@@ -1,0 +1,28 @@
+@import './base.css';
+
+#app {
+  /* max-width: 1280px; */
+  margin: 0 auto;
+  font-weight: normal;
+}
+
+a {
+  text-decoration: none;
+  color: rgba(235, 235, 235, 0.64);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+.router-link-active {
+  color: #ffc107 !important;
+}
+
+.yellow {
+  color: #ffc107;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(63, 100%, 37%, 0.2);
+  }
+}
