@@ -6,6 +6,7 @@ import MainView from '@/views/MainView.vue'
 import NotFoundView from '@/views/404Page.vue'
 import HomeView from '@/components/main/HomeView.vue'
 import CryptoChart from '@/components/main/CryptoChart.vue'
+import CryptoModel from '@/components/main/CryptoModel.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,6 +47,11 @@ const router = createRouter({
           path: 'chart',
           name: 'chart',
           component: CryptoChart,
+        },
+        {
+          path: 'crypto',
+          name: 'crypto',
+          component: CryptoModel,
         },
       ],
     },
