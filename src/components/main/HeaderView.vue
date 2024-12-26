@@ -8,7 +8,7 @@
       <ul>
         <li><RouterLink to="/app/accueil/v1">Home</RouterLink></li>
         <li><RouterLink to="/app/accueil/chart">Chart</RouterLink></li>
-        <li><RouterLink to="/profil">My Profile</RouterLink></li>
+        <li><RouterLink to="/app/accueil/profil">My Profile</RouterLink></li>
         <li><RouterLink to="/achat">Achat</RouterLink></li>
         <li><RouterLink to="/setting">Setting</RouterLink></li>
       </ul>

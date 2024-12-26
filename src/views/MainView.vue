@@ -14,9 +14,9 @@ import UtilClass from '@/util/UtilClass'
 
 const router = useRouter()
 
-onMounted(async () => {
+/* onMounted(async () => {
   await UtilClass.verifyToken(router)
-})
+}) */
 </script>
 
 <style scoped></style>
