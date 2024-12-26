@@ -102,6 +102,8 @@ export default {
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data)
 
+      console.log(data)
+
       data.forEach((crypto) => {
         const { id_crypto, nom } = crypto.crypto
         const value = crypto.valeur

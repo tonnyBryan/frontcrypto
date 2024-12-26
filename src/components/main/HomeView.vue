@@ -1,3 +1,7 @@
+<script setup>
+import CryptoTable from '@/components/util/CryptoTable.vue'
+</script>
+
 <template>
-  <h1>Home bro</h1>
+  <CryptoTable></CryptoTable>
 </template>
