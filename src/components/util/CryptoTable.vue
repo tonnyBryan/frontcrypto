@@ -1,12 +1,14 @@
+<script setup>
+import LoaderV from './LoaderV.vue'
+</script>
+
 <template>
   <div class="table-container">
     <div
       v-if="cryptos.length === 0 || !isConnected"
       class="loading-overlay d-flex justify-content-center align-items-center"
     >
-      <div class="spinner-grow text-warning" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
+      <LoaderV></LoaderV>
     </div>
 
     <table class="table table-dark tba">
@@ -107,6 +109,7 @@ export default {
       socket.onclose = () => {
         console.log('WebSocket déconnecté')
         this.isConnected = false
+        this.cryptos = []
         this.reconnectWebSocket()
       }
 
