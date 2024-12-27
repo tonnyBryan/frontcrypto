@@ -1,23 +1,21 @@
 <template>
-  <div class="card lg">
-    <h4 class="card-title yellow" style="margin-top: 16px; margin-left: 10px">{{ title }}</h4>
-    <br />
-    <div class="table-responsive" style="border-radius: 1%">
-      <table class="table">
+  <div class="table-container">
+    <h4 class=" yellow" style="margin-top: 10px; margin-left: 20px">{{ title }}</h4>
+      <table class="table table-dark tba">
         <thead>
           <tr>
-            <th>Ref</th>
-            <th>Date</th>
-            <th>Value</th>
-            <th v-if="isCrypto">Crypto</th>
-            <th>Type</th>
+            <th scope="col">Ref</th>
+            <th scope="col">Date</th>
+            <th scope="col">Value</th>
+            <th scope="col" v-if="isCrypto">Crypto</th>
+            <th scope="col">Type</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="transaction in paginatedTransactions" :key="transaction.ref">
-            <td>{{ transaction.ref }}</td>
+            <td >{{ transaction.ref }}</td>
             <td>{{ formatDate(transaction.date) }}</td>
-            <td>{{ formatAmount(transaction.amount) }}</td>
+            <td class="unit">{{ formatAmount(transaction.amount) }}</td>
             <td v-if="isCrypto">{{ transaction.cryptoName }}</td>
             <td>
               <div :class="getStatusBadgeClass(transaction.status)">
@@ -27,7 +25,7 @@
           </tr>
         </tbody>
       </table>
-    </div>
+    
   </div>
 </template>
 
@@ -99,16 +97,38 @@ export default {
   color: #dc3545;
   border: 1px solid #dc3545;
 }
+
 .table {
-  background-color: #2b362e9a;
+  margin: 20px auto;
+  width: 90%;
+}
+
+.table-dark {
+  --bs-table-bg: transparent !important;
+  --bs-table-color: inherit !important;
+}
+.unit {
+  font-weight: 600;
+  color: #fdf8f8;
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  color: rgb(161, 160, 160);
+}
+
+.table tbody tr {
+  height: initial;
+}
+.table-container {
+  position: relative;
 }
 
 th {
-  background-color: #f0ebebc0;
   font-weight: bold;
 }
 td {
-  background-color: rgba(46, 43, 175, 0.466);
   color: antiquewhite;
 }
 </style>
