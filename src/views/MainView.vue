@@ -13,10 +13,9 @@ import Head from '@/components/main/HeaderView.vue'
 import UtilClass from '@/util/UtilClass'
 
 const router = useRouter()
-
-/* onMounted(async () => {
-  await UtilClass.verifyToken(router)
-}) */
+onMounted(async () => {
+  //await UtilClass.verifyToken(router)
+})
 </script>
 
 <style scoped></style>
