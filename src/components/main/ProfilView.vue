@@ -165,7 +165,7 @@ export default {
   data() {
     return {
       userName: 'Gusss',
-      email: 'Guss@gmail.com',
+      email: 'Mimis@gmail.com',
       balance: '14500',
       confirmationKey: '',
       errorMessageKey: '',
