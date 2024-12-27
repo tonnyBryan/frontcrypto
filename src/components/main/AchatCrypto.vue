@@ -31,19 +31,19 @@ export default {
     return {
       // Liste des cryptomonnaies disponibles
       cryptos: [
-        { name: "Bitcoin", symbol: "btc", price: 30000, quantite: 0 },
-        { name: "Ethereum", symbol: "eth", price: 2000, quantite: 0 },
-        { name: "Litecoin", symbol: "ltc", price: 100, quantite: 0 },
-        { name: "Ripple", symbol: "xrp", price: 0.5, quantite: 0 },
-        { name: "Cardano", symbol: "ada", price: 0.4, quantite: 0 },
-        { name: "Polkadot", symbol: "dot", price: 5, quantite: 0 },
-        { name: "Solana", symbol: "sol", price: 20, quantite: 0 },
-        { name: "Binance Coin", symbol: "bnb", price: 300, quantite: 0 },
-        { name: "Dogecoin", symbol: "doge", price: 0.07, quantite: 0 },
-        { name: "Shiba Inu", symbol: "shib", price: 0.00001, quantite: 0 },
+        { name: 'Bitcoin', symbol: 'btc', price: 30000, quantite: 0 },
+        { name: 'Ethereum', symbol: 'eth', price: 2000, quantite: 0 },
+        { name: 'Litecoin', symbol: 'ltc', price: 100, quantite: 0 },
+        { name: 'Ripple', symbol: 'xrp', price: 0.5, quantite: 0 },
+        { name: 'Cardano', symbol: 'ada', price: 0.4, quantite: 0 },
+        { name: 'Polkadot', symbol: 'dot', price: 5, quantite: 0 },
+        { name: 'Solana', symbol: 'sol', price: 20, quantite: 0 },
+        { name: 'Binance Coin', symbol: 'bnb', price: 300, quantite: 0 },
+        { name: 'Dogecoin', symbol: 'doge', price: 0.07, quantite: 0 },
+        { name: 'Shiba Inu', symbol: 'shib', price: 0.00001, quantite: 0 },
       ],
       message: null, // Message de confirmation
-    };
+    }
   },
   methods: {
     acheterCryptos() {
@@ -51,24 +51,24 @@ export default {
       const achats = this.cryptos
         .filter((crypto) => crypto.quantite > 0)
         .map((crypto) => {
-          const total = crypto.quantite * crypto.price;
-          return `${crypto.quantite} unités de ${crypto.name} pour un total de ${total.toLocaleString()} USD`;
-        });
+          const total = crypto.quantite * crypto.price
+          return `${crypto.quantite} unités de ${crypto.name} pour un total de ${total.toLocaleString()} USD`
+        })
 
       // Afficher un message si aucune crypto n'est sélectionnée
       if (achats.length === 0) {
-        this.message = "Veuillez entrer une quantité à acheter pour au moins une cryptomonnaie.";
-        return;
+        this.message = 'Veuillez entrer une quantité à acheter pour au moins une cryptomonnaie.'
+        return
       }
 
       // Afficher le récapitulatif des achats
-      this.message = `Achat réussi! Vous avez acheté :\n${achats.join("\n")}`;
+      this.message = `Achat réussi! Vous avez acheté :\n${achats.join('\n')}`
 
       // Réinitialiser les quantités après achat
-      this.cryptos.forEach((crypto) => (crypto.quantite = 0));
+      this.cryptos.forEach((crypto) => (crypto.quantite = 0))
     },
   },
-};
+}
 </script>
 
 <style>

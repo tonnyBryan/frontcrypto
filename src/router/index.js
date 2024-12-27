@@ -5,7 +5,6 @@ import InscriptionView from '@/components/auth/InscriptionView.vue'
 import MainView from '@/views/MainView.vue'
 import NotFoundView from '@/views/404Page.vue'
 import HomeView from '@/components/main/HomeView.vue'
-import CryptoChart from '@/components/main/CryptoChart.vue'
 import ProfilView from '@/components/main/ProfilView.vue'
 import CryptoModel from '@/components/main/CryptoModel.vue'
 
@@ -13,6 +12,7 @@ import CryptoModel from '@/components/main/CryptoModel.vue'
 import AchatCrypto from '@/components/main/AchatCrypto.vue'
 import VenteCrypto from '@/components/main/VenteCrypto.vue'
 import UserCrypto from '@/components/main/UserCrypto.vue'
+import TransactionCrypto from '@/components/main/TransactionCrypto.vue'
 
 // end of modification import Voahary
 
@@ -72,10 +72,10 @@ const router = createRouter({
 
     // modification Voahary
 
-    { path: "/achat", name: "AchatCrypto", component: AchatCrypto },
-    { path: "/vente", name: "VenteCrypto", component: VenteCrypto },
+    { path: '/achat', name: 'AchatCrypto', component: AchatCrypto },
+    { path: '/vente', name: 'VenteCrypto', component: VenteCrypto },
     { path: '/user-crypto', name: 'UserCrypto', component: UserCrypto },
-    { path: '/crypto-transaction', name: 'CryptoTransaction', component: CryptoTransaction },
+    { path: '/crypto-transaction', name: 'CryptoTransaction', component: TransactionCrypto },
 
     // End of modification chemin Voahary
   ],
