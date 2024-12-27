@@ -6,23 +6,33 @@
         <thead>
           <tr>
             <th scope="col" class="d-none d-sm-table-cell">Ref</th>
-            <th scope="col">Date</th>
-            <th scope="col">Value</th>
-            <th scope="col" v-if="isCrypto">Crypto</th>
+            <th scope="col">Crypto</th>
+            <th scope="col">Cour</th>
+            <th scope="col">Quantité</th>
             <th scope="col">Type</th>
+            <th scope="col" class="d-none d-sm-table-cell">Date</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="transaction in paginatedTransactions" :key="transaction.ref">
-            <td class="d-none d-sm-table-cell">{{ transaction.ref }}</td>
-            <td>{{ formatDate(transaction.date) }}</td>
-            <td class="unit">{{ formatAmount(transaction.amount) }}</td>
-            <td v-if="isCrypto">{{ transaction.cryptoName }}</td>
+          <tr v-for="transaction in paginatedTransactions" :key="transaction.id_transaction_crypto">
+            <td class="d-none d-sm-table-cell">{{ transaction.id_transaction_crypto }}</td>
             <td>
-              <div :class="getStatusBadgeClass(transaction.status)">
-                {{ transaction.status }}
+              <img
+                :src="'/assets/crypto/' + transaction.crypto.logo"
+                alt="Bitcoin"
+                width="20"
+                class="me-2"
+              />
+              {{ transaction.crypto.nom }}
+            </td>
+            <td class="unit">{{ formatAmount(transaction.cour) }}</td>
+            <td class="unit">{{ transaction.qtty }}</td>
+            <td>
+              <div :class="getStatusBadgeClass(transaction.type.etat)">
+                {{ getStatusText(transaction.type.etat) }}
               </div>
             </td>
+            <td class="d-none d-sm-table-cell">{{ formatDate(transaction.date_action) }}</td>
           </tr>
         </tbody>
       </table>
@@ -32,15 +42,11 @@
 
 <script>
 export default {
-  name: 'TransactionTable',
+  name: 'TransactionFond',
   props: {
     transactions: {
       type: Array,
       required: true,
-    },
-    isCrypto: {
-      type: Boolean,
-      default: false,
     },
     limit: {
       type: Number,
@@ -49,7 +55,7 @@ export default {
   },
   computed: {
     title() {
-      return this.isCrypto ? 'Historique Transactions Crypto' : 'Historique Transactions Fonds'
+      return 'Historique Transactions Crypto'
     },
     paginatedTransactions() {
       return this.limit ? this.transactions.slice(0, this.limit) : this.transactions
@@ -70,12 +76,19 @@ export default {
       }).format(amount)
     },
     getStatusBadgeClass(status) {
-      const classes = {
-        Approved: 'badge badge-success',
-        Pending: 'badge badge-warning',
-        Rejected: 'badge badge-danger',
+      if (status === 'down') {
+        return 'badge badge-success'
       }
-      return classes[status] || 'badge badge-secondary'
+
+      return 'badge badge-warning'
+    },
+
+    getStatusText(status) {
+      if (status === 'down') {
+        return 'sell'
+      }
+
+      return 'buy'
     },
   },
 }
