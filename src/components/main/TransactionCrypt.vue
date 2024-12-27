@@ -2,27 +2,37 @@
   <div class="table-container">
     <h4>{{ title }}</h4>
     <div class="table-responsive">
-      <table v-if ="paginatedTransactions.length"class="table table-dark tba">
+      <table v-if="paginatedTransactions.length" class="table table-dark tba">
         <thead>
           <tr>
-            <th scope="col">Ref</th>
-            <th scope="col">Date</th>
-            <th scope="col">Value</th>
-            <th scope="col" v-if="isCrypto">Crypto</th>
+            <th scope="col" class="d-none d-sm-table-cell">Ref</th>
+            <th scope="col">Crypto</th>
+            <th scope="col">Cour</th>
+            <th scope="col">Quantité</th>
             <th scope="col">Type</th>
+            <th scope="col" class="d-none d-sm-table-cell">Date</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="transaction in paginatedTransactions" :key="transaction.ref">
-            <td >{{ transaction.ref }}</td>
-            <td>{{ formatDate(transaction.date) }}</td>
-            <td class="unit">{{ formatAmount(transaction.amount) }}</td>
-            <td v-if="isCrypto">{{ transaction.cryptoName }}</td>
+          <tr v-for="transaction in paginatedTransactions" :key="transaction.id_transaction_crypto">
+            <td class="d-none d-sm-table-cell">{{ transaction.id_transaction_crypto }}</td>
             <td>
-              <div :class="getStatusBadgeClass(transaction.status)">
-                {{ transaction.status }}
+              <img
+                :src="'/assets/crypto/' + transaction.crypto.logo"
+                alt="Bitcoin"
+                width="20"
+                class="me-2"
+              />
+              {{ transaction.crypto.nom }}
+            </td>
+            <td class="unit">{{ formatAmount(transaction.cour) }}</td>
+            <td class="unit">{{ transaction.qtty }}</td>
+            <td>
+              <div :class="getStatusBadgeClass(transaction.type.etat)">
+                {{ getStatusText(transaction.type.etat) }}
               </div>
             </td>
+            <td class="d-none d-sm-table-cell">{{ formatDate(transaction.date_action) }}</td>
           </tr>
         </tbody>
       </table>
@@ -30,7 +40,7 @@
         <div class="icon-container">
           <i class="bi bi-file-earmark fs-1 text-secondary"></i>
         </div>
-        <p class="mt-3">Historique de transaction vide !</p>
+        <p class="mt-3 ">Historique de transaction vide !</p>
       </div>
     </div>
   </div>
@@ -38,15 +48,11 @@
 
 <script>
 export default {
-  name: 'TransactionTable',
+  name: 'TransactionFond',
   props: {
     transactions: {
       type: Array,
       required: true,
-    },
-    isCrypto: {
-      type: Boolean,
-      default: false,
     },
     limit: {
       type: Number,
@@ -55,7 +61,7 @@ export default {
   },
   computed: {
     title() {
-      return this.isCrypto ? 'Historique Transactions Crypto' : 'Historique Transactions Fonds'
+      return 'Historique Transactions Crypto'
     },
     paginatedTransactions() {
       return this.limit ? this.transactions.slice(0, this.limit) : this.transactions
@@ -79,21 +85,30 @@ export default {
       if (status === 'down') {
         return 'badge badge-success'
       }
-      return classes[status] || 'badge badge-secondary'
+
+      return 'badge badge-warning'
+    },
+
+    getStatusText(status) {
+      if (status === 'down') {
+        return 'sell'
+      }
+
+      return 'buy'
     },
   },
 }
 </script>
 
 <style scoped>
-
 h4 {
   margin-top: 16px;
   font-weight: 700;
   color: white;
   text-align: left;
-  margin-bottom: 10px; /* Pour l'espacement avec la table */
+  margin-bottom: 10px;
 }
+
 .badge {
   padding: 0.5em 1em;
   border-radius: 0.25rem;
@@ -112,7 +127,7 @@ h4 {
 }
 
 .table {
-  margin: 0px auto;
+  margin: 0 auto;
   width: 100%;
 }
 
@@ -120,6 +135,7 @@ h4 {
   --bs-table-bg: transparent !important;
   --bs-table-color: inherit !important;
 }
+
 .unit {
   font-weight: 600;
   color: #fdf8f8;
@@ -134,6 +150,7 @@ h4 {
 .table tbody tr {
   height: initial;
 }
+
 .table-container {
   position: relative;
   padding: 0 20px;
@@ -142,6 +159,7 @@ h4 {
 th {
   font-weight: bold;
 }
+
 td {
   color: antiquewhite;
 }
@@ -161,16 +179,16 @@ td {
   h4 {
     font-size: 16px;
   }
+
   .icon-container {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    background-color: transparent;
-    color: white;/* Couleur de fond claire */
+    background-color: transparent; /* Couleur de fond claire */
     border-radius: 50%;
     width: 100px;
     height: 100px;
     margin: auto;
-    }
+  }
 }
 </style>
