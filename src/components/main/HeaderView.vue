@@ -90,8 +90,8 @@ nav ul li RouterLink:hover {
   display: none;
   flex-direction: column;
   justify-content: space-around;
-  width: 2rem;
-  height: 1.5rem;
+  width: 40px;
+  height: 40px;
   background: none;
   border: none;
   cursor: pointer;

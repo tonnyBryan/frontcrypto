@@ -5,24 +5,22 @@
       <table v-if ="paginatedTransactions.length"class="table table-dark tba">
         <thead>
           <tr>
-            <th scope="col">Ref</th>
-            <th scope="col">Date</th>
-            <th scope="col">Value</th>
-            <th scope="col" v-if="isCrypto">Crypto</th>
+            <th scope="col" class="d-none d-sm-table-cell">Ref</th>
+            <th scope="col">Valeur</th>
             <th scope="col">Type</th>
+            <th scope="col">Date</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="transaction in paginatedTransactions" :key="transaction.ref">
-            <td >{{ transaction.ref }}</td>
-            <td>{{ formatDate(transaction.date) }}</td>
-            <td class="unit">{{ formatAmount(transaction.amount) }}</td>
-            <td v-if="isCrypto">{{ transaction.cryptoName }}</td>
+          <tr v-for="transaction in paginatedTransactions" :key="transaction.id_transaction_fond">
+            <td class="d-none d-sm-table-cell">{{ transaction.id_transaction_fond }}</td>
+            <td class="unit">{{ formatAmount(transaction.valeur) }}</td>
             <td>
-              <div :class="getStatusBadgeClass(transaction.status)">
-                {{ transaction.status }}
+              <div :class="getStatusBadgeClass(transaction.type.etat)">
+                {{ getStatusText(transaction.type.etat) }}
               </div>
             </td>
+            <td>{{ formatDate(transaction.date_action) }}</td>
           </tr>
         </tbody>
       </table>
@@ -38,15 +36,11 @@
 
 <script>
 export default {
-  name: 'TransactionTable',
+  name: 'TransactionFond',
   props: {
     transactions: {
       type: Array,
       required: true,
-    },
-    isCrypto: {
-      type: Boolean,
-      default: false,
     },
     limit: {
       type: Number,
@@ -55,7 +49,7 @@ export default {
   },
   computed: {
     title() {
-      return this.isCrypto ? 'Historique Transactions Crypto' : 'Historique Transactions Fonds'
+      return 'Historique Transactions Fonds'
     },
     paginatedTransactions() {
       return this.limit ? this.transactions.slice(0, this.limit) : this.transactions
@@ -79,21 +73,30 @@ export default {
       if (status === 'down') {
         return 'badge badge-success'
       }
-      return classes[status] || 'badge badge-secondary'
+
+      return 'badge badge-warning'
+    },
+
+    getStatusText(status) {
+      if (status === 'down') {
+        return 'retrait'
+      }
+
+      return 'dépot'
     },
   },
 }
 </script>
 
 <style scoped>
-
 h4 {
   margin-top: 16px;
   font-weight: 700;
   color: white;
   text-align: left;
-  margin-bottom: 10px; /* Pour l'espacement avec la table */
+  margin-bottom: 10px;
 }
+
 .badge {
   padding: 0.5em 1em;
   border-radius: 0.25rem;
@@ -112,7 +115,7 @@ h4 {
 }
 
 .table {
-  margin: 0px auto;
+  margin: 0 auto;
   width: 100%;
 }
 
@@ -120,6 +123,7 @@ h4 {
   --bs-table-bg: transparent !important;
   --bs-table-color: inherit !important;
 }
+
 .unit {
   font-weight: 600;
   color: #fdf8f8;
@@ -134,6 +138,7 @@ h4 {
 .table tbody tr {
   height: initial;
 }
+
 .table-container {
   position: relative;
   padding: 0 20px;
@@ -142,6 +147,7 @@ h4 {
 th {
   font-weight: bold;
 }
+
 td {
   color: antiquewhite;
 }
