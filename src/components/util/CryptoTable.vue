@@ -1,4 +1,5 @@
 <script setup>
+import UtilClass from '@/util/UtilClass'
 import LoaderV from './LoaderV.vue'
 </script>
 
@@ -8,62 +9,65 @@ import LoaderV from './LoaderV.vue'
       <LoaderV></LoaderV>
     </div>
 
-    <table class="table table-dark tba">
-      <thead>
-        <tr>
-          <th scope="col">Nom</th>
-          <th scope="col">Prix</th>
-          <th scope="col">Variation</th>
-          <th scope="col">Volume 24h</th>
-          <th scope="col">Capitalisation</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="crypto in cryptos"
-          :key="crypto.crypto.id_crypto"
-          style="border-style: unset !important"
-          @click="goToCryptoDetails(crypto.crypto.id_crypto)"
-        >
-          <td>
-            <img :src="getLogoUrl(crypto.crypto.logo)" alt="logo" class="crypto-logo" />
-            <span class="unit">{{ crypto.crypto.unit_nom }}</span> {{ crypto.crypto.nom }}
-          </td>
-          <td class="unit">{{ formatCurrency(crypto.valeur) }}</td>
-          <td>
-            <span
-              :class="{
-                'text-success': crypto.variation >= 0,
-                'text-danger': crypto.variation < 0,
-              }"
-            >
-              {{ formatVariation(crypto.variation) }}
-            </span>
-          </td>
-          <td>{{ formatVolume(crypto.volume) }}</td>
-          <td class="unit">{{ formatCurrency(crypto.capitalisation) }}</td>
-          <td>
-            <button
-              class="btn btn-sm btn-secondary icon-button"
-              data-bs-toggle="tooltip"
-              data-bs-placement="top"
-              title="Voir les détails"
-            >
-              <i class="fas fa-eye"></i>
-            </button>
-            <button
-              class="btn btn-sm btn-secondary icon-button"
-              data-bs-toggle="tooltip"
-              data-bs-placement="top"
-              title="Ajouter aux favoris"
-            >
-              <i class="fas fa-heart"></i>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- Ajout de la classe table-responsive pour la table -->
+    <div class="table-responsive">
+      <table class="table table-dark tba">
+        <thead>
+          <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Prix</th>
+            <th scope="col" class="d-none d-sm-table-cell">Variation</th>
+            <th scope="col" class="d-none d-sm-table-cell">Volume 24h</th>
+            <th scope="col" class="d-none d-sm-table-cell">Capitalisation</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="crypto in cryptos"
+            :key="crypto.crypto.id_crypto"
+            style="border-style: unset !important"
+            @click="goToCryptoDetails(crypto.crypto.id_crypto)"
+          >
+            <td>
+              <img :src="getLogoUrl(crypto.crypto.logo)" alt="logo" class="crypto-logo" />
+              <span class="unit">{{ crypto.crypto.unit_nom }}</span> {{ crypto.crypto.nom }}
+            </td>
+            <td class="unit">{{ formatCurrency(crypto.valeur) }}</td>
+            <td class="d-none d-sm-table-cell">
+              <span
+                :class="{
+                  'text-success': crypto.variation >= 0,
+                  'text-danger': crypto.variation < 0,
+                }"
+              >
+                {{ formatVariation(crypto.variation) }}
+              </span>
+            </td>
+            <td class="d-none d-sm-table-cell">{{ formatVolume(crypto.volume) }}</td>
+            <td class="d-none d-sm-table-cell unit">{{ formatCurrency(crypto.capitalisation) }}</td>
+            <td>
+              <button
+                class="btn btn-sm btn-secondary icon-button"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Voir les détails"
+              >
+                <i class="fas fa-eye"></i>
+              </button>
+              <button
+                class="btn btn-sm btn-secondary icon-button"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Ajouter aux favoris"
+              >
+                <i class="fas fa-heart"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -87,7 +91,7 @@ export default {
       }))
     },
     initializeWebSocket() {
-      const socket = new WebSocket('ws://localhost:8080/ws/crypto')
+      const socket = new WebSocket(UtilClass.BACKEND_SOCKET_BASE_UR + '/ws/crypto')
 
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data)
