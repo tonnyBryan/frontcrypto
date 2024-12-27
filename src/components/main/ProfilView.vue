@@ -1,149 +1,147 @@
 <template>
-
   <div class="container-fluid pb-2 lg">
     <div class="row">
       <div class="col-md-4">
         <div class="row m-1">
           <div class="col-md-4 offset-md-1">
-            <img src="@/assets/bruce-mars.jpg" alt="profile_image" class="avatar">
+            <img src="@/assets/bruce-mars.jpg" alt="profile_image" class="avatar" />
           </div>
-          <div class="col-md-6 ">
-              <h5>{{userName}}</h5>
+          <div class="col-md-6">
+            <h5>{{ userName }}</h5>
           </div>
         </div>
       </div>
       <div class="col-md-4">
-        <h2>Your wallet </h2>
-        <h3 class="yellow">{{ formatAmount(balance)}} </h3>
+        <h2>Your wallet</h2>
+        <h3 class="yellow">{{ formatAmount(balance) }}</h3>
       </div>
 
-      <div class="col-md-4  ">
+      <div class="col-md-4">
         <h2>Transaction</h2>
         <div class="row">
           <div class="col-md-6">
             <input
-            v-model="solde"
-            class="form-control"
-            type="number" 
-            min="10" 
-            id="solde"
-            placeholder="Solde pour transaction"
-            style="background-color: #f3f1f1c9;padding: 9px; "
-            required >
+              v-model="solde"
+              class="form-control"
+              type="number"
+              min="10"
+              id="solde"
+              placeholder="Solde pour transaction"
+              style="background-color: #f3f1f1c9; padding: 9px"
+              required
+            />
           </div>
         </div>
-        <div class="row" style="margin-top: 16px;">
+        <div class="row" style="margin-top: 16px">
           <div class="col-md-4">
-            <button id="depot-btn" type="submit" 
-            class="btn btn-warning w-100 mb-3 fw-bold " 
-            @click="handleTransaction('depot')">
-               Depot
+            <button
+              id="depot-btn"
+              type="submit"
+              class="btn btn-warning w-100 mb-3 fw-bold"
+              @click="handleTransaction('depot')"
+            >
+              Depot
             </button>
           </div>
           <div class="col-md-4">
-            <button id="retrait-btn" type="submit" 
-            class="btn btn-warning w-100 mb-3 fw-bold" 
-            @click="handleTransaction('retrait')">
-               Retrait
+            <button
+              id="retrait-btn"
+              type="submit"
+              class="btn btn-warning w-100 mb-3 fw-bold"
+              @click="handleTransaction('retrait')"
+            >
+              Retrait
             </button>
           </div>
         </div>
       </div>
     </div>
-     <hr style="border-top: 4px solid gray;">
+    <hr style="border-top: 4px solid gray" />
     <div class="row">
       <div class="col-md-6">
-        <TransactionView 
-          :transactions="fundTransactions" 
-          :limit="5"
-        />
+        <TransactionView :transactions="fundTransactions" :limit="5" />
       </div>
       <div class="col-md-6">
-        <TransactionView 
-          :transactions="cryptoTransactions" 
-          :isCrypto="true"
-          :limit="5"
-        />
+        <TransactionView :transactions="cryptoTransactions" :isCrypto="true" :limit="5" />
       </div>
     </div>
-    <hr style="border-top: 4px solid gray;">
+    <hr style="border-top: 4px solid gray" />
     <div class="row">
-      <WalletCryptoView
-      :Mycryphoss="mycrypto"
-      :limit="10"
-      />
+      <WalletCryptoView :Mycryphoss="mycrypto" :limit="10" />
     </div>
-   
   </div>
 
-   <!-- Modal pour la confirmation du compte -->
-   <div
-      class="modal d-flex justify-content-center align-items-center"
-      v-if="showConfirmationModal"
-      style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 1050;
-      "
+  <!-- Modal pour la confirmation du compte -->
+  <div
+    class="modal d-flex justify-content-center align-items-center"
+    v-if="showConfirmationModal"
+    style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1050;
+    "
+  >
+    <div
+      class="card p-5 text-center shadow-lg"
+      style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
     >
-      <div
-        class="card p-5 text-center shadow-lg"
-        style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+      <button
+        class="btn-close position-absolute"
+        style="
+          top: 10px;
+          right: 10px;
+          color: white;
+          background-color: transparent;
+          font-size: 1.5rem;
+        "
+        @click="closeModalAcc"
+      ></button>
+      <h5 class="mb-4 email">{{ email }}</h5>
+      <p class="mb-3">
+        Type de transaction: <span class="text-warning">{{ transactionType }}</span>
+      </p>
+      <p class="mb-3">
+        Montant: <span class="text-warning">{{ solde }}$</span>
+      </p>
+      <p>
+        Veuillez entrer la clé de confirmation envoyée à votre e-mail pour confirmer transaction.
+      </p>
+      <input
+        type="text"
+        v-model="confirmationKey"
+        class="form-control mb-3 text-center"
+        style="background-color: #444; color: #fff; border: none; border-radius: 5px"
+        placeholder="Entrez la clé de confirmation"
+      />
+      <p class="text-danger mb-3" v-if="errorMessageKey">{{ errorMessageKey }}</p>
+
+      <button
+        id="confirmAccBtn"
+        class="btn btn-warning w-100 fw-bold"
+        style="font-size: 1.2rem"
+        @click="confirmAccount"
       >
-        <button
-          class="btn-close position-absolute"
-          style="
-            top: 10px;
-            right: 10px;
-            color: white;
-            background-color: transparent;
-            font-size: 1.5rem;
-          "
-          @click="closeModalAcc"
-        ></button>
-        <h5 class="mb-4 email">{{ email }}</h5>
-        <p class="mb-3">Type de transaction: <span class="text-warning">{{ transactionType }}</span></p>
-        <p class="mb-3">Montant: <span class="text-warning">{{ solde }}$</span></p>
-        <p>
-          Veuillez entrer la clé de confirmation envoyée à votre e-mail pour confirmer transaction.
-        </p>
-        <input
-          type="text"
-          v-model="confirmationKey"
-          class="form-control mb-3 text-center"
-          style="background-color: #444; color: #fff; border: none; border-radius: 5px"
-          placeholder="Entrez la clé de confirmation"
-        />
-        <p class="text-danger mb-3" v-if="errorMessageKey">{{ errorMessageKey }}</p>
-
-        <button
-          id="confirmAccBtn"
-          class="btn btn-warning w-100 fw-bold"
-          style="font-size: 1.2rem"
-          @click="confirmAccount"
-        >
-          Confirmer
-        </button>
-        <p class="text-muted ">
-          or, vous pouvez juste appeler dans postman l'url envoyé à votre email
-        </p>
-      </div>
+        Confirmer
+      </button>
+      <p class="text-muted">
+        or, vous pouvez juste appeler dans postman l'url envoyé à votre email
+      </p>
     </div>
-
+  </div>
 </template>
 <script>
 import UtilClass from '@/util/UtilClass'
-import TransactionView from './TransactionView.vue';
-import WalletCryptoView from './WalletCryptoView.vue';
+import TransactionView from './TransactionView.vue'
+import WalletCryptoView from './WalletCryptoView.vue'
 
 export default {
   components: {
     TransactionView,
-    WalletCryptoView
+    WalletCryptoView,
   },
   data() {
     return {
@@ -162,50 +160,50 @@ export default {
           ref: '02312',
           date: '2024-12-04',
           amount: 14500,
-          status: 'Approved'
+          status: 'Approved',
         },
         {
           ref: '02313',
           date: '2024-12-03',
           amount: 5000,
-          status: 'Pending'
+          status: 'Pending',
         },
         {
           ref: '02314',
           date: '2024-12-02',
           amount: 7500,
-          status: 'Rejected'
+          status: 'Rejected',
         },
         {
           ref: '02315',
           date: '2024-12-01',
           amount: 3000,
-          status: 'Approved'
+          status: 'Approved',
         },
         {
           ref: '02316',
           date: '2024-11-30',
           amount: 2000,
-          status: 'Approved'
+          status: 'Approved',
         },
         {
           ref: '02314',
           date: '2024-12-02',
           amount: 7500,
-          status: 'Rejected'
+          status: 'Rejected',
         },
         {
           ref: '02315',
           date: '2024-12-01',
           amount: 3000,
-          status: 'Approved'
+          status: 'Approved',
         },
         {
           ref: '02316',
           date: '2024-11-30',
           amount: 2000,
-          status: 'Rejected'
-        }
+          status: 'Rejected',
+        },
       ],
       cryptoTransactions: [
         {
@@ -213,73 +211,72 @@ export default {
           date: '2024-12-04',
           amount: 10000,
           cryptoName: 'Bitcoin',
-          status: 'Approved'
+          status: 'Approved',
         },
         {
           ref: 'C2313',
           date: '2024-12-03',
           amount: 5000,
           cryptoName: 'Ethereum',
-          status: 'Pending'
+          status: 'Pending',
         },
         {
           ref: 'C2314',
           date: '2024-12-02',
           amount: 3000,
           cryptoName: 'Bitcoin',
-          status: 'Rejected'
+          status: 'Rejected',
         },
         {
           ref: 'C2315',
           date: '2024-12-01',
           amount: 2000,
           cryptoName: 'Dogecoin',
-          status: 'Approved'
+          status: 'Approved',
         },
         {
           ref: 'C2316',
           date: '2024-11-30',
           amount: 1500,
           cryptoName: 'Ethereum',
-          status: 'Approved'
-        }
+          status: 'Approved',
+        },
       ],
       mycrypto: [
         {
-          id:1,
+          id: 1,
           amount: 1000,
           cryptoName: 'Bitcoin',
-          qtt: '12'
+          qtt: '12',
         },
         {
-          id:2,
+          id: 2,
           amount: 10300,
           cryptoName: 'Dogecoin',
-          qtt: '13'
+          qtt: '13',
         },
         {
-          id:3,
+          id: 3,
           amount: 4500,
           cryptoName: 'Ethereum',
-          qtt: '14'
-        }
-       
-      ]
+          qtt: '14',
+        },
+      ],
     }
   },
   methods: {
     formatAmount(amount) {
-        return new Intl.NumberFormat('fr-FR', {
-          style: 'currency',
-          currency: 'USD'
-        }).format(amount)
+      return new Intl.NumberFormat('fr-FR', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(amount)
     },
     handleTransaction(type) {
       // Réinitialiser le message d'erreur
-      this.errorMessage = '';
+      this.errorMessage = ''
       // Vérifier si le solde est vide
       if (!this.solde) {
-        this.errorMessage = 'Veuillez entrer un montant';
+        this.errorMessage = 'Veuillez entrer un montant'
         return
       }
       // Définir le type de transaction et le titre du modal
@@ -326,25 +323,23 @@ export default {
       this.confirmationKey = ''
       this.errorMessageKey = ''
       this.showConfirmationModal = false
-    }
-  }
-};
+    },
+  },
+}
 </script>
 <style scoped>
-
 .avatar {
-  height: 71PX;
-  width: 71PX;
+  height: 71px;
+  width: 71px;
   border-radius: 10%;
 }
 
 .lg {
-  background-color: rgba(46, 37, 37, 0.5); 
+  background-color: rgba(46, 37, 37, 0.5);
   backdrop-filter: blur(3px);
   color: #fff;
 }
-.CB{
-    color: #fff;
+.CB {
+  color: #fff;
 }
 </style>
-

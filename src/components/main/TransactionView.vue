@@ -1,8 +1,8 @@
 <template>
   <div class="card lg">
-    <h4 class="card-title  yellow" style="margin-top:16px;margin-left: 10px;">{{ title }}</h4>
-    <br>
-    <div class="table-responsive " style="border-radius: 1%;">
+    <h4 class="card-title yellow" style="margin-top: 16px; margin-left: 10px">{{ title }}</h4>
+    <br />
+    <div class="table-responsive" style="border-radius: 1%">
       <table class="table">
         <thead>
           <tr>
@@ -33,21 +33,20 @@
 
 <script>
 export default {
-    
   name: 'TransactionTable',
   props: {
     transactions: {
       type: Array,
-      required: true
+      required: true,
     },
     isCrypto: {
       type: Boolean,
-      default: false
+      default: false,
     },
     limit: {
       type: Number,
-      default: null
-    }
+      default: null,
+    },
   },
   computed: {
     title() {
@@ -55,31 +54,31 @@ export default {
     },
     paginatedTransactions() {
       return this.limit ? this.transactions.slice(0, this.limit) : this.transactions
-    }
+    },
   },
   methods: {
     formatDate(date) {
       return new Date(date).toLocaleDateString('fr-FR', {
         day: '2-digit',
         month: 'short',
-        year: 'numeric'
+        year: 'numeric',
       })
     },
     formatAmount(amount) {
       return new Intl.NumberFormat('fr-FR', {
         style: 'currency',
-        currency: 'USD'
+        currency: 'USD',
       }).format(amount)
     },
     getStatusBadgeClass(status) {
       const classes = {
-        'Approved': 'badge badge-success',
-        'Pending': 'badge badge-warning',
-        'Rejected': 'badge badge-danger'
+        Approved: 'badge badge-success',
+        Pending: 'badge badge-warning',
+        Rejected: 'badge badge-danger',
       }
       return classes[status] || 'badge badge-secondary'
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -100,7 +99,7 @@ export default {
   color: #dc3545;
   border: 1px solid #dc3545;
 }
-.table{
+.table {
   background-color: #2b362e9a;
 }
 
