@@ -1,6 +1,6 @@
 <template>
   <div class="table-container">
-    <h4 class=" yellow" style="margin-top: 10px; margin-left: 20px">{{ title }}</h4>
+    <h4>{{ title }}</h4>
       <table class="table table-dark tba">
         <thead>
           <tr>
@@ -81,6 +81,14 @@ export default {
 </script>
 
 <style scoped>
+
+h4 {
+  margin-top: 16px;
+  font-weight: 700;
+  color: white;
+  text-align: left;
+  margin-bottom: 10px; /* Pour l'espacement avec la table */
+}
 .badge {
   padding: 0.5em 1em;
   border-radius: 0.25rem;
@@ -99,8 +107,8 @@ export default {
 }
 
 .table {
-  margin: 20px auto;
-  width: 90%;
+  margin: 0px auto;
+  width: 100%;
 }
 
 .table-dark {
@@ -123,6 +131,7 @@ export default {
 }
 .table-container {
   position: relative;
+  padding: 0 20px;
 }
 
 th {
