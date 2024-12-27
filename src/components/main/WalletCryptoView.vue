@@ -1,197 +1,204 @@
 <template>
-    <div class="table-container">
-  <h4>Cryptho-Wallet</h4>
-  <table class="table table-dark tba">
-    <thead>
-      <tr>
-        <th scope="col">Name</th>
-        <th scope="col">Estimated value</th>
-        <th scope="col">Quantity</th>
-        <th scope="col"></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="Mycryphos in paginatedMycryphoss" :key="Mycryphos.ref">
-        <td class="unit">{{ Mycryphos.cryptoName }}</td>
-        <td class="unit">{{ formatAmount(Mycryphos.amount) }}</td>
-        <td>{{ Mycryphos.qtt }}</td>
-        <td>
-          <button  
-            class="btn btn-sm btn-warning fw-bold"
-            type="submit"
-            @click="handleTransaction('buy', Mycryphos)">
-            Buy
-          </button>
-          <button  
-            class="btn btn-sm btn-success fw-bold"
-            type="submit"
-            @click="handleTransaction('Sell', Mycryphos)">
-            Sell
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-
-
-    <!-- Modal pour la confirmation du compte -->
-   <div
-      class="modal d-flex justify-content-center align-items-center"
-      v-if="showConfirmationModal"
-      style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 1050;
-      "
-    >
-      <div
-        class="card p-5 text-center shadow-lg"
-        style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
-      >
-        <button
-          class="btn-close position-absolute"
-          style="
-            top: 10px;
-            right: 10px;
-            color: white;
-            background-color: transparent;
-            font-size: 1.5rem;
-          "
-          @click="closeModalAcc"
-        ></button>
-        <p class="mb-3">Type de transaction: <span class="text-warning">{{ transactionType }}</span></p>
-        <p class="mb-3">Cryptomonai type : <span class="text-warning">{{ cryptoId.cryptoName}}</span></p>
-        
-        <input
-          type="number"
-          v-model="Qtt"
-          required
-          class="form-control mb-3 text-center"
-          style="background-color: #444; color: #fff; border: none; border-radius: 5px"
-          placeholder="Entrez  quantite"
-        />
-        <p class="text-danger mb-3" v-if="errorMessageKey">{{ errorMessageKey }}</p>
-
-        <button
-          id="confirmAccBtn"
-          class="btn btn-warning w-100 fw-bold"
-          style="font-size: 1.2rem"
-          @click="confirmAccount"
-        >
-          Confirmer
-        </button>
-        <p class="text-muted ">
-          or, vous pouvez juste appeler dans postman l'url envoyé à votre email
-        </p>
-      </div>
+  <div class="table-container">
+    <h4>Cryptho-Wallet</h4>
+    <div class="table-responsive">
+      <table class="table table-dark tba">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Estimated value</th>
+            <th scope="col">Quantity</th>
+            <th scope="col" class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="Mycryphos in paginatedMycryphoss" :key="Mycryphos.ref">
+            <td class="unit">
+              <img src="/assets/crypto/BTC.png" alt="Bitcoin" width="20" class="me-2" />
+              {{ Mycryphos.cryptoName }}
+            </td>
+            <td class="unit">{{ formatAmount(Mycryphos.amount) }}</td>
+            <td>{{ Mycryphos.qtt }}</td>
+            <td class="text-center">
+              <button
+                class="btn btn-sm btn-warning fw-bold"
+                type="submit"
+                @click="handleTransaction('buy', Mycryphos)"
+              >
+                Buy
+              </button>
+              <button
+                class="btn btn-sm btn-success fw-bold"
+                type="submit"
+                @click="handleTransaction('Sell', Mycryphos)"
+              >
+                Sell
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    
-    
-  </template>
-  
-  <script>
-  export default {
-    props: {
-      Mycryphoss: {
-        type: Array,
-        required: true
-      },
-      limit: {
-        type: Number,
-        default: null
-      }
-    },
-    data() {
-      return {
-        Qtt: '',
-        errorMessageKey: '',
-        errorMessage: '',
-        showConfirmationModal: false,
-        transactionType: '',
-        cryptoId:[],
-      }
-    },
-    computed: {
-      paginatedMycryphoss() {
-        return this.limit ? this.Mycryphoss.slice(0, this.limit) : this.Mycryphoss
-      }
-    },
-    methods: {
-      handleTransaction(type,crypto) {
-        this.errorMessage = '';
-        this.transactionType = type === 'buy' ? 'Achats' : 'Vente'
-        this.cryptoId=crypto;
-        this.showConfirmationModal = true
-      },
-      formatDate(date) {
-        return new Date(date).toLocaleDateString('fr-FR', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric'
-        })
-      },
-      formatAmount(amount) {
-        return new Intl.NumberFormat('fr-FR', {
-          style: 'currency',
-          currency: 'USD'
-        }).format(amount)
-      },
-      async confirmAccount() {
-        if (!this.Qtt) {
-          this.errorMessageKey = 'Veuillez entrer une clé de confirmation.'
-          return
-        }
+  </div>
 
-        const confirmAccButton = document.getElementById('confirmAccBtn')
-        UtilClass.loadButton(confirmAccButton)
-        try {
-          const response = await fetch(
-            UtilClass.BACKEND_BASE_URL + '/crypto/auth/validate?key=' + this.confirmationKey,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            },
-          )
+  <!-- Modal pour la confirmation du compte -->
+  <div
+    class="modal d-flex justify-content-center align-items-center"
+    v-if="showConfirmationModal"
+    style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1050;
+    "
+  >
+    <div
+      class="card p-5 text-center shadow-lg"
+      style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+    >
+      <button
+        class="btn-close position-absolute"
+        style="
+          top: 10px;
+          right: 10px;
+          color: white;
+          background-color: transparent;
+          font-size: 1.5rem;
+        "
+        @click="closeModalAcc"
+      ></button>
+      <p class="mb-3">
+        Type de transaction: <span class="text-warning">{{ transactionType }}</span>
+      </p>
+      <p class="mb-3">
+        Cryptomonai type : <span class="text-warning">{{ cryptoId.cryptoName }}</span>
+      </p>
 
-          const data = await response.json()
-          UtilClass.endLoadedButton(confirmAccButton, 'Confirmer')
+      <input
+        type="number"
+        v-model="Qtt"
+        required
+        class="form-control mb-3 text-center"
+        style="background-color: #444; color: #fff; border: none; border-radius: 5px"
+        placeholder="Entrez  quantite"
+      />
+      <p class="text-danger mb-3" v-if="errorMessageKey">{{ errorMessageKey }}</p>
 
-          if (data.isSuccess) {
-            const token = data.data.token
-            UtilClass.setToken(token)
-            this.closeModalAcc()
-            this.$router.push('/app/accueil')
-          } else {
-            throw new Error(data.message || 'Clé de confirmation invalide.')
-          }
-        } catch (error) {
-          UtilClass.endLoadedButton(confirmAccButton, 'Confirmer')
-          this.errorMessageKey = error.message
-        }
-      },
-      closeModalAcc() {
-        this.confirmationKey = ''
-        this.errorMessageKey = ''
-        this.showConfirmationModal = false,
-        this.cryptoId=[]
-      }
+      <button
+        id="confirmAccBtn"
+        class="btn btn-warning w-100 fw-bold"
+        style="font-size: 1.2rem"
+        @click="confirmAccount"
+      >
+        Confirmer
+      </button>
+      <p class="text-muted">
+        or, vous pouvez juste appeler dans postman l'url envoyé à votre email
+      </p>
+    </div>
+  </div>
+</template>
+
+<script>
+import UtilClass from '@/util/UtilClass'
+
+export default {
+  props: {
+    Mycryphoss: {
+      type: Array,
+      required: true,
+    },
+    limit: {
+      type: Number,
+      default: null,
+    },
+  },
+  data() {
+    return {
+      Qtt: '',
+      errorMessageKey: '',
+      errorMessage: '',
+      showConfirmationModal: false,
+      transactionType: '',
+      cryptoId: [],
     }
-  }
-  </script>
-  
-<style scoped>
+  },
+  computed: {
+    paginatedMycryphoss() {
+      return this.limit ? this.Mycryphoss.slice(0, this.limit) : this.Mycryphoss
+    },
+  },
+  methods: {
+    handleTransaction(type, crypto) {
+      this.errorMessage = ''
+      this.transactionType = type === 'buy' ? 'Achats' : 'Vente'
+      this.cryptoId = crypto
+      this.showConfirmationModal = true
+    },
+    formatDate(date) {
+      return new Date(date).toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      })
+    },
+    formatAmount(amount) {
+      return new Intl.NumberFormat('fr-FR', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(amount)
+    },
+    async confirmAccount() {
+      if (!this.Qtt) {
+        this.errorMessageKey = 'Veuillez entrer une clé de confirmation.'
+        return
+      }
 
- .table-container {
+      const confirmAccButton = document.getElementById('confirmAccBtn')
+      UtilClass.loadButton(confirmAccButton)
+      try {
+        const response = await fetch(
+          UtilClass.BACKEND_BASE_URL + '/crypto/auth/validate?key=' + this.confirmationKey,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        )
+
+        const data = await response.json()
+        UtilClass.endLoadedButton(confirmAccButton, 'Confirmer')
+
+        if (data.isSuccess) {
+          const token = data.data.token
+          UtilClass.setToken(token)
+          this.closeModalAcc()
+          this.$router.push('/app/accueil')
+        } else {
+          throw new Error(data.message || 'Clé de confirmation invalide.')
+        }
+      } catch (error) {
+        UtilClass.endLoadedButton(confirmAccButton, 'Confirmer')
+        this.errorMessageKey = error.message
+      }
+    },
+    closeModalAcc() {
+      this.confirmationKey = ''
+      this.errorMessageKey = ''
+      ;(this.showConfirmationModal = false), (this.cryptoId = [])
+    },
+  },
+}
+</script>
+
+<style scoped>
+.table-container {
   position: relative;
-  padding: 0 20px; 
+  padding: 0 20px;
 }
 
 h4 {
@@ -204,12 +211,14 @@ h4 {
 
 .table {
   margin: 0 auto;
-  width: 100%; /* Ajuster à 100% pour un alignement optimal */
+  width: 100%;
 }
+
 .table-dark {
   --bs-table-bg: transparent !important;
   --bs-table-color: inherit !important;
 }
+
 .table th,
 .table td {
   padding: 10px;
@@ -231,23 +240,34 @@ td {
 
 .btn {
   border-radius: 5px;
-  font-size: 1rem; /* Augmenter légèrement la taille de la police */
+  font-size: 1rem;
 }
 
 .btn-sm {
-  font-size: 1.1rem; /* Ajuster la taille pour être plus grande que par défaut */
+  font-size: 1.1rem;
 }
 
 .btn-warning,
 .btn-success {
-  width: 30%; /* Réduire légèrement pour rapprocher les boutons */
-  margin: 0 3%; /* Ajouter un léger espacement entre les boutons */
+  width: 45%; /* Ajuster la largeur pour alignement optimal */
+  margin: 0 2%; /* Ajouter un léger espacement entre les boutons */
 }
 
 th {
   font-weight: bold;
-  
 }
 
+/* Réduire la taille des polices et masquer certaines colonnes sur les petits écrans */
+@media (max-width: 576px) {
+  .table th:nth-child(2),
+  .table td:nth-child(2) {
+    display: none;
+  }
 
-  </style>
+  .btn-warning,
+  .btn-success {
+    width: 100%; /* Prendre toute la largeur pour les petits écrans */
+    margin: 5px 0; /* Espacement vertical entre les boutons */
+  }
+}
+</style>

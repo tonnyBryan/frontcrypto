@@ -1,6 +1,7 @@
 <script setup>
 import LoaderV from '../util/LoaderV.vue'
 import ChartView from '../util/ChartView.vue'
+import UtilClass from '@/util/UtilClass'
 // ne touche pas ici
 </script>
 
@@ -163,7 +164,7 @@ export default {
       }
     },
     connectWebSocket() {
-      this.socket = new WebSocket('ws://localhost:8080/ws/crypto')
+      this.socket = new WebSocket(UtilClass.BACKEND_SOCKET_BASE_UR + '/ws/crypto')
       this.socket.onmessage = (event) => {
         const data = JSON.parse(event.data)
         this.updateCryptoData(data)

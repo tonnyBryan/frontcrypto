@@ -1,10 +1,11 @@
 <template>
   <div class="table-container">
     <h4>{{ title }}</h4>
+    <div class="table-responsive">
       <table class="table table-dark tba">
         <thead>
           <tr>
-            <th scope="col">Ref</th>
+            <th scope="col" class="d-none d-sm-table-cell">Ref</th>
             <th scope="col">Date</th>
             <th scope="col">Value</th>
             <th scope="col" v-if="isCrypto">Crypto</th>
@@ -13,7 +14,7 @@
         </thead>
         <tbody>
           <tr v-for="transaction in paginatedTransactions" :key="transaction.ref">
-            <td >{{ transaction.ref }}</td>
+            <td class="d-none d-sm-table-cell">{{ transaction.ref }}</td>
             <td>{{ formatDate(transaction.date) }}</td>
             <td class="unit">{{ formatAmount(transaction.amount) }}</td>
             <td v-if="isCrypto">{{ transaction.cryptoName }}</td>
@@ -25,7 +26,7 @@
           </tr>
         </tbody>
       </table>
-    
+    </div>
   </div>
 </template>
 
@@ -81,14 +82,14 @@ export default {
 </script>
 
 <style scoped>
-
 h4 {
   margin-top: 16px;
   font-weight: 700;
   color: white;
   text-align: left;
-  margin-bottom: 10px; /* Pour l'espacement avec la table */
+  margin-bottom: 10px;
 }
+
 .badge {
   padding: 0.5em 1em;
   border-radius: 0.25rem;
@@ -107,7 +108,7 @@ h4 {
 }
 
 .table {
-  margin: 0px auto;
+  margin: 0 auto;
   width: 100%;
 }
 
@@ -115,6 +116,7 @@ h4 {
   --bs-table-bg: transparent !important;
   --bs-table-color: inherit !important;
 }
+
 .unit {
   font-weight: 600;
   color: #fdf8f8;
@@ -129,6 +131,7 @@ h4 {
 .table tbody tr {
   height: initial;
 }
+
 .table-container {
   position: relative;
   padding: 0 20px;
@@ -137,7 +140,25 @@ h4 {
 th {
   font-weight: bold;
 }
+
 td {
   color: antiquewhite;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .table-container {
+    padding: 0 10px;
+  }
+
+  .table th,
+  .table td {
+    font-size: 12px;
+    padding: 5px;
+  }
+
+  h4 {
+    font-size: 16px;
+  }
 }
 </style>
