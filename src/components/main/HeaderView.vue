@@ -41,7 +41,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #1e1e1e;
+  background-color: transparent;
   color: #fff;
   position: relative;
   z-index: 1000;
