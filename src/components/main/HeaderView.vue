@@ -7,8 +7,7 @@
     <nav :class="{ open: isMenuOpen }">
       <ul>
         <li><RouterLink to="/app/accueil/v1">Home</RouterLink></li>
-        <li><RouterLink to="/app/accueil/chart">Chart</RouterLink></li>
-        <li><RouterLink to="/profil">My Profile</RouterLink></li>
+        <li><RouterLink to="/app/accueil/profil">My Profile</RouterLink></li>
         <li><RouterLink to="/achat">Achat</RouterLink></li>
         <li><RouterLink to="/setting">Setting</RouterLink></li>
       </ul>
@@ -77,7 +76,7 @@ nav ul {
 
 nav ul li a,
 nav ul li RouterLink {
-  color: rgba(235, 235, 235, 0.64);
+  color: rgb(255 255 255 / 93%);
   text-decoration: none;
   font-size: 1rem;
 }

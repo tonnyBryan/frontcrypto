@@ -6,6 +6,8 @@ import MainView from '@/views/MainView.vue'
 import NotFoundView from '@/views/404Page.vue'
 import HomeView from '@/components/main/HomeView.vue'
 import CryptoChart from '@/components/main/CryptoChart.vue'
+import ProfilView from '@/components/main/ProfilView.vue'
+import CryptoModel from '@/components/main/CryptoModel.vue'
 
 // modification Voahary
 import AchatCrypto from '@/components/main/AchatCrypto.vue'
@@ -50,12 +52,18 @@ const router = createRouter({
           component: HomeView,
         },
         {
-          path: 'chart',
-          name: 'chart',
-          component: CryptoChart,
+          path: 'profil',
+          name: 'profil',
+          component: ProfilView,
+        },
+        {
+          path: 'crypto',
+          name: 'crypto',
+          component: CryptoModel,
         },
       ],
     },
+
     {
       path: '/:catchAll(.*)',
       name: 'NotFound',

@@ -1,5 +1,13 @@
+<script setup>
+import LoaderV from './LoaderV.vue'
+</script>
+
 <template>
-  <div>
+  <div class="table-container">
+    <div v-if="cryptos.length === 0 || !isConnected" class="loading-overlay">
+      <LoaderV></LoaderV>
+    </div>
+
     <table class="table table-dark tba">
       <thead>
         <tr>
@@ -16,6 +24,7 @@
           v-for="crypto in cryptos"
           :key="crypto.crypto.id_crypto"
           style="border-style: unset !important"
+          @click="goToCryptoDetails(crypto.crypto.id_crypto)"
         >
           <td>
             <img :src="getLogoUrl(crypto.crypto.logo)" alt="logo" class="crypto-logo" />
@@ -59,66 +68,75 @@
 </template>
 
 <script>
-import { onMounted, ref, onUnmounted } from 'vue'
-
 export default {
   name: 'CryptoTable',
-  setup() {
-    const cryptos = ref([])
-
-    let socket
-
-    const updateData = (data) => {
-      cryptos.value = data.map((item) => ({
-        ...item,
-        variation: Math.random() * 10 - 5, // Variation aléatoire entre -5% et 5%
-        volume: Math.random() * 1000000000, // Volume simulé
-        capitalisation: item.valeur * 1000000, // Calcul basé sur le prix
-      }))
+  data() {
+    return {
+      cryptos: [],
+      isConnected: false,
+      reconnectInterval: null,
     }
-
-    onMounted(() => {
-      socket = new WebSocket('ws://localhost:8080/ws/crypto')
+  },
+  methods: {
+    updateData(data) {
+      this.cryptos = data.map((item) => ({
+        ...item,
+        variation: Math.random() * 10 - 5,
+        volume: Math.random() * 1000000000,
+        capitalisation: item.valeur * 1000000,
+      }))
+    },
+    initializeWebSocket() {
+      const socket = new WebSocket('ws://localhost:8080/ws/crypto')
 
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data)
-        updateData(data)
+        this.updateData(data)
       }
 
       socket.onopen = () => {
         console.log('WebSocket connecté')
+        this.isConnected = true
+        if (this.reconnectInterval) {
+          clearInterval(this.reconnectInterval)
+          this.reconnectInterval = null
+        }
       }
 
       socket.onclose = () => {
         console.log('WebSocket déconnecté')
+        this.isConnected = false
+        this.cryptos = []
+        this.reconnectWebSocket()
       }
-    })
 
-    onUnmounted(() => {
-      if (socket) {
-        socket.close()
+      this.socket = socket
+    },
+    reconnectWebSocket() {
+      if (!this.reconnectInterval) {
+        this.reconnectInterval = setInterval(() => {
+          console.log('Tentative de reconnexion WebSocket...')
+          this.initializeWebSocket()
+        }, 5000)
       }
-    })
-
-    const formatCurrency = (value) => {
+    },
+    formatCurrency(value) {
       return new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       }).format(value)
-    }
-
-    const formatVariation = (variation) => {
+    },
+    formatVariation(variation) {
       return (
         new Intl.NumberFormat('en-US', {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         }).format(variation) + '%'
       )
-    }
-
-    const formatVolume = (volume) => {
+    },
+    formatVolume(volume) {
       return (
         new Intl.NumberFormat('en-US', {
           style: 'decimal',
@@ -126,21 +144,26 @@ export default {
           maximumFractionDigits: 2,
         }).format(volume) + 'B'
       )
-    }
-
-    const getLogoUrl = (logo) => {
+    },
+    getLogoUrl(logo) {
       if (!logo) {
         return '/assets/crypto/default-logo.png'
       }
       return `/assets/crypto/${logo}`
+    },
+    goToCryptoDetails(idCrypto) {
+      this.$router.push('/app/accueil/crypto?id=' + idCrypto)
+    },
+  },
+  mounted() {
+    this.initializeWebSocket()
+  },
+  unmounted() {
+    if (this.socket) {
+      this.socket.close()
     }
-
-    return {
-      cryptos,
-      formatCurrency,
-      formatVariation,
-      formatVolume,
-      getLogoUrl,
+    if (this.reconnectInterval) {
+      clearInterval(this.reconnectInterval)
     }
   },
 }
@@ -159,18 +182,18 @@ export default {
 
 .table th,
 .table td {
-  padding: 10px; /* Style par défaut */
+  padding: 10px;
 }
 
 .table tbody tr {
-  height: initial; /* Hauteur des lignes uniquement dans tbody */
+  height: initial;
 }
 
 .crypto-logo {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  margin-right: 10px; /* Espacement entre le logo et le nom */
+  margin-right: 10px;
 }
 
 .text-success {
@@ -183,18 +206,18 @@ export default {
 
 button {
   margin: 0 5px;
-  padding: 0; /* Supprimer l'espace autour de l'icône */
-  border: none; /* Supprimer les bordures */
-  background: transparent; /* Supprimer l'arrière-plan */
+  padding: 0;
+  border: none;
+  background: transparent;
 }
 
 button i {
-  font-size: 15px; /* Taille de l'icône */
-  color: inherit; /* Garde la couleur d'origine des boutons */
+  font-size: 15px;
+  color: inherit;
 }
 
 button.icon-button:hover {
-  background: transparent; /* Aucun changement de fond au survol */
+  background: transparent;
 }
 
 .unit {
@@ -234,5 +257,18 @@ button.icon-button:hover {
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.table-container {
+  position: relative;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
 }
 </style>
