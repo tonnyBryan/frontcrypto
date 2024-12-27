@@ -1,22 +1,20 @@
 <template>
-    <div class="card lg">
-      <h4 class="card-title  yellow" style="margin-top:16px;margin-left: 10px;">Cryptho-Wallet</h4>
-      <br>
-      <div class="table-responsive " style="border-radius: 1%;">
-        <table class="table">
+    <div class="table-container">
+      <h4 class="yellow" style="margin-top:16px;margin-left: 10px;">Cryptho-Wallet</h4>
+        <table class="table table-dark tba">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Estimade value</th>
-              <th>Quantity</th>
-              <th colspan="2">Operation</th>
+              <th scope="col">Name</th>
+              <th scope="col">Estimade value</th>
+              <th scol="col">Quantity</th>
+              <th scol="col" colspan="2"></th>
              
             </tr>
           </thead>
           <tbody>
             <tr v-for="Mycryphos in paginatedMycryphoss" :key="Mycryphos.ref">
-              <td>{{ Mycryphos.cryptoName }}</td>
-              <td>{{ formatAmount(Mycryphos.amount) }}</td>
+              <td class="unit">{{ Mycryphos.cryptoName }}</td>
+              <td class="unit">{{ formatAmount(Mycryphos.amount) }}</td>
               <td>{{ Mycryphos.qtt }}</td>
               <td>
                 <button  
@@ -31,7 +29,6 @@
             </tr>
           </tbody>
         </table>
-      </div>
     </div>
 
 
@@ -186,23 +183,39 @@
   }
   </script>
   
-  <style scoped>
-  .table{
-    background-color: #2b362e9a;
-  }
+<style scoped>
   
-  th {
-    background-color: #f0ebebc0;
-    font-weight: bold;
-    
-  }
-  td {
-    background-color: rgba(46, 43, 175, 0.466);
-    color: antiquewhite;
-  }
-  .lg {
-    background-color: rgba(46, 37, 37, 0.5); 
-    backdrop-filter: blur(3px);
-    color: #fff;
-  }
+.table {
+  margin: 20px auto;
+  width: 90%;
+}
+
+.table-dark {
+  --bs-table-bg: transparent !important;
+  --bs-table-color: inherit !important;
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  color: rgb(161, 160, 160);
+}
+.unit {
+  font-weight: 600;
+  color: #fdf8f8;
+}
+
+.table tbody tr {
+  height: initial;
+}
+.table-container {
+  position: relative;
+}
+
+th {
+  font-weight: bold;
+}
+td {
+  color: antiquewhite;
+}
   </style>

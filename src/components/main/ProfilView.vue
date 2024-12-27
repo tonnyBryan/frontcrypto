@@ -1,7 +1,7 @@
 <template>
-  <div class="container-fluid pb-2 lg">
+  <div class="container-fluid pb-1 m-3" >
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-4" >
         <div class="row m-1">
           <div class="col-md-4 offset-md-1">
             <img src="@/assets/bruce-mars.jpg" alt="profile_image" class="avatar" />
@@ -13,32 +13,18 @@
       </div>
       <div class="col-md-4">
         <h2>Your wallet</h2>
-        <h3 class="yellow">{{ formatAmount(balance) }}</h3>
+        <h1 class="yellow">{{ formatAmount(balance) }}</h1>
       </div>
 
       <div class="col-md-4">
         <h2>Transaction</h2>
-        <div class="row">
-          <div class="col-md-6">
-            <input
-              v-model="solde"
-              class="form-control"
-              type="number"
-              min="10"
-              id="solde"
-              placeholder="Solde pour transaction"
-              style="background-color: #f3f1f1c9; padding: 9px"
-              required
-            />
-          </div>
-        </div>
         <div class="row" style="margin-top: 16px">
           <div class="col-md-4">
             <button
               id="depot-btn"
               type="submit"
               class="btn btn-warning w-100 mb-3 fw-bold"
-              @click="handleTransaction('depot')"
+              @click="openTransactionModal('depot')"
             >
               Depot
             </button>
@@ -48,7 +34,7 @@
               id="retrait-btn"
               type="submit"
               class="btn btn-warning w-100 mb-3 fw-bold"
-              @click="handleTransaction('retrait')"
+              @click="openTransactionModal('retrait')"
             >
               Retrait
             </button>
@@ -70,6 +56,39 @@
       <WalletCryptoView :Mycryphoss="mycrypto" :limit="10" />
     </div>
   </div>
+      <!-- Modal pour entrer le solde -->
+      <div
+      class="modal d-flex justify-content-center align-items-center"
+      v-if="showTransactionModal"
+      style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 1050;"
+    >
+      <div
+        class="card p-5 text-center shadow-lg"
+        style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+      >
+        <button
+          class="btn-close position-absolute"
+          style="top: 10px; right: 10px; color: white; background-color: transparent; font-size: 1.5rem;"
+          @click="closeTransactionModal"
+        ></button>
+        <h5 class="mb-4">{{ transactionType === 'depot' ? 'Dépot' : 'Retrait' }}</h5>
+        <input
+          type="number"
+          v-model="solde"
+          class="form-control mb-3 text-center"
+          style="background-color: #444; color: #fff; border: none; border-radius: 5px"
+          placeholder="Entrez le montant"
+        />
+        <p class="text-danger mb-3" v-if="errorMessage">{{ errorMessage }}</p>
+        <button
+          id="confirmBtn"
+          class="btn btn-warning w-100 fw-bold"
+          @click="proceedToConfirmation"
+        >
+          Confirmer
+        </button>
+      </div>
+    </div>
 
   <!-- Modal pour la confirmation du compte -->
   <div
@@ -153,6 +172,7 @@ export default {
       errorMessage: '',
       solde: '',
       showConfirmationModal: false,
+      showTransactionModal: false,
       transactionType: '',
 
       fundTransactions: [
@@ -271,18 +291,22 @@ export default {
         currency: 'USD',
       }).format(amount)
     },
-    handleTransaction(type) {
-      // Réinitialiser le message d'erreur
-      this.errorMessage = ''
-      // Vérifier si le solde est vide
-      if (!this.solde) {
-        this.errorMessage = 'Veuillez entrer un montant'
-        return
+    openTransactionModal(type) {
+      this.transactionType = type === "depot" ? "Dépôt" : "Retrait";
+      this.solde = "";
+      this.errorMessage = "";
+      this.showTransactionModal = true;
+    },
+    closeTransactionModal() {
+      this.showTransactionModal = false;
+    },
+    proceedToConfirmation() {
+      if (!this.solde || this.solde <= 0) {
+        this.errorMessage = "Veuillez entrer un montant valide.";
+        return;
       }
-      // Définir le type de transaction et le titre du modal
-      this.transactionType = type === 'depot' ? 'Dépôt' : 'Retrait'
-      // Afficher le modal
-      this.showConfirmationModal = true
+      this.showTransactionModal = false;
+      this.showConfirmationModal = true;
     },
     async confirmAccount() {
       if (!this.confirmationKey) {
