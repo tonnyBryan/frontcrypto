@@ -376,6 +376,7 @@ export default {
         this.errorMessagePin = error.message
       }
     },
+    
     async confirmAccount() {
       if (!this.confirmationKey) {
         this.errorMessageKey = 'Veuillez entrer une clé de confirmation.'
