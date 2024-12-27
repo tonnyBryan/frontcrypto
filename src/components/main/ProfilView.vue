@@ -50,11 +50,23 @@ import LoaderV from '../util/LoaderV.vue'
       <WalletCryptoView :Mycryphoss="this.mycrypto" :limit="10" />
     </div>
     <div class="row">
-      <div class="col-md-6">
-        <TransactionView :transactions="fundTransactions" :limit="5" />
+      <div class="scrollable-container  col-md-6">
+        <TransactionView :transactions="fundTransactions" :limit="fundLimit" />
+        <button 
+        v-if="fundTransactions.length"
+        @click="toggleFundView" 
+        class="btn btn-secondary btn-sm bt bt-retrait m-3">
+        {{ fundButtonText }}
+      </button>
       </div>
-      <div class="col-md-6">
-        <TransactionCrypt :transactions="cryptoTransactions" :limit="5" />
+      <div class="scrollable-container  col-md-6">
+        <TransactionCrypt :transactions="cryptoTransactions" :limit="cryptoLimit" />
+        <button 
+        v-if="cryptoTransactions.length"
+        @click="toggleCryptoView" 
+        class="btn btn-secondary btn-sm bt bt-retrait m-3">
+        {{ cryptoButtonText }}
+      </button>
       </div>
     </div>
   </div>
@@ -90,7 +102,7 @@ import LoaderV from '../util/LoaderV.vue'
         "
         @click="closeTransactionModal"
       ></button>
-      <h5 class="mb-4">{{ transactionType === 'depot' ? 'Dépot' : 'Retrait' }}</h5>
+      <h5 class="mb-4">{{ transactionType}}</h5>
       <input
         type="number"
         v-model="solde"
@@ -192,12 +204,42 @@ export default {
       fundTransactions: [],
       cryptoTransactions: [],
       mycrypto: [],
+
+      fundLimit: 3,
+      cryptoLimit: 3, 
+      fundExpanded: false, 
+      cryptoExpanded: false,
+
     }
   },
   created() {
     this.getUserInfo()
   },
+  computed: {
+    fundButtonText() {
+      return this.fundExpanded ? "Voir Moins" : "Voir Plus";
+    },
+    cryptoButtonText() {
+      return this.cryptoExpanded ? "Voir Moins" : "Voir Plus";
+    },
+  },
   methods: {
+    toggleFundView() {
+      if (this.fundExpanded) {
+        this.fundLimit = 3;
+      } else {
+        this.fundLimit = null;
+      }
+      this.fundExpanded = !this.fundExpanded;
+    },
+    toggleCryptoView() {
+      if (this.cryptoExpanded) {
+        this.cryptoLimit = 3;
+      } else {
+        this.cryptoLimit = null;
+      }
+      this.cryptoExpanded = !this.cryptoExpanded;
+    },
     async getUserInfo() {
       try {
         const response = await fetch(UtilClass.BACKEND_BASE_URL + '/crypto/user', {
@@ -362,4 +404,11 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+.scrollable-container {
+  max-height: 50vh;
+  overflow-y: auto;
+  border: 1px solid #444;
+  padding: 1rem;
+}
+
 </style>
