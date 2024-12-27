@@ -2,7 +2,7 @@
   <div class="table-container">
     <h4>{{ title }}</h4>
     <div class="table-responsive">
-      <table class="table table-dark tba">
+      <table v-if ="paginatedTransactions.length"class="table table-dark tba">
         <thead>
           <tr>
             <th scope="col" class="d-none d-sm-table-cell">Ref</th>
@@ -24,6 +24,12 @@
           </tr>
         </tbody>
       </table>
+      <div v-else class="text-center my-5">
+        <div class="icon-container">
+          <i class="bi bi-file-earmark fs-1 text-secondary"></i>
+        </div>
+        <p class="mt-3">Historique de transaction vide !</p>
+      </div>
     </div>
   </div>
 </template>
@@ -64,8 +70,6 @@ export default {
       }).format(amount)
     },
     getStatusBadgeClass(status) {
-      console.log(status)
-
       if (status === 'down') {
         return 'badge badge-success'
       }
@@ -163,5 +167,16 @@ td {
   h4 {
     font-size: 16px;
   }
+  .icon-container {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    color: white;/* Couleur de fond claire */
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    }
 }
 </style>
