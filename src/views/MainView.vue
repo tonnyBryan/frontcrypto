@@ -1,5 +1,6 @@
 <template>
   <Head></Head>
+  
 
   <div class="main col-lg-12 container-fluid">
     <RouterView />
