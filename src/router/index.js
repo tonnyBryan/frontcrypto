@@ -45,11 +45,6 @@ const router = createRouter({
           component: HomeView,
         },
         {
-          path: 'chart',
-          name: 'chart',
-          component: CryptoChart,
-        },
-        {
           path: 'profil',
           name: 'profil',
           component: ProfilView,
