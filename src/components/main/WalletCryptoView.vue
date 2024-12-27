@@ -1,35 +1,39 @@
 <template>
     <div class="table-container">
-      <h4 class="yellow" style="margin-top:16px;margin-left: 10px;">Cryptho-Wallet</h4>
-        <table class="table table-dark tba">
-          <thead>
-            <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Estimade value</th>
-              <th scol="col">Quantity</th>
-              <th scol="col" colspan="2"></th>
-             
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="Mycryphos in paginatedMycryphoss" :key="Mycryphos.ref">
-              <td class="unit">{{ Mycryphos.cryptoName }}</td>
-              <td class="unit">{{ formatAmount(Mycryphos.amount) }}</td>
-              <td>{{ Mycryphos.qtt }}</td>
-              <td>
-                <button  
-                class="btn  btn-sm btn-warning w-50 fw-bold"
-                type="submit"
-                @click="handleTransaction('buy',Mycryphos)">
-                Buy </button>
-              </td>
-              <td><button  class="btn  btn-sm btn-success w-50 fw-bold"
-                type="submit"
-                @click="handleTransaction('Sell',Mycryphos)">Sell</button></td>
-            </tr>
-          </tbody>
-        </table>
-    </div>
+  <h4>Cryptho-Wallet</h4>
+  <table class="table table-dark tba">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Estimated value</th>
+        <th scope="col">Quantity</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="Mycryphos in paginatedMycryphoss" :key="Mycryphos.ref">
+        <td class="unit">{{ Mycryphos.cryptoName }}</td>
+        <td class="unit">{{ formatAmount(Mycryphos.amount) }}</td>
+        <td>{{ Mycryphos.qtt }}</td>
+        <td>
+          <button  
+            class="btn btn-sm btn-warning fw-bold"
+            type="submit"
+            @click="handleTransaction('buy', Mycryphos)">
+            Buy
+          </button>
+          <button  
+            class="btn btn-sm btn-success fw-bold"
+            type="submit"
+            @click="handleTransaction('Sell', Mycryphos)">
+            Sell
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 
 
     <!-- Modal pour la confirmation du compte -->
@@ -184,22 +188,34 @@
   </script>
   
 <style scoped>
-  
-.table {
-  margin: 20px auto;
-  width: 90%;
+
+ .table-container {
+  position: relative;
+  padding: 0 20px; 
 }
 
+h4 {
+  margin-top: 16px;
+  font-weight: 700;
+  color: white;
+  text-align: left;
+  margin-bottom: 10px; /* Pour l'espacement avec la table */
+}
+
+.table {
+  margin: 0 auto;
+  width: 100%; /* Ajuster à 100% pour un alignement optimal */
+}
 .table-dark {
   --bs-table-bg: transparent !important;
   --bs-table-color: inherit !important;
 }
-
 .table th,
 .table td {
   padding: 10px;
   color: rgb(161, 160, 160);
 }
+
 .unit {
   font-weight: 600;
   color: #fdf8f8;
@@ -208,14 +224,30 @@
 .table tbody tr {
   height: initial;
 }
-.table-container {
-  position: relative;
+
+td {
+  color: antiquewhite;
+}
+
+.btn {
+  border-radius: 5px;
+  font-size: 1rem; /* Augmenter légèrement la taille de la police */
+}
+
+.btn-sm {
+  font-size: 1.1rem; /* Ajuster la taille pour être plus grande que par défaut */
+}
+
+.btn-warning,
+.btn-success {
+  width: 30%; /* Réduire légèrement pour rapprocher les boutons */
+  margin: 0 3%; /* Ajouter un léger espacement entre les boutons */
 }
 
 th {
   font-weight: bold;
+  
 }
-td {
-  color: antiquewhite;
-}
+
+
   </style>
