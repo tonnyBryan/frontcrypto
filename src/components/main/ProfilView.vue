@@ -1,5 +1,9 @@
+<script setup>
+import LoaderV from '../util/LoaderV.vue'
+</script>
+
 <template>
-  <div style="padding-top: 2rem">
+  <div style="padding-top: 2rem; padding-bottom: 3rem" v-if="user">
     <div class="row">
       <div class="col-md-4">
         <div class="row m-1 d-flex align-items-center">
@@ -7,8 +11,8 @@
             <img src="@/assets/bruce-mars.jpg" alt="profile_image" class="avatar" />
           </div>
           <div class="col">
-            <h5 class="username">{{ userName }}</h5>
-            <h6>email@gmail.com</h6>
+            <h5 class="username">{{ user.nom }}</h5>
+            <h6>{{ user.email }}</h6>
           </div>
         </div>
       </div>
@@ -21,7 +25,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <h5 class="card-title mb-2">Solde réel <i class="bi bi-eye"></i></h5>
-              <h1 class="mb-0">{{ formatAmount(balance) }} <span class="unit">MGA</span></h1>
+              <h1 class="mb-0">{{ formatAmount(user.monnaie) }} <span class="unit">MGA</span></h1>
             </div>
             <div class="d-flex gap-2 flex-sm-row flex-column">
               <button
@@ -42,18 +46,20 @@
       </div>
     </div>
     <hr style="border-top: 4px solid gray" />
-    <div class="row">
-      <WalletCryptoView :Mycryphoss="mycrypto" :limit="10" />
+    <div class="row" style="padding-bottom: 2rem">
+      <WalletCryptoView :Mycryphoss="this.mycrypto" :limit="10" />
     </div>
-    <hr style="border-top: 4px solid gray" />
     <div class="row">
       <div class="col-md-6">
         <TransactionView :transactions="fundTransactions" :limit="5" />
       </div>
       <div class="col-md-6">
-        <TransactionView :transactions="cryptoTransactions" :isCrypto="true" :limit="5" />
+        <TransactionCrypt :transactions="cryptoTransactions" :limit="5" />
       </div>
     </div>
+  </div>
+  <div class="center" v-else>
+    <LoaderV></LoaderV>
   </div>
   <!-- Modal pour entrer le solde -->
   <div
@@ -163,8 +169,9 @@
 </template>
 <script>
 import UtilClass from '@/util/UtilClass'
-import TransactionView from './TransactionView.vue'
+import TransactionView from './TransactionFond.vue'
 import WalletCryptoView from './WalletCryptoView.vue'
+import TransactionCrypt from './TransactionCrypt.vue'
 
 export default {
   components: {
@@ -173,9 +180,7 @@ export default {
   },
   data() {
     return {
-      userName: 'Gusss',
-      email: 'Guss@gmail.com',
-      balance: '14500',
+      user: null,
       confirmationKey: '',
       errorMessageKey: '',
       errorMessage: '',
@@ -184,116 +189,44 @@ export default {
       showTransactionModal: false,
       transactionType: '',
 
-      fundTransactions: [
-        {
-          ref: '02312',
-          date: '2024-12-04',
-          amount: 14500,
-          status: 'Approved',
-        },
-        {
-          ref: '02313',
-          date: '2024-12-03',
-          amount: 5000,
-          status: 'Pending',
-        },
-        {
-          ref: '02314',
-          date: '2024-12-02',
-          amount: 7500,
-          status: 'Rejected',
-        },
-        {
-          ref: '02315',
-          date: '2024-12-01',
-          amount: 3000,
-          status: 'Approved',
-        },
-        {
-          ref: '02316',
-          date: '2024-11-30',
-          amount: 2000,
-          status: 'Approved',
-        },
-        {
-          ref: '02314',
-          date: '2024-12-02',
-          amount: 7500,
-          status: 'Rejected',
-        },
-        {
-          ref: '02315',
-          date: '2024-12-01',
-          amount: 3000,
-          status: 'Approved',
-        },
-        {
-          ref: '02316',
-          date: '2024-11-30',
-          amount: 2000,
-          status: 'Rejected',
-        },
-      ],
-      cryptoTransactions: [
-        {
-          ref: 'C2312',
-          date: '2024-12-04',
-          amount: 10000,
-          cryptoName: 'Bitcoin',
-          status: 'Approved',
-        },
-        {
-          ref: 'C2313',
-          date: '2024-12-03',
-          amount: 5000,
-          cryptoName: 'Ethereum',
-          status: 'Pending',
-        },
-        {
-          ref: 'C2314',
-          date: '2024-12-02',
-          amount: 3000,
-          cryptoName: 'Bitcoin',
-          status: 'Rejected',
-        },
-        {
-          ref: 'C2315',
-          date: '2024-12-01',
-          amount: 2000,
-          cryptoName: 'Dogecoin',
-          status: 'Approved',
-        },
-        {
-          ref: 'C2316',
-          date: '2024-11-30',
-          amount: 1500,
-          cryptoName: 'Ethereum',
-          status: 'Approved',
-        },
-      ],
-      mycrypto: [
-        {
-          id: 1,
-          amount: 1000,
-          cryptoName: 'Bitcoin',
-          qtt: '12',
-        },
-        {
-          id: 2,
-          amount: 10300,
-          cryptoName: 'Dogecoin',
-          qtt: '13',
-        },
-        {
-          id: 3,
-          amount: 4500,
-          cryptoName: 'Ethereum',
-          qtt: '14',
-        },
-      ],
+      fundTransactions: [],
+      cryptoTransactions: [],
+      mycrypto: [],
     }
   },
+  created() {
+    this.getUserInfo()
+  },
   methods: {
+    async getUserInfo() {
+      try {
+        const response = await fetch(UtilClass.BACKEND_BASE_URL + '/crypto/user', {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + UtilClass.getLocalToken(),
+            'Content-Type': 'application/json',
+          },
+        })
+
+        const data = await response.json()
+
+        console.log(data)
+
+        if (data.success) {
+          this.user = data.data
+          this.mycrypto = data.data.portefeuille.cryptoValeurs
+          this.fundTransactions = data.data.transactionFond
+          this.cryptoTransactions = data.data.transactionCryptos
+        } else {
+          throw new Error(
+            data.message || 'Erreur lors de la récupération des informations utilisateur.',
+          )
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
+
     formatAmount(amount) {
       return new Intl.NumberFormat('fr-FR', {
         minimumFractionDigits: 2,
@@ -421,5 +354,12 @@ export default {
 .bt-retrait:hover {
   border-color: #e6b625;
   color: #e6b625;
+}
+
+.center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

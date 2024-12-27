@@ -12,13 +12,19 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="Mycryphos in paginatedMycryphoss" :key="Mycryphos.ref">
+          <tr v-for="Mycryphos in paginatedMycryphoss" :key="Mycryphos.crypto.id_crypto">
             <td class="unit">
-              <img src="/assets/crypto/BTC.png" alt="Bitcoin" width="20" class="me-2" />
-              {{ Mycryphos.cryptoName }}
+              <img
+                :src="'/assets/crypto/' + Mycryphos.crypto.logo"
+                alt="Bitcoin"
+                width="20"
+                class="me-2"
+              />
+
+              {{ Mycryphos.crypto.nom }}
             </td>
-            <td class="unit">{{ formatAmount(Mycryphos.amount) }}</td>
-            <td>{{ Mycryphos.qtt }}</td>
+            <td class="unit">haha</td>
+            <td>{{ Mycryphos.valeur }}</td>
             <td class="text-center">
               <button
                 class="btn btn-sm btn-warning fw-bold"
