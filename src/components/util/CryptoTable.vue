@@ -4,10 +4,7 @@ import LoaderV from './LoaderV.vue'
 
 <template>
   <div class="table-container">
-    <div
-      v-if="cryptos.length === 0 || !isConnected"
-      class="loading-overlay d-flex justify-content-center align-items-center"
-    >
+    <div v-if="cryptos.length === 0 || !isConnected" class="loading-overlay">
       <LoaderV></LoaderV>
     </div>
 
@@ -269,10 +266,9 @@ button.icon-button:hover {
 
 .loading-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 1000;
 }
 </style>
