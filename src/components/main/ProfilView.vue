@@ -3,216 +3,246 @@ import LoaderV from '../util/LoaderV.vue'
 </script>
 
 <template>
-  <div v-if="!istransaction">
-    <div   style="padding-top: 2rem; padding-bottom: 3rem" v-if="user">
-      <div class="row">
-        <div class="col-md-4">
-          <div class="row m-1 d-flex align-items-center">
-            <div class="col-auto">
-              <img src="@/assets/bruce-mars.jpg" alt="profile_image" class="avatar" />
-            </div>
-            <div class="col">
-              <h5 class="username">{{ user.nom }}</h5>
-              <h6>{{ user.email }}</h6>
-            </div>
+  <div style="padding-top: 2rem; padding-bottom: 3rem; overflow-x: hidden" v-if="user">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="row m-1 d-flex align-items-center">
+          <div class="col-auto">
+            <img src="@/assets/bruce-mars.jpg" alt="profile_image" class="avatar" />
+          </div>
+          <div class="col">
+            <h5 class="username">{{ user.nom }}</h5>
+            <h6>{{ user.email }}</h6>
           </div>
         </div>
       </div>
+    </div>
 
-      <hr style="border-top: 4px solid gray" />
-      <div class="row">
-        <div class="card text-white bg-dark shadow rounded-custom">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start">
-              <div>
-                <h5 class="card-title mb-2">Solde réel <i class="bi bi-eye"></i></h5>
-                <h1 class="mb-0">{{ formatAmount(user.monnaie) }} <span class="unit">MGA</span></h1>
-              </div>
-              <div class="d-flex gap-2 flex-sm-row flex-column">
-                <button
-                  @click="openTransactionModal('depot')"
-                  class="btn btn-secondary btn-sm bt bt-depot"
-                >
-                  <i class="bi bi-arrow-bar-down"></i> Dépôt
-                </button>
-                <button
-                  @click="openTransactionModal('retrait')"
-                  class="btn btn-secondary btn-sm bt bt-retrait"
-                >
-                  <i class="bi bi-arrow-bar-up"></i> Retrait
-                </button>
-              </div>
+    <hr style="border-top: 4px solid gray" />
+    <div class="row">
+      <div class="card text-white bg-dark shadow rounded-custom">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h5 class="card-title mb-2">Solde réel <i class="bi bi-eye"></i></h5>
+              <h1 class="mb-0">{{ formatAmount(user.monnaie) }} <span class="unit">MGA</span></h1>
             </div>
-          </div>
-        </div>
-      </div>
-      <hr style="border-top: 4px solid gray" />
-      <div class="row" style="padding-bottom: 2rem">
-        <WalletCryptoView :Mycryphoss="mycrypto" :limit="10" />
-      </div>
-      <div class="row">
-        <div class="scrollable-container col-md-6">
-          <TransactionView :transactions="fundTransactions" :limit="fundLimit" />
-          <button
-            v-if="fundTransactions.length"
-            @click="toggleFundView"
-            class="btn btn-secondary btn-sm bt bt-retrait m-3"
-          >
-            {{ fundButtonText }}
-          </button>
-        </div>
-        <div class="scrollable-container col-md-6">
-          <TransactionCrypt :transactions="cryptoTransactions" :limit="cryptoLimit" />
-          <button
-            v-if="cryptoTransactions.length"
-            @click="toggleCryptoView"
-            class="btn btn-secondary btn-sm bt bt-retrait m-3"
-          >
-            {{ cryptoButtonText }}
-          </button>
-        </div>
-      </div>
-    </div>
-    <div class="center" v-else>
-      <LoaderV></LoaderV>
-    </div>
-    <!-- Modal pour entrer le solde -->
-    <div
-      class="modal d-flex justify-content-center align-items-center"
-      v-if="showTransactionModal"
-      style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 1050;
-      "
-    >
-      <div
-        class="card p-5 shadow-lg cd"
-        style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
-      >
-        <button
-          class="btn-close position-absolute"
-          style="
-            top: 10px;
-            right: 10px;
-            color: white;
-            background-color: transparent;
-            font-size: 1.5rem;
-          "
-          @click="closeTransactionModal"
-        ></button>
-        <h5 class="mb-4" style="font-size: x-large">
-          {{ transactionType }}
-          <span style="font-size: x-large; color: #aaacab">@{{ user.email }}</span>
-        </h5>
-        <div class="position-relative">
-          <input
-            type="text"
-            v-model="formattedSolde"
-            class="form-control inp"
-            placeholder="Entrez le montant"
-            @input="formatNumber"
-          />
-          <span class="usd-icon">$</span>
-        </div>
-
-        <p class="text-danger mb-3" v-if="errorMessage">{{ errorMessage }}</p>
-        <button
-          style="margin-top: 5rem"
-          id="trscBtn"
-          class="btn btn-warning w-100 fw-bold"
-          @click="proceedToConfirmation"
-        >
-          Confirmer
-        </button>
-      </div>
-    </div>
-
-    <!-- Modal pour la confirmation du compte -->
-    <div
-      class="modal d-flex justify-content-center align-items-center"
-      v-if="showConfirmationModal"
-      style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 1050;
-      "
-    >
-      <div
-        class="card p-5 text-center shadow-lg cd"
-        style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
-      >
-        <button
-          class="btn-close position-absolute"
-          style="
-            top: 10px;
-            right: 10px;
-            color: white;
-            background-color: transparent;
-            font-size: 1.5rem;
-          "
-          @click="closeModalAcc"
-        ></button>
-        <h5 class="mb-4 email" style="text-align: left; font-size: x-large">Confirmation Requise</h5>
-        <div class="card bg-dark p-4" style="border: solid 1px #676767">
-          <div class="row align-items-center">
-            <div class="col-md-8">
-              <h5 class="text-white" style="text-align: left">{{ formatAmount(solde) }} $</h5>
-            </div>
-            <div class="col-md-4 og">
-              <div
-                style="border: solid 2px"
-                :class="[
-                  'badge',
-                  transactionType === 'Dépôt'
-                    ? 'border-warning text-warning'
-                    : 'border-success text-success',
-                ]"
+            <div class="d-flex gap-2 flex-sm-row flex-column">
+              <button
+                @click="openTransactionModal('depot')"
+                class="btn btn-secondary btn-sm bt bt-depot"
               >
-                {{ transactionType }}
-              </div>
+                <i class="bi bi-arrow-bar-down"></i> Dépôt
+              </button>
+              <button
+                @click="openTransactionModal('retrait')"
+                class="btn btn-secondary btn-sm bt bt-retrait"
+              >
+                <i class="bi bi-arrow-bar-up"></i> Retrait
+              </button>
             </div>
           </div>
         </div>
-
-        <p style="margin-top: 5rem; text-align: left">
-          Veuillez entrer la clé de confirmation envoyée à votre e-mail pour confirmer transaction.
-        </p>
-        <input
-          type="text"
-          v-model="confirmationKey"
-          class="form-control mb-3 text-center inp2"
-          style="background-color: #444; color: #fff; border: none; border-radius: 5px"
-          placeholder="Entrez la clé de confirmation"
-        />
-        <div v-if="errorMessageKey" class="alert alert-danger" role="alert">
-          {{ errorMessageKey }}
-        </div>
+      </div>
+    </div>
+    <hr style="border-top: 4px solid gray" />
+    <div class="row" style="padding-bottom: 2rem">
+      <WalletCryptoView :Mycryphoss="mycrypto" :limit="10" />
+    </div>
+    <div class="row">
+      <div class="scrollable-container col-md-6">
+        <TransactionView :transactions="fundTransactions" :limit="fundLimit" />
         <button
-          id="confirmAccBtn"
-          class="btn btn-warning w-100 fw-bold"
-          style="font-size: 1.2rem"
-          @click="confirmAccount"
+          v-if="fundTransactions.length"
+          @click="toggleFundView"
+          class="btn btn-secondary btn-sm bt bt-retrait m-3"
         >
-          Confirmer
+          {{ fundButtonText }}
         </button>
-        <p class="text-muted">
-          or, vous pouvez juste appeler dans postman l'url envoyé à votre email
-        </p>
+      </div>
+      <div class="scrollable-container col-md-6">
+        <TransactionCrypt :transactions="cryptoTransactions" :limit="cryptoLimit" />
+        <button
+          v-if="cryptoTransactions.length"
+          @click="toggleCryptoView"
+          class="btn btn-secondary btn-sm bt bt-retrait m-3"
+        >
+          {{ cryptoButtonText }}
+        </button>
       </div>
     </div>
   </div>
-  <TransactionFdResult v-else :details="dtll" ></TransactionFdResult>
+  <div class="center" v-else>
+    <LoaderV></LoaderV>
+  </div>
+  <!-- Modal pour entrer le solde -->
+  <div
+    class="modal d-flex justify-content-center align-items-center"
+    v-if="showTransactionModal"
+    style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1050;
+    "
+  >
+    <div
+      class="card p-5 shadow-lg cd"
+      style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+    >
+      <button
+        class="btn-close position-absolute"
+        style="
+          top: 10px;
+          right: 10px;
+          color: white;
+          background-color: transparent;
+          font-size: 1.5rem;
+        "
+        @click="closeTransactionModal"
+      ></button>
+      <h5 class="mb-4" style="font-size: x-large">
+        {{ transactionType }}
+        <span style="font-size: x-large; color: #aaacab">@{{ user.email }}</span>
+      </h5>
+      <div class="position-relative">
+        <input
+          type="text"
+          v-model="formattedSolde"
+          class="form-control inp"
+          placeholder="Entrez le montant"
+          @input="formatNumber"
+        />
+        <span class="usd-icon">$</span>
+      </div>
 
-  
+      <p class="text-danger mb-3" v-if="errorMessage">{{ errorMessage }}</p>
+      <button
+        style="margin-top: 5rem"
+        id="trscBtn"
+        class="btn btn-warning w-100 fw-bold"
+        @click="proceedToConfirmation"
+      >
+        Confirmer
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal pour la confirmation du compte -->
+  <div
+    class="modal d-flex justify-content-center align-items-center"
+    v-if="showConfirmationModal"
+    style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1050;
+    "
+  >
+    <div
+      class="card p-5 text-center shadow-lg cd"
+      style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+    >
+      <button
+        class="btn-close position-absolute"
+        style="
+          top: 10px;
+          right: 10px;
+          color: white;
+          background-color: transparent;
+          font-size: 1.5rem;
+        "
+        @click="closeModalAcc"
+      ></button>
+      <h5 class="mb-4 email" style="text-align: left; font-size: x-large">Confirmation Requise</h5>
+      <div class="card bg-dark p-4" style="border: solid 1px #676767">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h5 class="text-white" style="text-align: left">{{ formatAmount(solde) }} $</h5>
+          </div>
+          <div class="col-md-4 og">
+            <div
+              style="border: solid 2px"
+              :class="[
+                'badge',
+                transactionType === 'Dépôt'
+                  ? 'border-warning text-warning'
+                  : 'border-success text-success',
+              ]"
+            >
+              {{ transactionType }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p style="margin-top: 5rem; text-align: left">
+        Veuillez entrer la clé de confirmation envoyée à votre e-mail pour confirmer transaction.
+      </p>
+      <input
+        type="text"
+        v-model="confirmationKey"
+        class="form-control mb-3 text-center inp2"
+        style="background-color: #444; color: #fff; border: none; border-radius: 5px"
+        placeholder="Entrez la clé de confirmation"
+      />
+      <div v-if="errorMessageKey" class="alert alert-danger" role="alert">
+        {{ errorMessageKey }}
+      </div>
+      <button
+        id="confirmAccBtn"
+        class="btn btn-warning w-100 fw-bold"
+        style="font-size: 1.2rem"
+        @click="confirmAccount"
+      >
+        Confirmer
+      </button>
+      <p class="text-muted">
+        or, vous pouvez juste appeler dans postman l'url envoyé à votre email
+      </p>
+    </div>
+  </div>
+
+  <!-- Modal pour la resultat du compte -->
+  <div
+    class="modal d-flex justify-content-center align-items-center"
+    v-if="showResultModal"
+    style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1050;
+    "
+  >
+    <div
+      class="card p-5 shadow-lg cd"
+      style="width: 40rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+    >
+      <button
+        class="btn-close position-absolute"
+        style="
+          top: 10px;
+          right: 10px;
+          color: white;
+          background-color: transparent;
+          font-size: 1.5rem;
+        "
+        @click="closeResultModal"
+      ></button>
+
+      <TransactionFdResult :details="dtll"></TransactionFdResult>
+    </div>
+  </div>
+  <!-- <TransactionFdResult v-else :details="dtll"></TransactionFdResult> -->
 </template>
 
 <script>
@@ -248,10 +278,8 @@ export default {
       fundExpanded: false,
       cryptoExpanded: false,
 
-      istransaction: false,
-      dtll:null,
-
-
+      showResultModal: false,
+      dtll: null,
     }
   },
   created() {
@@ -302,7 +330,6 @@ export default {
         })
 
         const data = await response.json()
-      
 
         console.log(data)
 
@@ -341,8 +368,11 @@ export default {
     closeTransactionModal() {
       this.showTransactionModal = false
     },
+    closeResultModal() {
+      this.showResultModal = false
+    },
     async proceedToConfirmation() {
-      if (!this.solde || this.solde <= 0 || this.user.monnaie < this.solde   ) {
+      if (!this.solde || this.solde <= 0 || this.user.monnaie < this.solde) {
         this.errorMessage = 'Veuillez entrer un montant valide.'
         return
       }
@@ -406,22 +436,24 @@ export default {
         )
 
         const data = await response.json()
-        UtilClass.endLoadedButton(confirmAccButton, 'Confirmer')
-       
-        
 
         if (data.success) {
           this.closeModalAcc()
-          
-           this.dtll={
+
+          this.dtll = {
             type: this.getType(this.transactionType),
-            solde:this.solde,
-            NouveauSolde:(this.getType(this.transactionType) === 'depot') ? ( parseFloat(this.user.monnaie) + parseFloat(this.solde)):( parseFloat(this.user.monnaie) - parseFloat(this.solde))
-          };
-          this.istransaction=true;
-          
-          
+            solde: this.solde,
+            NouveauSolde:
+              this.getType(this.transactionType) === 'depot'
+                ? parseFloat(this.user.monnaie) + parseFloat(this.solde)
+                : parseFloat(this.user.monnaie) - parseFloat(this.solde),
+          }
+
+          await this.getUserInfo()
+          UtilClass.endLoadedButton(confirmAccButton, 'Confirmer')
+          this.showResultModal = true
         } else {
+          UtilClass.endLoadedButton(confirmAccButton, 'Confirmer')
           throw new Error(data.message || 'Clé de confirmation invalide.')
         }
       } catch (error) {

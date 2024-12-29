@@ -1,6 +1,6 @@
 <template>
   <div class="table-container">
-    <h4>Cryptho-Wallet</h4>
+    <h4 style="margin-left: 7px">Cryptho-Wallet</h4>
     <div class="table-responsive">
       <table class="table table-dark tba">
         <thead>

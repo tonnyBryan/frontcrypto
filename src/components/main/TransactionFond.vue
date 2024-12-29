@@ -2,7 +2,7 @@
   <div class="table-container">
     <h4>{{ title }}</h4>
     <div class="table-responsive">
-      <table v-if ="paginatedTransactions.length"class="table table-dark tba">
+      <table v-if="paginatedTransactions.length" class="table table-dark tba">
         <thead>
           <tr>
             <th scope="col" class="d-none d-sm-table-cell">Ref</th>
@@ -172,11 +172,11 @@ td {
     justify-content: center;
     align-items: center;
     background-color: transparent;
-    color: white;/* Couleur de fond claire */
+    color: white; /* Couleur de fond claire */
     border-radius: 50%;
     width: 100px;
     height: 100px;
     margin: auto;
-    }
+  }
 }
 </style>
