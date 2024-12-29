@@ -78,7 +78,7 @@ export default {
     formatAmount(amount) {
       return new Intl.NumberFormat('fr-FR', {
         style: 'currency',
-        currency: 'USD',
+        currency: 'MGA',
       }).format(amount)
     },
     getStatusBadgeClass(status) {

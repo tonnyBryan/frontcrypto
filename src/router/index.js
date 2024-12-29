@@ -13,8 +13,8 @@ import AchatCrypto from '@/components/main/AchatCrypto.vue'
 import VenteCrypto from '@/components/main/VenteCrypto.vue'
 import UserCrypto from '@/components/main/UserCrypto.vue'
 import TransactionCrypto from '@/components/main/TransactionCrypto.vue'
-
 // end of modification import Voahary
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -62,8 +62,7 @@ const router = createRouter({
           component: CryptoModel,
         },
       ],
-    },
-
+    }, 
     {
       path: '/:catchAll(.*)',
       name: 'NotFound',
