@@ -1,10 +1,6 @@
 <template>
   <Head></Head>
-
-  <div class="main col-lg-12 container-fluid">
-    <RouterView />
-  </div>
-
+  <RouterView />
   <!-- Bouton pour remonter -->
   <button
     v-if="showScrollButton"

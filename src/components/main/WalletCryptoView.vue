@@ -80,7 +80,7 @@
         Type de transaction: <span class="text-warning">{{ transactionType }}</span>
       </p>
       <p class="mb-3">
-        Cryptomonai type : <span class="text-warning">{{ cryptoId.cryptoName }}</span>
+        Cryptomonai type : <span class="text-warning">{{ cryptoId.crypto.nom }}</span>
       </p>
 
       <input
@@ -150,12 +150,6 @@ export default {
         month: 'short',
         year: 'numeric',
       })
-    },
-    formatAmount(amount) {
-      return new Intl.NumberFormat('fr-FR', {
-        style: 'currency',
-        currency: 'USD',
-      }).format(amount)
     },
     async confirmAccount() {
       if (!this.Qtt) {
