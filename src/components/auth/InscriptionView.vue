@@ -2,7 +2,13 @@
   <div class="container d-flex justify-content-center align-items-center vh-100">
     <div
       class="card p-4 shadow lg"
-      style="width: 22rem; background-color: #1e1e1e; color: #fff; border-radius: 10px"
+      style="
+        width: 22rem;
+        background-color: transparent;
+        color: #fff;
+        border-radius: 10px;
+        border: solid 1px #666365;
+      "
     >
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="text-left">Inscription</h2>
@@ -19,7 +25,7 @@
             class="form-control"
             :class="{ 'is-invalid': errors.username }"
             placeholder="Entrez votre Username"
-            style="background-color: #1e1e1e; padding: 13px"
+            style="background-color: transparent; padding: 13px"
             autocomplete="off"
             required
           />
@@ -36,7 +42,7 @@
             class="form-control"
             :class="{ 'is-invalid': errors.email }"
             placeholder="Entrez votre e-mail"
-            style="background-color: #1e1e1e; padding: 13px"
+            style="background-color: transparent; padding: 13px"
             autocomplete="off"
             required
           />
@@ -54,7 +60,7 @@
             class="form-control"
             :class="{ 'is-invalid': errors.password }"
             placeholder="Entrez votre mot de passe"
-            style="background-color: #1e1e1e; padding: 13px"
+            style="background-color: transparent; padding: 13px"
             required
           />
           <div class="invalid-feedback">
@@ -84,7 +90,7 @@
     "
   >
     <div
-      class="card p-5 text-center shadow-lg"
+      class="card p-5 text-center shadow-lg cd"
       style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
     >
       <button
@@ -250,11 +256,13 @@ input::placeholder {
 }
 
 input {
-  color: #c7c6c6;
+  color: #ffffff;
+  font-size: larger;
+  font-weight: 600;
 }
 
 input:focus {
-  color: #c7c6c6; /* Texte jaune vif au focus */
+  color: #ffffff; /* Texte jaune vif au focus */
   border-color: #ffc107; /* Bordure bleu clair au focus */
   outline: none; /* Enlever le contour par défaut */
   box-shadow: none; /* Enlever le contour bleu spécifique à Bootstrap */
@@ -264,13 +272,13 @@ input:-webkit-autofill {
   background-color: #1e1e1e !important; /* Remettre un fond sombre */
   color: #c7c6c6 !important; /* Garder le texte en blanc */
 }
-
-.lg {
-  background-color: rgba(255, 255, 255, 0.5); /* Couleur blanche avec transparence */
-  backdrop-filter: blur(10px);
-}
-
 .border-red {
   border: 3px solid #c82333 !important;
+}
+
+@media (max-width: 480px) {
+  .vh-100 {
+    height: unset !important;
+  }
 }
 </style>

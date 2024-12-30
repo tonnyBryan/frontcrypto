@@ -95,12 +95,15 @@ export default {
 
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data)
+        console.log(data)
         this.updateData(data)
       }
 
       socket.onopen = () => {
         console.log('WebSocket connecté')
         this.isConnected = true
+
+        this.getLastCour()
         if (this.reconnectInterval) {
           clearInterval(this.reconnectInterval)
           this.reconnectInterval = null
@@ -157,6 +160,34 @@ export default {
     },
     goToCryptoDetails(idCrypto) {
       this.$router.push('/app/accueil/crypto?id=' + idCrypto)
+    },
+    async getLastCour() {
+      try {
+        const response = await fetch(UtilClass.BACKEND_BASE_URL + '/crypto/cour', {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + UtilClass.getLocalToken(),
+            'Content-Type': 'application/json',
+          },
+        })
+
+        const data = await response.json()
+
+        if (data.success) {
+          this.cryptos = data.data.map((item) => ({
+            ...item,
+            variation: Math.random() * 10 - 5,
+            volume: Math.random() * 1000000000,
+            capitalisation: item.valeur * 1000000,
+          }))
+        } else {
+          throw new Error(
+            data.message || 'Erreur lors de la récupération des informations utilisateur.',
+          )
+        }
+      } catch (error) {
+        console.error(error)
+      }
     },
   },
   mounted() {

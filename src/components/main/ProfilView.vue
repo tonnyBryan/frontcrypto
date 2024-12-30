@@ -372,9 +372,16 @@ export default {
       this.showResultModal = false
     },
     async proceedToConfirmation() {
-      if (!this.solde || this.solde <= 0 || this.user.monnaie < this.solde) {
+      if (!this.solde || this.solde <= 0) {
         this.errorMessage = 'Veuillez entrer un montant valide.'
         return
+      }
+
+      if (this.getType(this.transactionType) === 'retrait') {
+        if (this.user.monnaie < this.solde) {
+          this.errorMessage = 'Veuillez entrer un montant valide.'
+          return
+        }
       }
 
       const trButton = document.getElementById('trscBtn')

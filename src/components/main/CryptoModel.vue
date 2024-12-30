@@ -2,13 +2,11 @@
 import LoaderV from '../util/LoaderV.vue'
 import ChartView from '../util/ChartView.vue'
 import UtilClass from '@/util/UtilClass'
-// ne touche pas ici
 </script>
 
 <template>
   <div class="container mt-4">
     <div class="row">
-      <!-- Section gauche : détails de la crypto et graphique -->
       <div class="col-lg-8 col-md-6 mb-4">
         <div v-if="crypto">
           <div class="crypto-header d-flex align-items-center mb-3">
@@ -90,9 +88,9 @@ export default {
     return {
       crypto: null,
       socket: null,
-      buyAmount: 0, // Quantité de crypto à acheter
-      spendAmount: 0, // Montant dépensé calculé
-      chartData: [], // Données du graphique en temps réel
+      buyAmount: 0,
+      spendAmount: 0,
+      chartData: [],
     }
   },
   methods: {
@@ -161,6 +159,8 @@ export default {
         if (this.chartData.length > 10) {
           this.chartData.shift() // Garder uniquement les 10 dernières valeurs
         }
+      } else {
+        this.$router.push('/app/accueil')
       }
     },
     connectWebSocket() {
@@ -171,9 +171,33 @@ export default {
       }
       this.socket.onopen = () => {
         console.log('WebSocket connecté')
+        this.getLastCour()
       }
       this.socket.onclose = () => {
         console.log('WebSocket déconnecté')
+      }
+    },
+    async getLastCour() {
+      try {
+        const response = await fetch(UtilClass.BACKEND_BASE_URL + '/crypto/cour', {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + UtilClass.getLocalToken(),
+            'Content-Type': 'application/json',
+          },
+        })
+
+        const data = await response.json()
+
+        if (data.success) {
+          this.updateCryptoData(data.data)
+        } else {
+          throw new Error(
+            data.message || 'Erreur lors de la récupération des informations utilisateur.',
+          )
+        }
+      } catch (error) {
+        console.error(error)
       }
     },
   },

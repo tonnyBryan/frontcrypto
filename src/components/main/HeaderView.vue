@@ -6,10 +6,17 @@
     </div>
     <nav :class="{ open: isMenuOpen }">
       <ul>
-        <li><RouterLink to="/app/accueil/v1">Home</RouterLink></li>
-        <li><RouterLink to="/app/accueil/profil">My Profile</RouterLink></li>
-        <li><RouterLink to="/achat">Achat</RouterLink></li>
-        <li><RouterLink to="/setting">Setting</RouterLink></li>
+        <li>
+          <RouterLink to="/app/accueil/v1"><i class="bi bi-house-door"></i> Home</RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/app/accueil/profil"
+            ><i class="bi bi-person-circle"></i> My Profile</RouterLink
+          >
+        </li>
+        <li>
+          <a href="#" @click.prevent="logout"><i class="bi bi-box-arrow-right"></i> Log out</a>
+        </li>
       </ul>
     </nav>
     <button class="hamburger" @click="toggleMenu">
@@ -21,6 +28,8 @@
 </template>
 
 <script>
+import UtilClass from '@/util/UtilClass'
+
 export default {
   data() {
     return {
@@ -30,6 +39,27 @@ export default {
   methods: {
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen
+    },
+    async logout() {
+      try {
+        const response = await fetch(UtilClass.BACKEND_BASE_URL + '/crypto/user/logout', {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + UtilClass.getLocalToken(),
+            'Content-Type': 'application/json',
+          },
+        })
+
+        const data = await response.json()
+
+        if (data.success) {
+          this.$router.push('/app')
+        } else {
+          throw new Error(data.message || 'Erreur lors de la deconnection')
+        }
+      } catch (error) {
+        console.error(error)
+      }
     },
   },
 }
@@ -53,7 +83,7 @@ export default {
   font-size: 1.5rem;
   font-weight: bold;
   color: #ffc107;
-  gap: 0.5rem; /* Espace entre le logo et le texte */
+  gap: 0.5rem;
 }
 
 .logo-icon {
@@ -79,11 +109,18 @@ nav ul li RouterLink {
   color: rgb(255 255 255 / 93%);
   text-decoration: none;
   font-size: 1rem;
+  display: flex;
+  align-items: center;
 }
 
 nav ul li a:hover,
 nav ul li RouterLink:hover {
   color: #ff9800;
+}
+
+nav ul li i {
+  margin-right: 8px; /* Espacement entre l'icône et le texte */
+  font-size: 1.2rem;
 }
 
 .hamburger {
