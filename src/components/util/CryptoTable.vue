@@ -79,6 +79,7 @@ export default {
       cryptos: [],
       isConnected: false,
       reconnectInterval: null,
+      onclose: false,
     }
   },
   methods: {
@@ -95,7 +96,7 @@ export default {
 
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data)
-        console.log(data)
+        console.log('tafiditraa')
         this.updateData(data)
       }
 
@@ -114,7 +115,9 @@ export default {
         console.log('WebSocket déconnecté')
         this.isConnected = false
         this.cryptos = []
-        this.reconnectWebSocket()
+        if (!this.onclose) {
+          this.reconnectWebSocket()
+        }
       }
 
       this.socket = socket
@@ -194,12 +197,15 @@ export default {
     this.initializeWebSocket()
   },
   unmounted() {
+    console.log('fakoo')
     if (this.socket) {
       this.socket.close()
     }
-    if (this.reconnectInterval) {
-      clearInterval(this.reconnectInterval)
-    }
+
+    this.onclose = true
+    clearInterval(this.reconnectInterval)
+    this.reconnectInterval = null
+    console.log('Intervalle de reconnexion annulé')
   },
 }
 </script>

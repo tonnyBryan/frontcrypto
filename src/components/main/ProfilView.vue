@@ -104,6 +104,7 @@ import LoaderV from '../util/LoaderV.vue'
         "
         @click="closeTransactionModal"
       ></button>
+
       <h5 class="mb-4" style="font-size: x-large">
         {{ transactionType }}
         <span style="font-size: x-large; color: #aaacab">@{{ user.email }}</span>
@@ -242,7 +243,6 @@ import LoaderV from '../util/LoaderV.vue'
       <TransactionFdResult :details="dtll"></TransactionFdResult>
     </div>
   </div>
-  <!-- <TransactionFdResult v-else :details="dtll"></TransactionFdResult> -->
 </template>
 
 <script>

@@ -1,7 +1,7 @@
 <script setup>
 import LoaderV from '../util/LoaderV.vue'
-import ChartView from '../util/ChartView.vue'
 import UtilClass from '@/util/UtilClass'
+import TradeView from '../util/TradeView.vue'
 </script>
 
 <template>
@@ -31,7 +31,8 @@ import UtilClass from '@/util/UtilClass'
           </div>
           <!-- Graphique (vide pour l'instant) -->
           <div class="crypto-chart">
-            <ChartView :data="chartData" />
+            <!-- <ChartView :data="chartData" /> -->
+            <TradeView :idCrypto="getCryptoId()" />
           </div>
         </div>
 
@@ -49,16 +50,31 @@ import UtilClass from '@/util/UtilClass'
             </h3>
             <form @submit.prevent="handleBuy">
               <div class="mb-3">
-                <label for="cryptoBuy" class="form-label text-light"> You Buy </label>
-                <input
-                  type="number"
-                  id="cryptoBuy"
-                  v-model.number="buyAmount"
-                  @input="updateSpend"
-                  class="form-control bg-secondary text-light border-0"
-                  placeholder="Enter amount"
-                />
+                <label for="cryptoBuy" class="form-label text-light">You Buy</label>
+                <div class="position-relative">
+                  <input
+                    type="number"
+                    id="cryptoBuy"
+                    v-model.number="buyAmount"
+                    @input="updateSpend"
+                    class="form-control bg-transparent text-light border-0 ps-3"
+                    placeholder="Enter amount"
+                  />
+                  <img
+                    v-if="crypto"
+                    :src="getLogoUrl(crypto.crypto.logo)"
+                    alt="Logo"
+                    style="
+                      position: absolute;
+                      right: 18px;
+                      top: 50%;
+                      transform: translateY(-50%);
+                      height: 20px;
+                    "
+                  />
+                </div>
               </div>
+
               <div class="mb-3">
                 <label for="cryptoSpend" class="form-label text-light">You Spend (USD)</label>
                 <input
@@ -168,6 +184,7 @@ export default {
       this.socket.onmessage = (event) => {
         const data = JSON.parse(event.data)
         this.updateCryptoData(data)
+        this.updateSpend()
       }
       this.socket.onopen = () => {
         console.log('WebSocket connecté')
