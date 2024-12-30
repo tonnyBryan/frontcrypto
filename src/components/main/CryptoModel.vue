@@ -29,9 +29,7 @@ import TradeView from '../util/TradeView.vue'
               </span>
             </p>
           </div>
-          <!-- Graphique (vide pour l'instant) -->
           <div class="crypto-chart">
-            <!-- <ChartView :data="chartData" /> -->
             <TradeView :idCrypto="getCryptoId()" />
           </div>
         </div>
