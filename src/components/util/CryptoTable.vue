@@ -53,15 +53,7 @@ import LoaderV from './LoaderV.vue'
                 data-bs-placement="top"
                 title="Voir les détails"
               >
-                <i class="fas fa-eye"></i>
-              </button>
-              <button
-                class="btn btn-sm btn-secondary icon-button"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                title="Ajouter aux favoris"
-              >
-                <i class="fas fa-heart"></i>
+                <i class="bi bi-graph-up-arrow"></i>
               </button>
             </td>
           </tr>
