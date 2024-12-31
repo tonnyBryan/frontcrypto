@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <div ref="chartContainer" style="width: 100%; height: 400px"></div>
-  </div>
+  <div id="chart" ref="chart" style="width: 100%; height: 400px"></div>
 </template>
 
 <script>
@@ -9,20 +7,22 @@ import UtilClass from '@/util/UtilClass'
 import { createChart } from 'lightweight-charts'
 
 export default {
+  name: 'TradingView',
   props: {
     idCrypto: {
-      type: Number,
+      type: String,
       required: true,
     },
   },
-  data() {
-    return {
-      chart: null,
-      lineSeries: null,
-      socket: null,
-    }
+  mounted() {
+    this.initChart()
   },
   methods: {
+    handleResize() {
+      if (this.chart) {
+        this.chart.resize(this.$refs.chart.offsetWidth, this.$refs.chart.offsetHeight)
+      }
+    },
     async fetchInitialData() {
       try {
         const response = await fetch(
@@ -37,6 +37,45 @@ export default {
       } catch (error) {
         console.error('Erreur lors de la récupération des données initiales :', error)
       }
+    },
+    initChart() {
+      this.chart = createChart(this.$refs.chart, {
+        width: this.$refs.chart.offsetWidth,
+        height: this.$refs.chart.offsetHeight,
+        layout: {
+          background: { color: 'transparent' },
+          textColor: '#DDD',
+        },
+        grid: {
+          vertLines: { color: 'transparent' },
+          horzLines: { color: 'transparent' },
+        },
+        crosshair: {
+          vertLine: {
+            color: '#575757',
+            width: 1,
+            style: 0,
+          },
+          horzLine: {
+            color: '#575757',
+            width: 1,
+            style: 0,
+          },
+        },
+      })
+
+      this.lineSeries = this.chart.addLineSeries({
+        color: '#ffc107',
+        lineWidth: 2,
+        crosshairMarkerVisible: true,
+        lastValueVisible: true,
+        priceLineVisible: true,
+      })
+
+      this.fetchInitialData()
+      this.connectWebSocket()
+
+      window.addEventListener('resize', this.handleResize)
     },
 
     connectWebSocket() {
@@ -64,71 +103,24 @@ export default {
       }
       this.lineSeries.update(updatedData)
     },
-
-    handleResize() {
-      if (this.chart) {
-        this.chart.resize(
-          this.$refs.chartContainer.offsetWidth,
-          this.$refs.chartContainer.offsetHeight,
-        )
-      }
-    },
   },
-
-  mounted() {
-    this.chart = createChart(this.$refs.chartContainer, {
-      width: this.$refs.chartContainer.offsetWidth,
-      height: this.$refs.chartContainer.offsetHeight,
-      layout: {
-        background: { color: 'transparent' },
-        textColor: '#DDD',
-      },
-      grid: {
-        vertLines: { color: 'transparent' },
-        horzLines: { color: 'transparent' },
-      },
-      priceScale: {
-        borderColor: '#555',
-        scaleMargins: { top: 0.1, bottom: 0.1 },
-      },
-      timeScale: {
-        borderColor: '#555',
-      },
-      crosshair: {
-        vertLine: {
-          color: '#575757',
-          width: 1,
-          style: 0,
-        },
-        horzLine: {
-          color: '#575757',
-          width: 1,
-          style: 0,
-        },
-      },
-    })
-
-    this.lineSeries = this.chart.addLineSeries({
-      color: '#ffc107',
-      lineWidth: 2,
-      priceLineVisible: true,
-      lastValueVisible: true,
-      crosshairMarkerVisible: true,
-    })
-
-    this.fetchInitialData()
-    this.connectWebSocket()
-
-    window.addEventListener('resize', this.handleResize)
-  },
-
   beforeUnmount() {
     if (this.socket) {
       this.socket.close()
+    }
+    if (this.chart) {
+      this.chart.remove()
     }
     window.removeEventListener('resize', this.handleResize)
   },
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+#chart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+}
+</style>
