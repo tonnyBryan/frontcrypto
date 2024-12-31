@@ -9,7 +9,6 @@ import LoaderV from './LoaderV.vue'
       <LoaderV></LoaderV>
     </div>
 
-    <!-- Ajout de la classe table-responsive pour la table -->
     <div class="table-responsive">
       <table class="table table-dark tba">
         <thead>
