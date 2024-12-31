@@ -38,7 +38,7 @@ export default {
         console.error('Erreur lors de la récupération des données initiales :', error)
       }
     },
-    initChart() {
+    async initChart() {
       this.chart = createChart(this.$refs.chart, {
         width: this.$refs.chart.offsetWidth,
         height: this.$refs.chart.offsetHeight,
