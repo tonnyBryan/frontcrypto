@@ -1,7 +1,7 @@
 <script setup>
 import LoaderV from '../util/LoaderV.vue'
 import UtilClass from '@/util/UtilClass'
-import TradeView from '../util/TradeView.vue'
+import TradingView from '../util/TradingView.vue'
 </script>
 
 <template>
@@ -30,7 +30,7 @@ import TradeView from '../util/TradeView.vue'
             </p>
           </div>
           <div class="crypto-chart">
-            <TradeView :idCrypto="getCryptoId()" />
+            <TradingView :idCrypto="getCryptoId()"></TradingView>
           </div>
         </div>
 
