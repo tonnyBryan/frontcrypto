@@ -23,7 +23,7 @@
 
               {{ Mycryphos.crypto.nom }}
             </td>
-            <td class="unit">haha</td>
+            <td>{{ formatCurrency(Mycryphos.estimation) }}</td>
             <td>{{ Mycryphos.valeur }}</td>
             <td class="text-center">
               <button
@@ -130,6 +130,15 @@ export default {
       showConfirmationModal: false,
       transactionType: '',
       cryptoId: [],
+      socket: null,
+    }
+  },
+  mounted() {
+    this.initializeWebSocket()
+  },
+  unmounted() {
+    if (this.socket) {
+      this.socket.close()
     }
   },
   computed: {
@@ -156,40 +165,50 @@ export default {
         this.errorMessageKey = 'Veuillez entrer une clé de confirmation.'
         return
       }
-
-      const confirmAccButton = document.getElementById('confirmAccBtn')
-      UtilClass.loadButton(confirmAccButton)
-      try {
-        const response = await fetch(
-          UtilClass.BACKEND_BASE_URL + '/crypto/auth/validate?key=' + this.confirmationKey,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          },
-        )
-
-        const data = await response.json()
-        UtilClass.endLoadedButton(confirmAccButton, 'Confirmer')
-
-        if (data.isSuccess) {
-          const token = data.data.token
-          UtilClass.setToken(token)
-          this.closeModalAcc()
-          this.$router.push('/app/accueil')
-        } else {
-          throw new Error(data.message || 'Clé de confirmation invalide.')
-        }
-      } catch (error) {
-        UtilClass.endLoadedButton(confirmAccButton, 'Confirmer')
-        this.errorMessageKey = error.message
-      }
     },
     closeModalAcc() {
       this.confirmationKey = ''
       this.errorMessageKey = ''
       ;(this.showConfirmationModal = false), (this.cryptoId = [])
+    },
+    initializeWebSocket() {
+      const socket = new WebSocket(UtilClass.BACKEND_SOCKET_BASE_UR + '/ws/crypto')
+
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data)
+        this.updateCryptoEstimations(data)
+      }
+
+      socket.onopen = () => {
+        console.log('WebSocket connecté')
+      }
+
+      socket.onclose = () => {
+        console.log('WebSocket déconnecté')
+        this.isConnected = false
+      }
+
+      this.socket = socket
+    },
+    updateCryptoEstimations(data) {
+      data.forEach((newCrypto) => {
+        const cryptoToUpdate = this.Mycryphoss.find(
+          (crypto) => crypto.crypto.id_crypto === newCrypto.crypto.id_crypto,
+        )
+        if (cryptoToUpdate) {
+          cryptoToUpdate.estimation = cryptoToUpdate.valeur * newCrypto.valeur
+        }
+      })
+    },
+    formatCurrency(value) {
+      const formatted = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(value)
+
+      return formatted.replace('$', '$ ')
     },
   },
 }

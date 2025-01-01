@@ -16,24 +16,9 @@ export default {
       type: String,
       required: true,
     },
-    updatedCryptoData: {
-      type: Object,
-      required: false,
-      default: null,
-    },
   },
   mounted() {
     this.initChart()
-  },
-  watch: {
-    updatedCryptoData: {
-      immediate: false,
-      handler(newData) {
-        if (newData) {
-          this.updateChartData(newData)
-        }
-      },
-    },
   },
   methods: {
     goToRealtime() {
@@ -47,7 +32,7 @@ export default {
     async fetchInitialData() {
       try {
         const response = await fetch(
-          UtilClass.BACKEND_BASE_URL + `/crypto/cour/${this.idCrypto}?limit=2000`,
+          UtilClass.BACKEND_BASE_URL + /crypto/cour/${this.idCrypto}?limit=2000,
           {
             method: 'GET',
             headers: {
@@ -97,10 +82,17 @@ export default {
           },
         },
         timeScale: {
-          timeVisible: true,
-          secondsVisible: true,
+          timeVisible: true, // Assure que l'heure est visible
+          secondsVisible: true, // Rend les secondes visibles
         },
       })
+
+      setTimeout(() => {
+        const logo = document.getElementById('tv-attr-logo')
+        if (logo) {
+          logo.style.display = 'none'
+        }
+      }, 500)
 
       this.lineSeries = this.chart.addLineSeries({
         color: '#ffc107',
@@ -111,9 +103,29 @@ export default {
       })
 
       this.fetchInitialData()
+      this.connectWebSocket()
 
       window.addEventListener('resize', this.handleResize)
     },
+
+    connectWebSocket() {
+      this.socket = new WebSocket(UtilClass.BACKEND_SOCKET_BASE_UR + '/ws/crypto')
+      this.socket.onmessage = (event) => {
+        const data = JSON.parse(event.data)
+
+        const selectedCrypto = data.find(
+          (crypto) => crypto.crypto.id_crypto === parseInt(this.idCrypto),
+        )
+        this.updateChartData(selectedCrypto)
+      }
+      this.socket.onopen = () => {
+        console.log('WebSocket connecté')
+      }
+      this.socket.onclose = () => {
+        console.log('WebSocket déconnecté')
+      }
+    },
+
     updateChartData(data) {
       const originalDate = new Date(data.date_changement)
 
@@ -128,6 +140,9 @@ export default {
     },
   },
   beforeUnmount() {
+    if (this.socket) {
+      this.socket.close()
+    }
     if (this.chart) {
       this.chart.remove()
     }

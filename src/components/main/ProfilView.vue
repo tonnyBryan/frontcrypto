@@ -25,7 +25,7 @@ import LoaderV from '../util/LoaderV.vue'
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <h5 class="card-title mb-2">Solde réel <i class="bi bi-eye"></i></h5>
-              <h1 class="mb-0">{{ formatAmount(user.monnaie) }} <span class="unit">MGA</span></h1>
+              <h1 class="mb-0">{{ formatAmount(user.monnaie) }} <span class="unit">USD</span></h1>
             </div>
             <div class="d-flex gap-2 flex-sm-row flex-column">
               <button
@@ -331,8 +331,6 @@ export default {
 
         const data = await response.json()
 
-        console.log(data)
-
         if (data.success) {
           this.user = data.data
           this.mycrypto = data.data.portefeuille.cryptoValeurs
@@ -472,6 +470,16 @@ export default {
       this.confirmationKey = ''
       this.errorMessageKey = ''
       this.showConfirmationModal = false
+    },
+    formatCurrency(value) {
+      const formatted = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(value)
+
+      return formatted.replace('$', '$ ')
     },
   },
 }

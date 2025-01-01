@@ -30,7 +30,7 @@ import TradingView from '../util/TradingView.vue'
             </p>
           </div>
           <div class="crypto-chart">
-            <TradingView :idCrypto="getCryptoId()"></TradingView>
+            <TradingView :idCrypto="getCryptoId()" :updatedCryptoData="socketData"></TradingView>
           </div>
         </div>
 
@@ -56,7 +56,7 @@ import TradingView from '../util/TradingView.vue'
                     v-model.number="buyAmount"
                     @input="updateSpend"
                     class="form-control bg-transparent text-light border-0 ps-3"
-                    placeholder="Enter amount"
+                    placeholder="Enter quantity"
                   />
                   <img
                     v-if="crypto"
@@ -76,9 +76,9 @@ import TradingView from '../util/TradingView.vue'
               <div class="mb-3">
                 <label for="cryptoSpend" class="form-label text-light">You Spend (USD)</label>
                 <input
-                  type="number"
+                  type="text"
                   id="cryptoSpend"
-                  v-model.number="spendAmount"
+                  :value="formattedSpendAmount"
                   class="form-control bg-secondary text-light border-0"
                   placeholder="Auto-calculated"
                   readonly
@@ -88,6 +88,19 @@ import TradingView from '../util/TradingView.vue'
                 Buy {{ crypto ? crypto.crypto.unit_nom : 'crypto' }}
               </button>
             </form>
+          </div>
+        </div>
+
+        <div style="margin-top: 2rem" class="card shadow-sm bg-dark text-light">
+          <div class="card-body">
+            <h3 class="card-title text-light">You have</h3>
+            <h1 class="mb-0">
+              {{ quantite }}
+              <span style="font-size: large; color: #cbcbcb" class="unit">{{
+                crypto ? crypto.crypto.unit_nom : 'crypto'
+              }}</span>
+            </h1>
+            <button style="margin-top: 2rem" class="btn btn-warning w-100">Sell</button>
           </div>
         </div>
       </div>
@@ -102,10 +115,19 @@ export default {
     return {
       crypto: null,
       socket: null,
-      buyAmount: 0,
+      buyAmount: '',
       spendAmount: 0,
-      chartData: [],
+      quantite: null,
+      socketData: null,
     }
+  },
+  computed: {
+    formattedSpendAmount() {
+      return new Intl.NumberFormat('fr-FR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(this.spendAmount)
+    },
   },
   methods: {
     updateSpend() {
@@ -128,6 +150,12 @@ export default {
       }).format(value)
 
       return formatted.replace('$', '$ ')
+    },
+    formatAmount(amount) {
+      return new Intl.NumberFormat('fr-FR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(amount)
     },
     formatVariation(variation) {
       return (
@@ -157,21 +185,14 @@ export default {
         (crypto) => crypto.crypto.id_crypto === parseInt(this.getCryptoId()),
       )
 
+      this.socketData = selectedCrypto
+
       if (selectedCrypto) {
         this.crypto = {
           ...selectedCrypto,
           variation: Math.random() * 10 - 5,
           volume: Math.random() * 1000000000,
           capitalisation: selectedCrypto.valeur * 1000000,
-        }
-
-        this.chartData.push({
-          x: selectedCrypto.date_changement, // Ajout de la date pour l'axe X
-          y: selectedCrypto.valeur, // Valeur pour l'axe Y
-        })
-
-        if (this.chartData.length > 10) {
-          this.chartData.shift() // Garder uniquement les 10 dernières valeurs
         }
       } else {
         this.$router.push('/app/accueil')
@@ -206,6 +227,33 @@ export default {
 
         if (data.success) {
           this.updateCryptoData(data.data)
+          this.getUserWallet()
+        } else {
+          throw new Error(
+            data.message || 'Erreur lors de la récupération des informations utilisateur.',
+          )
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async getUserWallet() {
+      try {
+        const response = await fetch(
+          UtilClass.BACKEND_BASE_URL + '/crypto/user/wallet/' + this.getCryptoId(),
+          {
+            method: 'GET',
+            headers: {
+              Authorization: 'Bearer ' + UtilClass.getLocalToken(),
+              'Content-Type': 'application/json',
+            },
+          },
+        )
+
+        const data = await response.json()
+
+        if (data.success) {
+          this.quantite = data.data.quantite
         } else {
           throw new Error(
             data.message || 'Erreur lors de la récupération des informations utilisateur.',
