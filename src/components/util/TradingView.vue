@@ -1,7 +1,8 @@
 <template>
   <div id="chart" ref="chart" style="width: 100%; height: 400px"></div>
   <button style="margin-top: 1rem" class="btn btn-outline-secondary" @click="goToRealtime">
-    Go to Realtime
+    Go to realtime
+    <i class="bi bi-clock"></i>
   </button>
 </template>
 
@@ -57,6 +58,14 @@ export default {
           },
         )
         const data = await response.json()
+
+        if (!response.ok) {
+          if (UtilClass.isInvalidTokenError(data)) {
+            UtilClass.removeLocalToken()
+            this.$router.push('/app/login')
+          }
+        }
+
         const initialData = data.data.map((item) => {
           const originalDate = new Date(item.date_changement)
           const updatedDate = new Date(originalDate)
@@ -110,6 +119,13 @@ export default {
         priceLineVisible: true,
       })
 
+      setTimeout(() => {
+        const logo = document.getElementById('tv-attr-logo')
+        if (logo) {
+          logo.style.display = 'none'
+        }
+      }, 100)
+
       this.fetchInitialData()
 
       window.addEventListener('resize', this.handleResize)
@@ -145,8 +161,8 @@ export default {
 }
 
 .btn-outline-secondary {
-  --bs-btn-color: #cdcfd1;
-  --bs-btn-border-color: #d8d8d8;
+  --bs-btn-color: #e7e7e8;
+  --bs-btn-border-color: #e7e7e8;
   --bs-btn-hover-color: #fff;
   --bs-btn-hover-bg: transparent;
   --bs-btn-hover-border-color: #ffffff;
@@ -154,5 +170,9 @@ export default {
 
 #tv-attr-logo {
   display: none;
+}
+
+a#tv-attr-logo {
+  display: none !important;
 }
 </style>

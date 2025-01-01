@@ -36,7 +36,7 @@
         <!-- Champ Mot de Passe -->
         <div class="mb-3">
           <label for="password" class="form-label">Mot de passe</label>
-          <div class="input-group">
+          <div class="input-group" style="position: relative">
             <input
               :type="showPassword ? 'text' : 'password'"
               id="password"
@@ -44,18 +44,30 @@
               class="form-control"
               :class="{ 'is-invalid': errors.password }"
               placeholder="password"
-              style="background-color: transparent; padding: 13px"
+              style="
+                background-color: transparent;
+                padding: 13px;
+                border-radius: 0.375rem !important;
+              "
               autocomplete="off"
               required
             />
-            <button
-              type="button"
-              class="btn btn-outline-secondary hide"
+            <span
               @click="togglePasswordVisibility"
-              style="border-left: none"
+              class="hide"
+              style="
+                position: absolute;
+                right: 18px;
+                top: 50%;
+                transform: translateY(-50%);
+                height: 20px;
+              "
             >
-              <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
-            </button>
+              <i
+                style="cursor: pointer"
+                :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"
+              ></i>
+            </span>
           </div>
           <div class="invalid-feedback">
             {{ errors.password }}
@@ -551,11 +563,6 @@ input:-webkit-autofill {
 .email {
   font-weight: revert;
   color: #d3d3d3;
-}
-
-.hide:hover {
-  background-color: transparent !important;
-  background: transparent !important;
 }
 
 @media (max-width: 480px) {

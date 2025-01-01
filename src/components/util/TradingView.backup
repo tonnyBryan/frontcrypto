@@ -42,6 +42,13 @@ export default {
           },
         )
         const data = await response.json()
+        if (!response.ok) {
+          if (UtilClass.isInvalidTokenError(data)) {
+            UtilClass.removeLocalToken()
+            this.$router.push('/app/login')
+          }
+        }
+
         const initialData = data.data.map((item) => {
           const originalDate = new Date(item.date_changement)
           const updatedDate = new Date(originalDate)

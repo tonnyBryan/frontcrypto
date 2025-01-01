@@ -331,6 +331,13 @@ export default {
 
         const data = await response.json()
 
+        if (!response.ok) {
+          if (UtilClass.isInvalidTokenError(data)) {
+            UtilClass.removeLocalToken()
+            this.$router.push('/app/login')
+          }
+        }
+
         if (data.success) {
           this.user = data.data
           this.mycrypto = data.data.portefeuille.cryptoValeurs
@@ -394,11 +401,16 @@ export default {
           },
         })
 
+        const data = await response.json()
+
         if (!response.ok) {
+          if (UtilClass.isInvalidTokenError(data)) {
+            UtilClass.removeLocalToken()
+            this.$router.push('/app/login')
+            return
+          }
           throw new Error("Une erreur est survenue lors de l'appel à l'API.")
         }
-
-        const data = await response.json()
 
         UtilClass.endLoadedButton(trButton, 'Confirmer')
 
@@ -441,6 +453,13 @@ export default {
         )
 
         const data = await response.json()
+
+        if (!response.ok) {
+          if (UtilClass.isInvalidTokenError(data)) {
+            UtilClass.removeLocalToken()
+            this.$router.push('/app/login')
+          }
+        }
 
         if (data.success) {
           this.closeModalAcc()

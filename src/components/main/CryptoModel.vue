@@ -5,7 +5,7 @@ import TradingView from '../util/TradingView.vue'
 </script>
 
 <template>
-  <div class="container mt-4">
+  <div class="container mt-4 mb-4">
     <div class="row">
       <div class="col-lg-8 col-md-6 mb-4">
         <div v-if="crypto">
@@ -15,7 +15,7 @@ import TradingView from '../util/TradingView.vue'
           </div>
           <div class="crypto-details">
             <p class="mb-2" style="font-size: larger">
-              1 <span class="bold">{{ crypto.crypto.nom }}</span> est égal à
+              1 <span class="bold">{{ crypto.crypto.nom }}</span> equals to
               <strong class="bold" style="margin-right: 5px"
                 >{{ formatCurrency(crypto.valeur) }}
               </strong>
@@ -74,7 +74,7 @@ import TradingView from '../util/TradingView.vue'
               </div>
 
               <div class="mb-3">
-                <label for="cryptoSpend" class="form-label text-light">You Spend (USD)</label>
+                <label for="cryptoSpend" class="form-label text-light">You Spend</label>
                 <input
                   type="text"
                   id="cryptoSpend"
@@ -100,6 +100,10 @@ import TradingView from '../util/TradingView.vue'
                 crypto ? crypto.crypto.unit_nom : 'crypto'
               }}</span>
             </h1>
+            <h4>
+              <span style="color: rgb(203, 203, 203)">equals to </span
+              >{{ formatCurrency(estimation) }}
+            </h4>
             <button style="margin-top: 2rem" class="btn btn-warning w-100">Sell</button>
           </div>
         </div>
@@ -119,20 +123,25 @@ export default {
       spendAmount: 0,
       quantite: null,
       socketData: null,
+      estimation: null,
     }
   },
   computed: {
     formattedSpendAmount() {
-      return new Intl.NumberFormat('fr-FR', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(this.spendAmount)
+      return this.formatCurrency(this.spendAmount)
     },
   },
   methods: {
     updateSpend() {
       if (this.crypto && this.crypto.valeur) {
         this.spendAmount = (this.buyAmount * this.crypto.valeur).toFixed(2)
+      }
+    },
+    updateEstimation() {
+      console.log(this.crypto)
+      console.log(this.quantite)
+      if (this.crypto && this.quantite) {
+        this.estimation = this.crypto.valeur * this.quantite
       }
     },
     handleBuy() {
@@ -194,6 +203,9 @@ export default {
           volume: Math.random() * 1000000000,
           capitalisation: selectedCrypto.valeur * 1000000,
         }
+
+        this.updateSpend()
+        this.updateEstimation()
       } else {
         this.$router.push('/app/accueil')
       }
@@ -203,7 +215,6 @@ export default {
       this.socket.onmessage = (event) => {
         const data = JSON.parse(event.data)
         this.updateCryptoData(data)
-        this.updateSpend()
       }
       this.socket.onopen = () => {
         console.log('WebSocket connecté')
@@ -224,6 +235,13 @@ export default {
         })
 
         const data = await response.json()
+
+        if (!response.ok) {
+          if (UtilClass.isInvalidTokenError(data)) {
+            UtilClass.removeLocalToken()
+            this.$router.push('/app/login')
+          }
+        }
 
         if (data.success) {
           this.updateCryptoData(data.data)
@@ -252,8 +270,16 @@ export default {
 
         const data = await response.json()
 
+        if (!response.ok) {
+          if (UtilClass.isInvalidTokenError(data)) {
+            UtilClass.removeLocalToken()
+            this.$router.push('/app/login')
+          }
+        }
+
         if (data.success) {
           this.quantite = data.data.quantite
+          this.updateEstimation()
         } else {
           throw new Error(
             data.message || 'Erreur lors de la récupération des informations utilisateur.',

@@ -84,4 +84,8 @@ export default class UtilClass {
       maximumFractionDigits: 2,
     }).format(value)
   }
+
+  static isInvalidTokenError(body) {
+    return !body.data && body.message === 'false' && !body.success
+  }
 }

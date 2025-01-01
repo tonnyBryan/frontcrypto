@@ -166,6 +166,13 @@ export default {
 
         const data = await response.json()
 
+        if (!response.ok) {
+          if (UtilClass.isInvalidTokenError(data)) {
+            UtilClass.removeLocalToken()
+            this.$router.push('/app/login')
+          }
+        }
+
         if (data.success) {
           this.cryptos = data.data.map((item) => ({
             ...item,
