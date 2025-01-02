@@ -395,7 +395,7 @@ export default {
           const token = data.data.token
           UtilClass.setToken(token)
           this.closePinModal()
-          this.$router.push('/app/accueil')
+          this.$router.push('/app/v1')
         } else {
           if (data.error.code === 500) {
             this.errorMessagePin = data.message
@@ -437,7 +437,7 @@ export default {
           const token = data.data.token
           UtilClass.setToken(token)
           this.closeModalAcc()
-          this.$router.push('/app/accueil')
+          this.$router.push('/app/v1')
         } else {
           throw new Error(data.message || 'Clé de confirmation invalide.')
         }

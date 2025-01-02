@@ -7,10 +7,13 @@
     <nav :class="{ open: isMenuOpen }">
       <ul>
         <li>
-          <RouterLink to="/app/accueil/v1"><i class="bi bi-house-door"></i> Home</RouterLink>
+          <RouterLink to="/app/v1/home"><i class="bi bi-house-door"></i> Home</RouterLink>
         </li>
         <li>
-          <RouterLink to="/app/accueil/profil"
+          <RouterLink to="/app/v1/achat"><i class="bi bi-box"></i> Buy crypto</RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/app/v1/profil"
             ><i class="bi bi-person-circle"></i> My Profile</RouterLink
           >
         </li>

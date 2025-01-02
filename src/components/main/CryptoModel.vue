@@ -84,7 +84,7 @@ import TradingView from '../util/TradingView.vue'
                   readonly
                 />
               </div>
-              <button type="submit" class="btn btn-warning w-100">
+              <button style="font-weight: 700" type="submit" class="btn btn-warning w-100">
                 Buy {{ crypto ? crypto.crypto.unit_nom : 'crypto' }}
               </button>
             </form>
@@ -104,7 +104,9 @@ import TradingView from '../util/TradingView.vue'
               <span style="color: rgb(203, 203, 203)">equals to </span
               >{{ formatCurrency(estimation) }}
             </h4>
-            <button style="margin-top: 2rem" class="btn btn-warning w-100">Sell</button>
+            <button style="margin-top: 2rem; font-weight: 700" class="btn btn-warning w-100">
+              Sell
+            </button>
           </div>
         </div>
       </div>
@@ -113,6 +115,8 @@ import TradingView from '../util/TradingView.vue'
 </template>
 
 <script>
+import CryptoJS from 'crypto-js'
+
 export default {
   name: 'CryptoModel',
   data() {
@@ -138,15 +142,28 @@ export default {
       }
     },
     updateEstimation() {
-      console.log(this.crypto)
-      console.log(this.quantite)
       if (this.crypto && this.quantite) {
         this.estimation = this.crypto.valeur * this.quantite
       }
     },
     handleBuy() {
-      alert(`You are buying ${this.buyAmount} ${this.crypto.unit_nom} for $${this.spendAmount}`)
+      const data = {
+        quantity: this.buyAmount,
+        cryptoId: this.crypto.crypto.id_crypto,
+      }
+
+      const encryptedData = CryptoJS.AES.encrypt(
+        JSON.stringify(data),
+        UtilClass.SECRET_KET,
+      ).toString()
+
+      localStorage.setItem('cryptoData', encryptedData)
+
+      this.$router.push({
+        name: 'cryptoAchat',
+      })
     },
+
     getCryptoId() {
       return this.$route.query.id
     },
@@ -207,7 +224,7 @@ export default {
         this.updateSpend()
         this.updateEstimation()
       } else {
-        this.$router.push('/app/accueil')
+        this.$router.push('/app/v1')
       }
     },
     connectWebSocket() {

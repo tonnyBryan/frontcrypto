@@ -7,6 +7,7 @@ import NotFoundView from '@/views/404Page.vue'
 import HomeView from '@/components/main/HomeView.vue'
 import ProfilView from '@/components/main/ProfilView.vue'
 import CryptoModel from '@/components/main/CryptoModel.vue'
+import AchatCrypto from '@/components/main/AchatCrypto.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,14 +34,14 @@ const router = createRouter({
       ],
     },
     {
-      path: '/app/accueil',
+      path: '/app/v1',
       name: 'accueil',
       component: MainView,
-      redirect: '/app/accueil/v1',
+      redirect: '/app/v1/home',
       children: [
         {
-          path: 'v1',
-          name: 'v1',
+          path: 'home',
+          name: 'home',
           component: HomeView,
         },
         {
@@ -52,6 +53,11 @@ const router = createRouter({
           path: 'crypto',
           name: 'crypto',
           component: CryptoModel,
+        },
+        {
+          path: 'achat',
+          name: 'cryptoAchat',
+          component: AchatCrypto,
         },
       ],
     },

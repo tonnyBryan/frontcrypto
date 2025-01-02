@@ -21,6 +21,7 @@
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "chart.js": "^4.4.7",
+    "crypto-js": "^4.2.0",
     "font-awesome": "^4.7.0",
     "lightweight-charts": "^4.2.2",
     "primeicons": "^7.0.0",
@@ -45,6 +46,7 @@
     "prettier": "^3.3.3",
     "vite": "^6.0.1",
     "vite-plugin-vue-devtools": "^7.6.5",
-    "vitest": "^2.1.5"
+    "vitest": "^2.1.5",
+    "vue3-select-component": "^0.7.0"
   }
 }

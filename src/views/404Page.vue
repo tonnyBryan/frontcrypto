@@ -25,7 +25,7 @@
 export default {
   methods: {
     redirectToHome() {
-      this.$router.push('/app/accueil')
+      this.$router.push('/app/v1')
     },
   },
 }

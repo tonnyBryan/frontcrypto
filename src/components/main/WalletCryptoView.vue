@@ -149,7 +149,7 @@ export default {
   methods: {
     handleTransaction(type, crypto) {
       if (type === 'buy') {
-        this.$router.push('/app/accueil/crypto?id=' + crypto.crypto.id_crypto)
+        this.$router.push('/app/v1/crypto?id=' + crypto.crypto.id_crypto)
         return
       }
 

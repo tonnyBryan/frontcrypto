@@ -115,7 +115,6 @@ export default {
     reconnectWebSocket() {
       if (!this.reconnectInterval) {
         this.reconnectInterval = setInterval(() => {
-          console.log('Tentative de reconnexion WebSocket...')
           this.initializeWebSocket()
         }, 5000)
       }
@@ -152,7 +151,7 @@ export default {
       return `/assets/crypto/${logo}`
     },
     goToCryptoDetails(idCrypto) {
-      this.$router.push('/app/accueil/crypto?id=' + idCrypto)
+      this.$router.push('/app/v1/crypto?id=' + idCrypto)
     },
     async getLastCour() {
       try {
