@@ -147,6 +147,10 @@ export default {
       }
     },
     handleBuy() {
+      if (!this.buyAmount) {
+        this.buyAmount = 0
+      }
+
       const data = {
         quantity: this.buyAmount,
         cryptoId: this.crypto.crypto.id_crypto,

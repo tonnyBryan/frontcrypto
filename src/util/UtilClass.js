@@ -50,7 +50,7 @@ export default class UtilClass {
   static loadButton(button) {
     button.innerHTML = `
       <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      Chargement...
+      loading...
     `
     button.disabled = true
   }
@@ -75,6 +75,15 @@ export default class UtilClass {
       progressBar: true,
       timeOut: 5000,
       positionClass: 'toast-top-right',
+    })
+  }
+
+  static showSuccessToastDelay(message, delay) {
+    toastr.success(message, 'Succès', {
+      closeButton: true,
+      progressBar: true,
+      timeOut: delay,
+      positionClass: 'toast-top-center',
     })
   }
 

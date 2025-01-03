@@ -100,29 +100,30 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: url(bg1.jpg);
-  background-attachment: fixed; /* L'image reste fixe */
+  /* background-image: url(bg1.jpg); */
+  background-attachment: fixed;
+  background-color: #181a20;
 }
 
-/* Cible toute la barre de défilement */
+.nav {
+  background-color: #181a20;
+}
+
 ::-webkit-scrollbar {
-  width: 6px; /* Largeur pour un conteneur vertical */
-  height: 6px; /* Hauteur pour un conteneur horizontal */
+  width: 6px;
+  height: 6px;
 }
 
-/* Style de la piste (le fond de la barre de défilement) */
 ::-webkit-scrollbar-track {
   background: transparent;
   border-radius: 10px;
 }
 
-/* Style du pouce (la partie mobile que l'utilisateur fait glisser) */
 ::-webkit-scrollbar-thumb {
-  background: #302e2e; /* Couleur du pouce */
+  background: #302e2e;
   border-radius: 10px;
 }
 
-/* Ajouter un effet au survol de la souris sur le pouce */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Couleur plus foncée au survol */
+  background: #555;
 }

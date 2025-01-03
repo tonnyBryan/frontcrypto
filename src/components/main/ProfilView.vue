@@ -3,7 +3,11 @@ import LoaderV from '../util/LoaderV.vue'
 </script>
 
 <template>
-  <div style="padding-top: 2rem; padding-bottom: 3rem; overflow-x: hidden" v-if="user">
+  <div
+    class="container-fluid"
+    style="padding-top: 2rem; padding-bottom: 3rem; overflow-x: hidden"
+    v-if="user"
+  >
     <div class="row">
       <div class="col-md-4">
         <div class="row m-1 d-flex align-items-center">
@@ -32,13 +36,13 @@ import LoaderV from '../util/LoaderV.vue'
                 @click="openTransactionModal('depot')"
                 class="btn btn-secondary btn-sm bt bt-depot"
               >
-                <i class="bi bi-arrow-bar-down"></i> Dépôt
+                <i class="bi bi-arrow-bar-up"></i> Dépôt
               </button>
               <button
                 @click="openTransactionModal('retrait')"
                 class="btn btn-secondary btn-sm bt bt-retrait"
               >
-                <i class="bi bi-arrow-bar-up"></i> Retrait
+                <i class="bi bi-arrow-bar-down"></i> Retrait
               </button>
             </div>
           </div>
@@ -91,7 +95,7 @@ import LoaderV from '../util/LoaderV.vue'
   >
     <div
       class="card p-5 shadow-lg cd"
-      style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+      style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
     >
       <button
         class="btn-close position-absolute"
@@ -148,7 +152,7 @@ import LoaderV from '../util/LoaderV.vue'
   >
     <div
       class="card p-5 text-center shadow-lg cd"
-      style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+      style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
     >
       <button
         class="btn-close position-absolute"
@@ -226,7 +230,7 @@ import LoaderV from '../util/LoaderV.vue'
   >
     <div
       class="card p-5 shadow-lg cd"
-      style="width: 40rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+      style="width: 40rem; background-color: #1e2329; border-radius: 15px; color: #fff"
     >
       <button
         class="btn-close position-absolute"
@@ -566,7 +570,7 @@ export default {
 }
 
 .center {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

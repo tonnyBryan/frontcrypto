@@ -1,9 +1,17 @@
 <template>
   <div class="row justify-content-center" style="margin: 0; margin-top: 2rem">
-    <div class="col-12 col-md-4">
-      <div class="card bg-dark text-light cd" style="padding: 1rem; border: solid 1px #4b4b4b">
+    <div class="col-12 col-md-7 col-lg-5">
+      <div class="card bg-dark text-light cd1" style="padding: 1rem; border: solid 1px #4b4b4b">
         <div class="card-body">
-          <h3 class="card-title" style="margin-bottom: 25px; color: #dadada">Buy Crypto</h3>
+          <div>
+            <h3 class="card-title" style="margin-bottom: 25px; color: #dadada">Buy Crypto</h3>
+            <h3 class="card-title" style="margin-bottom: 25px; color: #dadada">
+              <i class="bi bi-credit-card"></i> :
+              <span v-if="user" style="color: #fff; font-weight: 700">{{
+                formatCurrency(user.monnaie)
+              }}</span>
+            </h3>
+          </div>
 
           <div v-if="step === 1">
             <form @submit.prevent="nextStep">
@@ -58,9 +66,11 @@
                       class="form-control"
                       id="quantity"
                       v-model="quantity"
-                      min="1"
+                      min="0.01"
+                      step="0.01"
                       required
                       name="qtty"
+                      autocomplete="off"
                       @input="updateSpend"
                     />
                   </div>
@@ -79,7 +89,7 @@
                   </div>
                 </div>
               </div>
-              <div class="mb-3 dip">
+              <div class="mb-3 dip" id="div_dip">
                 <label for="spend" class="form-label">Spend</label>
                 <input
                   type="text"
@@ -92,10 +102,11 @@
                 />
               </div>
               <button
+                id="buyBtn"
                 type="submit"
                 class="btn btn-warning w-100"
                 style="margin-top: 3rem; font-size: larger; font-weight: 700"
-                :disabled="!cryptoOptions || quantity === 0 || !quantity"
+                :disabled="!canBuy"
               >
                 Buy (need email validation)
               </button>
@@ -106,6 +117,57 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal pour la confirmation du compte -->
+  <div
+    class="modal d-flex justify-content-center align-items-center"
+    v-if="showConfirmationModal"
+    style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1050"
+  >
+    <div
+      class="card p-5 text-center shadow-lg cd"
+      style="width: 35rem; background-color: #1e2329 !important; border-radius: 15px; color: #fff"
+    >
+      <button
+        class="btn-close position-absolute"
+        style="
+          top: 10px;
+          right: 10px;
+          color: white;
+          background-color: transparent;
+          font-size: 1.5rem;
+        "
+        @click="closeModalAcc"
+      ></button>
+      <h5 class="mb-4 email" style="text-align: left; font-size: x-large">Confirmation Requise</h5>
+
+      <p style="margin-top: 5rem; text-align: left">
+        A code has been sent to your email address. Please check your inbox and enter the code to
+        proceed.
+      </p>
+      <input
+        type="text"
+        v-model="confirmationKey"
+        class="form-control mb-3 text-center inp2"
+        style="background-color: #444; color: #fff; border: none; border-radius: 5px"
+        placeholder="Entrez la clé de confirmation"
+      />
+      <div v-if="errorMessageKey" class="alert alert-danger" role="alert">
+        {{ errorMessageKey }}
+      </div>
+      <button
+        id="confirmAccBtn"
+        class="btn btn-warning w-100 fw-bold"
+        style="font-size: 1.2rem"
+        @click="confirmAccount"
+      >
+        Validate
+      </button>
+      <p class="text-muted">
+        or, vous pouvez juste appeler dans postman l'url envoyé à votre email
+      </p>
     </div>
   </div>
 </template>
@@ -130,6 +192,16 @@ export default {
     formattedPriceOne() {
       return this.formatCurrency(this.priceOne)
     },
+    canBuy() {
+      return (
+        this.cryptoOptions &&
+        this.quantity !== 0 &&
+        this.quantity &&
+        this.selectedCrypto &&
+        this.user &&
+        this.estimation <= this.user.monnaie
+      )
+    },
   },
   data() {
     return {
@@ -138,16 +210,23 @@ export default {
       step: 1,
       selectedCrypto: ref(null),
       quantity: 0,
-      confirmationKey: '',
       cryptoOptions: null,
 
       estimation: 0,
       cryptoList: null,
 
       priceOne: 0,
+
+      showConfirmationModal: false,
+      confirmationKey: '',
+      errorMessageKey: '',
+
+      user: null,
     }
   },
   async mounted() {
+    window.scrollTo(0, 0)
+    this.getUser()
     await this.fetchCryptoOptions()
     await this.connectWebSocket()
     try {
@@ -175,6 +254,13 @@ export default {
   methods: {
     updateSpend() {
       this.estimation = this.priceOne * this.quantity
+
+      const div = document.getElementById('div_dip')
+      if (this.estimation > this.user.monnaie) {
+        div.style.borderColor = '#922121'
+      } else {
+        div.style.borderColor = '#686868'
+      }
     },
     handleChange(id_crypto) {
       const id = id_crypto
@@ -269,7 +355,144 @@ export default {
         console.error(error)
       }
     },
-    nextStep() {},
+    async nextStep() {
+      if (this.estimation > this.user.monnaie) {
+        return
+      }
+
+      const trButton = document.getElementById('buyBtn')
+      UtilClass.loadButton(trButton)
+
+      try {
+        const response = await fetch(UtilClass.BACKEND_BASE_URL + '/crypto/user/vdrequest', {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + UtilClass.getLocalToken(),
+            'Content-Type': 'application/json',
+          },
+        })
+
+        const data = await response.json()
+
+        if (!response.ok) {
+          if (UtilClass.isInvalidTokenError(data)) {
+            UtilClass.removeLocalToken()
+            this.$router.push('/app/login')
+            return
+          }
+          throw new Error("Une erreur est survenue lors de l'appel à l'API.")
+        }
+
+        UtilClass.endLoadedButton(trButton, 'Buy (need email validation)')
+
+        if (!data.success) {
+          UtilClass.showErrorToast(data.message || 'Erreur inconnue')
+          return
+        }
+        this.showConfirmationModal = true
+      } catch (error) {
+        UtilClass.endLoadedButton(trButton, 'Buy (need email validation)')
+        UtilClass.showErrorToast("Une erreur s'est produite. Veuillez réessayer plus tard.")
+        console.error(error)
+      }
+    },
+    closeModalAcc() {
+      this.confirmationKey = ''
+      this.errorMessageKey = ''
+      this.showConfirmationModal = false
+    },
+    clearForm() {
+      this.selectedCrypto = null
+      this.priceOne = 0
+      this.quantity = 0
+    },
+    async confirmAccount() {
+      if (!this.confirmationKey) {
+        this.errorMessageKey = 'Veuillez entrer une clé de confirmation.'
+        return
+      }
+
+      const confirmAccButton = document.getElementById('confirmAccBtn')
+      UtilClass.loadButton(confirmAccButton)
+      try {
+        const response = await fetch(UtilClass.BACKEND_BASE_URL + '/crypto/user/buy', {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer ' + UtilClass.getLocalToken(),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            idCrypto: this.selectedCrypto,
+            quantity: this.quantity,
+            key: this.confirmationKey,
+          }),
+        })
+
+        const data = await response.json()
+
+        if (!response.ok) {
+          if (UtilClass.isInvalidTokenError(data)) {
+            UtilClass.removeLocalToken()
+            this.$router.push('/app/login')
+          }
+        }
+
+        UtilClass.endLoadedButton(confirmAccButton, 'Validate')
+
+        if (data.success) {
+          await this.getUser()
+          this.closeModalAcc()
+          this.clearForm()
+
+          const finded = this.cryptoList.find(
+            (crypto) => crypto.crypto.id_crypto === parseInt(this.selectedCrypto),
+          )
+          console.log(finded)
+          const message = `
+            <div style="display: flex; align-items: center;">
+              <img src="/assets/crypto/${finded.crypto.logo}" alt="Logo" style="width: 30px; height: 30px; margin-right: 10px;">
+              <span>+ ${this.quantity}</span>
+            </div>
+          `
+          UtilClass.showSuccessToastDelay(message, 100000)
+        } else {
+          throw new Error(data.message || 'Clé de confirmation invalide.')
+        }
+      } catch (error) {
+        UtilClass.endLoadedButton(confirmAccButton, 'Validate')
+        this.errorMessageKey = error.message
+      }
+    },
+    async getUser() {
+      try {
+        const response = await fetch(UtilClass.BACKEND_BASE_URL + '/crypto/user/sm', {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + UtilClass.getLocalToken(),
+            'Content-Type': 'application/json',
+          },
+        })
+
+        const data = await response.json()
+
+        if (!response.ok) {
+          if (UtilClass.isInvalidTokenError(data)) {
+            UtilClass.removeLocalToken()
+            this.$router.push('/app/login')
+          }
+        }
+
+        if (data.success) {
+          this.user = data.data
+        } else {
+          throw new Error(
+            data.message || 'Erreur lors de la récupération des informations utilisateur.',
+          )
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
   },
 }
 </script>
@@ -357,6 +580,8 @@ input[type='number'] {
 
 :deep(.search-input) {
   color: #fff !important;
+  position: absolute !important;
+  width: 100% !important;
 }
 
 :deep(.no-results) {
@@ -383,6 +608,11 @@ input[type='number'] {
   font-weight: 700;
 }
 
+.inp2::placeholder {
+  color: #888;
+  opacity: 1;
+}
+
 .dip:focus-within {
   border-color: #ffc107;
 }
@@ -402,7 +632,7 @@ input[type='number'] {
     font-size: 1rem !important;
   }
 
-  .cd {
+  .cd1 {
     border: none !important;
     padding: 0 !important;
   }

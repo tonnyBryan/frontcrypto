@@ -4,11 +4,10 @@ import LoaderV from './LoaderV.vue'
 </script>
 
 <template>
-  <div class="table-container">
-    <div v-if="cryptos.length === 0 || !isConnected" class="loading-overlay">
-      <LoaderV></LoaderV>
-    </div>
-
+  <div v-if="cryptos.length === 0 || !isConnected" class="loading-overlay">
+    <LoaderV></LoaderV>
+  </div>
+  <div class="table-container" style="min-height: 70vh">
     <div class="table-responsive">
       <table class="table table-dark tba">
         <thead>
@@ -300,7 +299,7 @@ button.icon-button:hover {
 }
 
 .loading-overlay {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

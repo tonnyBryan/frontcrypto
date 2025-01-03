@@ -91,7 +91,7 @@
   >
     <div
       class="card p-5 text-center shadow-lg cd"
-      style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+      style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
     >
       <button
         class="btn-close position-absolute"

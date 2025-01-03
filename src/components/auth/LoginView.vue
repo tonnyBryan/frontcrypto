@@ -97,7 +97,7 @@
     >
       <div
         class="card p-5 text-center shadow-lg cd"
-        style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+        style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
       >
         <button
           class="btn-close position-absolute"
@@ -163,7 +163,7 @@
     >
       <div
         class="card p-5 text-center shadow-lg cd"
-        style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+        style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
       >
         <button
           class="btn-close position-absolute"
@@ -220,7 +220,7 @@
     >
       <div
         class="card p-5 text-center shadow-lg cd"
-        style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+        style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
       >
         <button
           class="btn-close position-absolute"
@@ -545,15 +545,15 @@ input {
 }
 
 input:focus {
-  color: #ffffff; /* Texte jaune vif au focus */
-  border-color: #ffc107; /* Bordure bleu clair au focus */
-  outline: none; /* Enlever le contour par défaut */
-  box-shadow: none; /* Enlever le contour bleu spécifique à Bootstrap */
+  color: #ffffff;
+  border-color: #ffc107;
+  outline: none;
+  box-shadow: none;
 }
 
 input:-webkit-autofill {
-  background-color: #1e1e1e !important; /* Remettre un fond sombre */
-  color: #c7c6c6 !important; /* Garder le texte en blanc */
+  background-color: #1e1e1e !important;
+  color: #c7c6c6 !important;
 }
 
 .border-red {

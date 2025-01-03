@@ -63,7 +63,7 @@
   >
     <div
       class="card p-5 text-center shadow-lg"
-      style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+      style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
     >
       <button
         class="btn-close position-absolute"
@@ -110,6 +110,7 @@
 
 <script>
 import UtilClass from '@/util/UtilClass'
+import CryptoJS from 'crypto-js'
 
 export default {
   props: {
@@ -149,7 +150,21 @@ export default {
   methods: {
     handleTransaction(type, crypto) {
       if (type === 'buy') {
-        this.$router.push('/app/v1/crypto?id=' + crypto.crypto.id_crypto)
+        const data = {
+          quantity: 0,
+          cryptoId: crypto.crypto.id_crypto,
+        }
+        const encryptedData = CryptoJS.AES.encrypt(
+          JSON.stringify(data),
+          UtilClass.SECRET_KET,
+        ).toString()
+
+        localStorage.setItem('cryptoData', encryptedData)
+
+        this.$router.push({
+          name: 'cryptoAchat',
+        })
+
         return
       }
 

@@ -1,7 +1,9 @@
 <template>
   <Head></Head>
-  <RouterView />
-  <!-- Bouton pour remonter -->
+  <div style="min-height: 80vh; position: relative">
+    <RouterView />
+  </div>
+  <Footer></Footer>
   <button
     v-if="showScrollButton"
     class="scroll-to-top"
@@ -16,6 +18,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Head from '@/components/main/HeaderView.vue'
+import Footer from '@/components/main/FooterView.vue'
 import UtilClass from '@/util/UtilClass'
 
 const router = useRouter()

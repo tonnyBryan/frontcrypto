@@ -7,13 +7,17 @@
     <nav :class="{ open: isMenuOpen }">
       <ul>
         <li>
-          <RouterLink to="/app/v1/home"><i class="bi bi-house-door"></i> Home</RouterLink>
+          <RouterLink to="/app/v1/home" @click="closeMenu"
+            ><i class="bi bi-house-door"></i> Home</RouterLink
+          >
         </li>
         <li>
-          <RouterLink to="/app/v1/achat"><i class="bi bi-box"></i> Buy crypto</RouterLink>
+          <RouterLink to="/app/v1/achat" @click="closeMenu"
+            ><i class="bi bi-box"></i> Buy crypto</RouterLink
+          >
         </li>
         <li>
-          <RouterLink to="/app/v1/profil"
+          <RouterLink to="/app/v1/profil" @click="closeMenu"
             ><i class="bi bi-person-circle"></i> My Profile</RouterLink
           >
         </li>
@@ -40,6 +44,9 @@ export default {
     }
   },
   methods: {
+    closeMenu() {
+      this.isMenuOpen = false
+    },
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen
     },
