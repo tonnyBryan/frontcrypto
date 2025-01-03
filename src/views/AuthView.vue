@@ -90,4 +90,10 @@ nav {
   padding: 1rem 0;
   margin-top: 1rem;
 }
+
+@media (max-width: 480px) {
+  header {
+    margin-top: 2rem;
+  }
+}
 </style>

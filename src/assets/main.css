@@ -21,12 +21,6 @@ a {
   color: #ffc107;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(63, 100%, 37%, 0.2);
-  }
-}
-
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -36,4 +30,13 @@ input[type='number']::-webkit-outer-spin-button {
 /* Supprimer les flèches sur Firefox */
 input[type='number'] {
   -moz-appearance: textfield;
+}
+
+@media (max-width: 768px) {
+  .cd {
+    height: 100%;
+    border-radius: unset !important;
+    padding: 1rem !important;
+    padding-top: 4rem !important;
+  }
 }

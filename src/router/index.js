@@ -7,14 +7,7 @@ import NotFoundView from '@/views/404Page.vue'
 import HomeView from '@/components/main/HomeView.vue'
 import ProfilView from '@/components/main/ProfilView.vue'
 import CryptoModel from '@/components/main/CryptoModel.vue'
-
-// modification Voahary
 import AchatCrypto from '@/components/main/AchatCrypto.vue'
-import VenteCrypto from '@/components/main/VenteCrypto.vue'
-import UserCrypto from '@/components/main/UserCrypto.vue'
-import TransactionCrypto from '@/components/main/TransactionCrypto.vue'
-// end of modification import Voahary
-
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -41,14 +34,14 @@ const router = createRouter({
       ],
     },
     {
-      path: '/app/accueil',
+      path: '/app/v1',
       name: 'accueil',
       component: MainView,
-      redirect: '/app/accueil/v1',
+      redirect: '/app/v1/home',
       children: [
         {
-          path: 'v1',
-          name: 'v1',
+          path: 'home',
+          name: 'home',
           component: HomeView,
         },
         {
@@ -61,22 +54,18 @@ const router = createRouter({
           name: 'crypto',
           component: CryptoModel,
         },
+        {
+          path: 'achat',
+          name: 'cryptoAchat',
+          component: AchatCrypto,
+        },
       ],
-    }, 
+    },
     {
       path: '/:catchAll(.*)',
       name: 'NotFound',
       component: NotFoundView,
     },
-
-    // modification Voahary
-
-    { path: '/achat', name: 'AchatCrypto', component: AchatCrypto },
-    { path: '/vente', name: 'VenteCrypto', component: VenteCrypto },
-    { path: '/user-crypto', name: 'UserCrypto', component: UserCrypto },
-    { path: '/crypto-transaction', name: 'CryptoTransaction', component: TransactionCrypto },
-
-    // End of modification chemin Voahary
   ],
 })
 

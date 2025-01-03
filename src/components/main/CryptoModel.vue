@@ -1,14 +1,12 @@
 <script setup>
 import LoaderV from '../util/LoaderV.vue'
-import ChartView from '../util/ChartView.vue'
 import UtilClass from '@/util/UtilClass'
-// ne touche pas ici
+import TradingView from '../util/TradingView.vue'
 </script>
 
 <template>
-  <div class="container mt-4">
+  <div class="container mt-4 mb-4">
     <div class="row">
-      <!-- Section gauche : détails de la crypto et graphique -->
       <div class="col-lg-8 col-md-6 mb-4">
         <div v-if="crypto">
           <div class="crypto-header d-flex align-items-center mb-3">
@@ -17,7 +15,7 @@ import UtilClass from '@/util/UtilClass'
           </div>
           <div class="crypto-details">
             <p class="mb-2" style="font-size: larger">
-              1 <span class="bold">{{ crypto.crypto.nom }}</span> est égal à
+              1 <span class="bold">{{ crypto.crypto.nom }}</span> equals to
               <strong class="bold" style="margin-right: 5px"
                 >{{ formatCurrency(crypto.valeur) }}
               </strong>
@@ -31,9 +29,8 @@ import UtilClass from '@/util/UtilClass'
               </span>
             </p>
           </div>
-          <!-- Graphique (vide pour l'instant) -->
           <div class="crypto-chart">
-            <ChartView :data="chartData" />
+            <TradingView :idCrypto="getCryptoId()" :updatedCryptoData="socketData"></TradingView>
           </div>
         </div>
 
@@ -51,31 +48,65 @@ import UtilClass from '@/util/UtilClass'
             </h3>
             <form @submit.prevent="handleBuy">
               <div class="mb-3">
-                <label for="cryptoBuy" class="form-label text-light"> You Buy </label>
-                <input
-                  type="number"
-                  id="cryptoBuy"
-                  v-model.number="buyAmount"
-                  @input="updateSpend"
-                  class="form-control bg-secondary text-light border-0"
-                  placeholder="Enter amount"
-                />
+                <label for="cryptoBuy" class="form-label text-light">You Buy</label>
+                <div class="position-relative">
+                  <input
+                    type="number"
+                    id="cryptoBuy"
+                    v-model.number="buyAmount"
+                    @input="updateSpend"
+                    class="form-control bg-transparent text-light border-0 ps-3"
+                    placeholder="Enter quantity"
+                  />
+                  <img
+                    v-if="crypto"
+                    :src="getLogoUrl(crypto.crypto.logo)"
+                    alt="Logo"
+                    style="
+                      position: absolute;
+                      right: 18px;
+                      top: 50%;
+                      transform: translateY(-50%);
+                      height: 20px;
+                    "
+                  />
+                </div>
               </div>
+
               <div class="mb-3">
-                <label for="cryptoSpend" class="form-label text-light">You Spend (USD)</label>
+                <label for="cryptoSpend" class="form-label text-light">You Spend</label>
                 <input
-                  type="number"
+                  type="text"
                   id="cryptoSpend"
-                  v-model.number="spendAmount"
+                  :value="formattedSpendAmount"
                   class="form-control bg-secondary text-light border-0"
                   placeholder="Auto-calculated"
                   readonly
                 />
               </div>
-              <button type="submit" class="btn btn-warning w-100">
+              <button style="font-weight: 700" type="submit" class="btn btn-warning w-100">
                 Buy {{ crypto ? crypto.crypto.unit_nom : 'crypto' }}
               </button>
             </form>
+          </div>
+        </div>
+
+        <div style="margin-top: 2rem" class="card shadow-sm bg-dark text-light">
+          <div class="card-body">
+            <h3 class="card-title text-light">You have</h3>
+            <h1 class="mb-0">
+              {{ quantite }}
+              <span style="font-size: large; color: #cbcbcb" class="unit">{{
+                crypto ? crypto.crypto.unit_nom : 'crypto'
+              }}</span>
+            </h1>
+            <h4>
+              <span style="color: rgb(203, 203, 203)">equals to </span
+              >{{ formatCurrency(estimation) }}
+            </h4>
+            <button style="margin-top: 2rem; font-weight: 700" class="btn btn-warning w-100">
+              Sell
+            </button>
           </div>
         </div>
       </div>
@@ -84,16 +115,25 @@ import UtilClass from '@/util/UtilClass'
 </template>
 
 <script>
+import CryptoJS from 'crypto-js'
+
 export default {
   name: 'CryptoModel',
   data() {
     return {
       crypto: null,
       socket: null,
-      buyAmount: 0, // Quantité de crypto à acheter
-      spendAmount: 0, // Montant dépensé calculé
-      chartData: [], // Données du graphique en temps réel
+      buyAmount: '',
+      spendAmount: 0,
+      quantite: null,
+      socketData: null,
+      estimation: null,
     }
+  },
+  computed: {
+    formattedSpendAmount() {
+      return this.formatCurrency(this.spendAmount)
+    },
   },
   methods: {
     updateSpend() {
@@ -101,9 +141,29 @@ export default {
         this.spendAmount = (this.buyAmount * this.crypto.valeur).toFixed(2)
       }
     },
-    handleBuy() {
-      alert(`You are buying ${this.buyAmount} ${this.crypto.unit_nom} for $${this.spendAmount}`)
+    updateEstimation() {
+      if (this.crypto && this.quantite) {
+        this.estimation = this.crypto.valeur * this.quantite
+      }
     },
+    handleBuy() {
+      const data = {
+        quantity: this.buyAmount,
+        cryptoId: this.crypto.crypto.id_crypto,
+      }
+
+      const encryptedData = CryptoJS.AES.encrypt(
+        JSON.stringify(data),
+        UtilClass.SECRET_KET,
+      ).toString()
+
+      localStorage.setItem('cryptoData', encryptedData)
+
+      this.$router.push({
+        name: 'cryptoAchat',
+      })
+    },
+
     getCryptoId() {
       return this.$route.query.id
     },
@@ -116,6 +176,12 @@ export default {
       }).format(value)
 
       return formatted.replace('$', '$ ')
+    },
+    formatAmount(amount) {
+      return new Intl.NumberFormat('fr-FR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(amount)
     },
     formatVariation(variation) {
       return (
@@ -145,6 +211,8 @@ export default {
         (crypto) => crypto.crypto.id_crypto === parseInt(this.getCryptoId()),
       )
 
+      this.socketData = selectedCrypto
+
       if (selectedCrypto) {
         this.crypto = {
           ...selectedCrypto,
@@ -153,14 +221,10 @@ export default {
           capitalisation: selectedCrypto.valeur * 1000000,
         }
 
-        this.chartData.push({
-          x: selectedCrypto.date_changement, // Ajout de la date pour l'axe X
-          y: selectedCrypto.valeur, // Valeur pour l'axe Y
-        })
-
-        if (this.chartData.length > 10) {
-          this.chartData.shift() // Garder uniquement les 10 dernières valeurs
-        }
+        this.updateSpend()
+        this.updateEstimation()
+      } else {
+        this.$router.push('/app/v1')
       }
     },
     connectWebSocket() {
@@ -171,9 +235,75 @@ export default {
       }
       this.socket.onopen = () => {
         console.log('WebSocket connecté')
+        this.getLastCour()
       }
       this.socket.onclose = () => {
         console.log('WebSocket déconnecté')
+      }
+    },
+    async getLastCour() {
+      try {
+        const response = await fetch(UtilClass.BACKEND_BASE_URL + '/crypto/cour', {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + UtilClass.getLocalToken(),
+            'Content-Type': 'application/json',
+          },
+        })
+
+        const data = await response.json()
+
+        if (!response.ok) {
+          if (UtilClass.isInvalidTokenError(data)) {
+            UtilClass.removeLocalToken()
+            this.$router.push('/app/login')
+          }
+        }
+
+        if (data.success) {
+          this.updateCryptoData(data.data)
+          this.getUserWallet()
+        } else {
+          throw new Error(
+            data.message || 'Erreur lors de la récupération des informations utilisateur.',
+          )
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async getUserWallet() {
+      try {
+        const response = await fetch(
+          UtilClass.BACKEND_BASE_URL + '/crypto/user/wallet/' + this.getCryptoId(),
+          {
+            method: 'GET',
+            headers: {
+              Authorization: 'Bearer ' + UtilClass.getLocalToken(),
+              'Content-Type': 'application/json',
+            },
+          },
+        )
+
+        const data = await response.json()
+
+        if (!response.ok) {
+          if (UtilClass.isInvalidTokenError(data)) {
+            UtilClass.removeLocalToken()
+            this.$router.push('/app/login')
+          }
+        }
+
+        if (data.success) {
+          this.quantite = data.data.quantite
+          this.updateEstimation()
+        } else {
+          throw new Error(
+            data.message || 'Erreur lors de la récupération des informations utilisateur.',
+          )
+        }
+      } catch (error) {
+        console.error(error)
       }
     },
   },

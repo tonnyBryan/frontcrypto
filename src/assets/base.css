@@ -1,4 +1,3 @@
-/* color palette from <https://github.com/vuejs/theme> */
 :root {
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
@@ -19,9 +18,23 @@
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+
+  --vs-input-bg: transparent !important;
+  --vs-menu-bg: black !important;
+  --vs-option-bg: black !important;
+  --vs-option-text-color: #fff !important;
+  --vs-spinner-color: #fff !important;
+  --vs-input-placeholder-color: #fff !important;
+  --vs-input-outline: #ffc107 !important;
+  --vs-icon-color: #d2d2d2 !important;
+  --vs-option-selected-color: #fff !important;
+  --vs-option-hover-color: rgba(255, 255, 255, 0.1) !important;
+  --vs-option-focused-color: var(--vs-option-hover-color) !important;
+  --vs-option-selected-color: rgba(255, 255, 255, 0.2) !important;
+  --vs-padding: 1.5rem !important;
+  --vs-option-padding: 1rem !important;
 }
 
-/* semantic color variables for this project */
 :root {
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);

@@ -9,7 +9,6 @@ import LoaderV from './LoaderV.vue'
       <LoaderV></LoaderV>
     </div>
 
-    <!-- Ajout de la classe table-responsive pour la table -->
     <div class="table-responsive">
       <table class="table table-dark tba">
         <thead>
@@ -53,15 +52,7 @@ import LoaderV from './LoaderV.vue'
                 data-bs-placement="top"
                 title="Voir les détails"
               >
-                <i class="fas fa-eye"></i>
-              </button>
-              <button
-                class="btn btn-sm btn-secondary icon-button"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                title="Ajouter aux favoris"
-              >
-                <i class="fas fa-heart"></i>
+                <i class="bi bi-graph-up-arrow"></i>
               </button>
             </td>
           </tr>
@@ -79,6 +70,7 @@ export default {
       cryptos: [],
       isConnected: false,
       reconnectInterval: null,
+      onclose: false,
     }
   },
   methods: {
@@ -101,6 +93,8 @@ export default {
       socket.onopen = () => {
         console.log('WebSocket connecté')
         this.isConnected = true
+
+        this.getLastCour()
         if (this.reconnectInterval) {
           clearInterval(this.reconnectInterval)
           this.reconnectInterval = null
@@ -111,7 +105,9 @@ export default {
         console.log('WebSocket déconnecté')
         this.isConnected = false
         this.cryptos = []
-        this.reconnectWebSocket()
+        if (!this.onclose) {
+          this.reconnectWebSocket()
+        }
       }
 
       this.socket = socket
@@ -119,7 +115,6 @@ export default {
     reconnectWebSocket() {
       if (!this.reconnectInterval) {
         this.reconnectInterval = setInterval(() => {
-          console.log('Tentative de reconnexion WebSocket...')
           this.initializeWebSocket()
         }, 5000)
       }
@@ -156,7 +151,42 @@ export default {
       return `/assets/crypto/${logo}`
     },
     goToCryptoDetails(idCrypto) {
-      this.$router.push('/app/accueil/crypto?id=' + idCrypto)
+      this.$router.push('/app/v1/crypto?id=' + idCrypto)
+    },
+    async getLastCour() {
+      try {
+        const response = await fetch(UtilClass.BACKEND_BASE_URL + '/crypto/cour', {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + UtilClass.getLocalToken(),
+            'Content-Type': 'application/json',
+          },
+        })
+
+        const data = await response.json()
+
+        if (!response.ok) {
+          if (UtilClass.isInvalidTokenError(data)) {
+            UtilClass.removeLocalToken()
+            this.$router.push('/app/login')
+          }
+        }
+
+        if (data.success) {
+          this.cryptos = data.data.map((item) => ({
+            ...item,
+            variation: Math.random() * 10 - 5,
+            volume: Math.random() * 1000000000,
+            capitalisation: item.valeur * 1000000,
+          }))
+        } else {
+          throw new Error(
+            data.message || 'Erreur lors de la récupération des informations utilisateur.',
+          )
+        }
+      } catch (error) {
+        console.error(error)
+      }
     },
   },
   mounted() {
@@ -166,9 +196,10 @@ export default {
     if (this.socket) {
       this.socket.close()
     }
-    if (this.reconnectInterval) {
-      clearInterval(this.reconnectInterval)
-    }
+
+    this.onclose = true
+    clearInterval(this.reconnectInterval)
+    this.reconnectInterval = null
   },
 }
 </script>

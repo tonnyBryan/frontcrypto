@@ -2,7 +2,13 @@
   <div class="container d-flex justify-content-center align-items-center vh-100">
     <div
       class="card p-4 shadow lg"
-      style="width: 22rem; background-color: #1e1e1e; color: #fff; border-radius: 10px"
+      style="
+        width: 22rem;
+        background-color: transparent;
+        color: #fff;
+        border-radius: 10px;
+        border: solid 1px #666365;
+      "
     >
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="text-left">Connexion</h2>
@@ -19,7 +25,7 @@
             class="form-control"
             :class="{ 'is-invalid': errors.email }"
             placeholder="Entrez votre e-mail"
-            style="background-color: #1e1e1e; padding: 13px"
+            style="background-color: transparent; padding: 13px"
             autocomplete="off"
             required
           />
@@ -30,20 +36,44 @@
         <!-- Champ Mot de Passe -->
         <div class="mb-3">
           <label for="password" class="form-label">Mot de passe</label>
-          <input
-            type="password"
-            id="password"
-            v-model="password"
-            class="form-control"
-            :class="{ 'is-invalid': errors.password }"
-            placeholder="Entrez votre mot de passe"
-            style="background-color: #1e1e1e; padding: 13px"
-            required
-          />
+          <div class="input-group" style="position: relative">
+            <input
+              :type="showPassword ? 'text' : 'password'"
+              id="password"
+              v-model="password"
+              class="form-control"
+              :class="{ 'is-invalid': errors.password }"
+              placeholder="password"
+              style="
+                background-color: transparent;
+                padding: 13px;
+                border-radius: 0.375rem !important;
+              "
+              autocomplete="off"
+              required
+            />
+            <span
+              @click="togglePasswordVisibility"
+              class="hide"
+              style="
+                position: absolute;
+                right: 18px;
+                top: 50%;
+                transform: translateY(-50%);
+                height: 20px;
+              "
+            >
+              <i
+                style="cursor: pointer"
+                :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"
+              ></i>
+            </span>
+          </div>
           <div class="invalid-feedback">
             {{ errors.password }}
           </div>
         </div>
+
         <!-- Bouton Continuer -->
         <button id="submit-btn" type="submit" class="btn btn-warning w-100 mb-3 fw-bold">
           Continuer
@@ -66,7 +96,7 @@
       "
     >
       <div
-        class="card p-5 text-center shadow-lg"
+        class="card p-5 text-center shadow-lg cd"
         style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
       >
         <button
@@ -132,7 +162,7 @@
       "
     >
       <div
-        class="card p-5 text-center shadow-lg"
+        class="card p-5 text-center shadow-lg cd"
         style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
       >
         <button
@@ -189,7 +219,7 @@
       "
     >
       <div
-        class="card p-5 text-center shadow-lg"
+        class="card p-5 text-center shadow-lg cd"
         style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
       >
         <button
@@ -272,9 +302,13 @@ export default {
       isResetRequested: false,
       resetKey: '',
       resetErrorMessage: '',
+      showPassword: false,
     }
   },
   methods: {
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword
+    },
     async handleLogin() {
       this.errors = {}
       if (!this.email) {
@@ -361,7 +395,7 @@ export default {
           const token = data.data.token
           UtilClass.setToken(token)
           this.closePinModal()
-          this.$router.push('/app/accueil')
+          this.$router.push('/app/v1')
         } else {
           if (data.error.code === 500) {
             this.errorMessagePin = data.message
@@ -376,7 +410,7 @@ export default {
         this.errorMessagePin = error.message
       }
     },
-    
+
     async confirmAccount() {
       if (!this.confirmationKey) {
         this.errorMessageKey = 'Veuillez entrer une clé de confirmation.'
@@ -403,7 +437,7 @@ export default {
           const token = data.data.token
           UtilClass.setToken(token)
           this.closeModalAcc()
-          this.$router.push('/app/accueil')
+          this.$router.push('/app/v1')
         } else {
           throw new Error(data.message || 'Clé de confirmation invalide.')
         }
@@ -429,7 +463,6 @@ export default {
         UtilClass.endLoadedButton(demandeBtn, 'Demander une réinitialisation')
 
         if (data.isSuccess) {
-          UtilClass.showSuccessToast('Un e-mail de réinitialisation a été envoyé.')
           this.isResetRequested = true
         } else {
           throw new Error(data.message || 'Échec de la demande de réinitialisation.')
@@ -506,11 +539,13 @@ input::placeholder {
 }
 
 input {
-  color: #c7c6c6;
+  color: #ffffff;
+  font-size: larger;
+  font-weight: 600;
 }
 
 input:focus {
-  color: #c7c6c6; /* Texte jaune vif au focus */
+  color: #ffffff; /* Texte jaune vif au focus */
   border-color: #ffc107; /* Bordure bleu clair au focus */
   outline: none; /* Enlever le contour par défaut */
   box-shadow: none; /* Enlever le contour bleu spécifique à Bootstrap */
@@ -521,11 +556,6 @@ input:-webkit-autofill {
   color: #c7c6c6 !important; /* Garder le texte en blanc */
 }
 
-.lg {
-  background-color: rgba(255, 255, 255, 0.5); /* Couleur blanche avec transparence */
-  backdrop-filter: blur(10px);
-}
-
 .border-red {
   border: 3px solid #c82333 !important;
 }
@@ -533,5 +563,11 @@ input:-webkit-autofill {
 .email {
   font-weight: revert;
   color: #d3d3d3;
+}
+
+@media (max-width: 480px) {
+  .vh-100 {
+    height: unset !important;
+  }
 }
 </style>

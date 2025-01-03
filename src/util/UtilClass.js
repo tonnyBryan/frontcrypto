@@ -6,6 +6,7 @@ export default class UtilClass {
   static LOCAL_TOKEN_NAME = 'token'
   static BACKEND_BASE_URL = 'http://192.168.0.15:8080'
   static BACKEND_SOCKET_BASE_UR = 'ws://192.168.0.15:8080'
+  static SECRET_KET = 'secretkey123456789'
 
   static redirectToLogin(router) {
     router.push('/app')
@@ -83,5 +84,9 @@ export default class UtilClass {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(value)
+  }
+
+  static isInvalidTokenError(body) {
+    return !body.data && body.message === 'false' && !body.success
   }
 }
