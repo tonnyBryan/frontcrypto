@@ -14,7 +14,7 @@
         <tbody>
           <tr v-for="transaction in paginatedTransactions" :key="transaction.id_transaction_fond">
             <td class="d-none d-sm-table-cell">{{ transaction.id_transaction_fond }}</td>
-            <td class="unit">{{ formatAmount(transaction.valeur) }}</td>
+            <td class="unit">{{ formatCurrency(transaction.valeur) }}</td>
             <td>
               <div :class="getStatusBadgeClass(transaction.type.etat)">
                 {{ getStatusText(transaction.type.etat) }}
@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import UtilClass from '@/util/UtilClass'
+
 export default {
   name: 'TransactionFond',
   props: {
@@ -68,6 +70,9 @@ export default {
         style: 'currency',
         currency: 'USD',
       }).format(amount)
+    },
+    formatCurrency(value) {
+      return UtilClass.formatCurrency(value)
     },
     getStatusBadgeClass(status) {
       if (status === 'down') {

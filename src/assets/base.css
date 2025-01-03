@@ -108,6 +108,9 @@ body {
 .nav {
   background-color: #181a20;
 }
+.modal {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}
 
 ::-webkit-scrollbar {
   width: 6px;

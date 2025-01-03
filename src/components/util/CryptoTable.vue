@@ -4,7 +4,7 @@ import LoaderV from './LoaderV.vue'
 </script>
 
 <template>
-  <div v-if="cryptos.length === 0 || !isConnected" class="loading-overlay">
+  <div v-if="cryptos.length === 0" class="loading-overlay">
     <LoaderV></LoaderV>
   </div>
   <div class="table-container" style="min-height: 70vh">
@@ -67,9 +67,6 @@ export default {
   data() {
     return {
       cryptos: [],
-      isConnected: false,
-      reconnectInterval: null,
-      onclose: false,
     }
   },
   methods: {
@@ -91,40 +88,19 @@ export default {
 
       socket.onopen = () => {
         console.log('WebSocket connecté')
-        this.isConnected = true
-
         this.getLastCour()
-        if (this.reconnectInterval) {
-          clearInterval(this.reconnectInterval)
-          this.reconnectInterval = null
-        }
       }
 
       socket.onclose = () => {
         console.log('WebSocket déconnecté')
         this.isConnected = false
         this.cryptos = []
-        if (!this.onclose) {
-          this.reconnectWebSocket()
-        }
       }
 
       this.socket = socket
     },
-    reconnectWebSocket() {
-      if (!this.reconnectInterval) {
-        this.reconnectInterval = setInterval(() => {
-          this.initializeWebSocket()
-        }, 5000)
-      }
-    },
     formatCurrency(value) {
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(value)
+      return UtilClass.formatCurrency(value)
     },
     formatVariation(variation) {
       return (
@@ -195,10 +171,6 @@ export default {
     if (this.socket) {
       this.socket.close()
     }
-
-    this.onclose = true
-    clearInterval(this.reconnectInterval)
-    this.reconnectInterval = null
   },
 }
 </script>
@@ -217,6 +189,10 @@ export default {
 .table th,
 .table td {
   padding: 10px;
+}
+
+th {
+  font-weight: 700;
 }
 
 .table tbody tr {
@@ -255,7 +231,7 @@ button.icon-button:hover {
 }
 
 .unit {
-  font-weight: 600;
+  font-weight: 700;
   color: #fdf8f8;
 }
 

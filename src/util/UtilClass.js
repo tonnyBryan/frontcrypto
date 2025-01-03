@@ -98,4 +98,29 @@ export default class UtilClass {
   static isInvalidTokenError(body) {
     return !body.data && body.message === 'false' && !body.success
   }
+
+  static blinkText(id) {
+    const textElement = document.getElementById(id)
+
+    if (textElement) {
+      textElement.style.color = 'red'
+
+      setTimeout(function () {
+        textElement.style.color = ''
+      }, 1000)
+    } else {
+      console.error("Élément non trouvé avec l'id:", id)
+    }
+  }
+
+  static formatCurrency(value) {
+    const formatted = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value)
+
+    return formatted.replace('$', '$ ')
+  }
 }

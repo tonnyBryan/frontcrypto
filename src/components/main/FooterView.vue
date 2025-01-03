@@ -23,16 +23,24 @@
           <h3 class="tl">Members</h3>
           <ul class="list-unstyled nav-links">
             <li>
-              <a href="#"><i class="bi bi-person"></i> Anderson Tonny Bryan</a>
+              <a href="https://www.facebook.com/bryan.to.7927"
+                ><i class="bi bi-person"></i> ANDERSON Tonny Bryan ETU2768</a
+              >
             </li>
             <li>
-              <a href="#"><i class="bi bi-person"></i> Anderson Tonny Bryan</a>
+              <a href="https://www.facebook.com/helena.candy.29"
+                ><i class="bi bi-person"></i> RIJARILANTO Helena Candy ETU2638</a
+              >
             </li>
             <li>
-              <a href="#"><i class="bi bi-person"></i> Anderson Tonny Bryan</a>
+              <a href="https://www.facebook.com/mamirazana.isisaxel.1"
+                ><i class="bi bi-person"></i> MAMIRAZANA Isis Axel ETU2442</a
+              >
             </li>
             <li>
-              <a href="#"><i class="bi bi-person"></i> Anderson Tonny Bryan</a>
+              <a href="https://www.facebook.com/voahary.RM21"
+                ><i class="bi bi-person"></i> Voahary Mihaja ETU2535</a
+              >
             </li>
           </ul>
         </div>
@@ -64,15 +72,34 @@
               ></textarea>
               <div class="invalid-feedback">Content is required.</div>
             </div>
-            <button type="submit" class="btn btn-warning">Submit</button>
+            <button id="sbt" type="submit" class="btn btn-warning">Submit</button>
           </form>
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-12 text-center">
-          <div class="copyright mt-5 pt-5">
-            <p><small>&copy; 2025 All Rights Reserved. IT University</small></p>
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="thankYouModal"
+        tabindex="-1"
+        aria-labelledby="thankYouModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="thankYouModalLabel">Thank You!</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">Thank you for your feedback!</div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
           </div>
         </div>
       </div>
@@ -81,7 +108,9 @@
 </template>
 
 <script>
+import UtilClass from '@/util/UtilClass'
 import axios from 'axios'
+import * as bootstrap from 'bootstrap'
 
 export default {
   data() {
@@ -101,11 +130,38 @@ export default {
         return
       }
 
+      const btn = document.getElementById('sbt')
+
       try {
-        const response = await axios.post('/api/submit-feedback', this.feedback)
-        console.log('Feedback submitted:', response.data)
+        UtilClass.loadButton(btn)
+        const token = UtilClass.getLocalToken()
+        const response = await axios.post(
+          UtilClass.BACKEND_BASE_URL + '/crypto/user/feedback',
+          this.feedback,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        )
+
+        const data = response.data
+
+        UtilClass.endLoadedButton(btn, 'Submit')
+        if (data.success) {
+          this.feedback.subject = ''
+          this.feedback.content = ''
+          this.submitted = false
+
+          const thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'))
+          thankYouModal.show()
+        } else {
+          UtilClass.showErrorToast('Something went wrong! Please try again.')
+        }
       } catch (error) {
+        UtilClass.endLoadedButton(btn, 'Submit')
         console.error('Error submitting feedback:', error)
+        UtilClass.showErrorToast('An error occurred while submitting feedback.')
       }
     },
   },
@@ -137,5 +193,20 @@ textarea:focus {
   outline: none;
   box-shadow: none;
   background-color: transparent;
+}
+
+.modal-content {
+  background-color: #181a20;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  border-bottom: 1px solid #444;
+}
+
+.modal-footer {
+  border-top: 1px solid #444;
 }
 </style>

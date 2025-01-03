@@ -13,7 +13,7 @@
         </thead>
         <tbody>
           <tr v-for="Mycryphos in paginatedMycryphoss" :key="Mycryphos.crypto.id_crypto">
-            <td class="unit">
+            <td>
               <img
                 :src="'/assets/crypto/' + Mycryphos.crypto.logo"
                 alt="Bitcoin"
@@ -21,89 +21,33 @@
                 class="me-2"
               />
 
-              {{ Mycryphos.crypto.nom }}
+              <router-link :to="'/app/v1/crypto?id=' + Mycryphos.crypto.id_crypto">
+                <span class="unit">{{ Mycryphos.crypto.unit_nom }}</span> {{ Mycryphos.crypto.nom }}
+              </router-link>
             </td>
-            <td>{{ formatCurrency(Mycryphos.estimation) }}</td>
-            <td>{{ Mycryphos.valeur }}</td>
+            <td class="unit">{{ formatCurrency(Mycryphos.estimation) }}</td>
+            <td class="unit" :id="'qtyLab' + Mycryphos.crypto.id_crypto">{{ Mycryphos.valeur }}</td>
             <td class="text-center">
-              <button
-                class="btn btn-sm btn-warning fw-bold"
-                type="submit"
-                @click="handleTransaction('buy', Mycryphos)"
-              >
-                Buy
-              </button>
-              <button
-                class="btn btn-sm btn-success fw-bold"
-                type="submit"
-                @click="handleTransaction('Sell', Mycryphos)"
-              >
-                Sell
-              </button>
+              <div class="d-flex flex-column flex-md-row justify-content-center">
+                <button
+                  class="btn btn-sm btn-outline-warning fw-bold mb-2 mb-md-0 me-md-2"
+                  type="submit"
+                  @click="handleTransaction('buy', Mycryphos)"
+                >
+                  Buy
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-success fw-bold"
+                  type="submit"
+                  @click="handleTransaction('sell', Mycryphos)"
+                >
+                  Sell
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
       </table>
-    </div>
-  </div>
-
-  <!-- Modal pour la confirmation du compte -->
-  <div
-    class="modal d-flex justify-content-center align-items-center"
-    v-if="showConfirmationModal"
-    style="
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 1050;
-    "
-  >
-    <div
-      class="card p-5 text-center shadow-lg"
-      style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
-    >
-      <button
-        class="btn-close position-absolute"
-        style="
-          top: 10px;
-          right: 10px;
-          color: white;
-          background-color: transparent;
-          font-size: 1.5rem;
-        "
-        @click="closeModalAcc"
-      ></button>
-      <p class="mb-3">
-        Type de transaction: <span class="text-warning">{{ transactionType }}</span>
-      </p>
-      <p class="mb-3">
-        Cryptomonai type : <span class="text-warning">{{ cryptoId.crypto.nom }}</span>
-      </p>
-
-      <input
-        type="number"
-        v-model="Qtt"
-        required
-        class="form-control mb-3 text-center"
-        style="background-color: #444; color: #fff; border: none; border-radius: 5px"
-        placeholder="Entrez  quantite"
-      />
-      <p class="text-danger mb-3" v-if="errorMessageKey">{{ errorMessageKey }}</p>
-
-      <button
-        id="confirmAccBtn"
-        class="btn btn-warning w-100 fw-bold"
-        style="font-size: 1.2rem"
-        @click="confirmAccount"
-      >
-        Confirmer
-      </button>
-      <p class="text-muted">
-        or, vous pouvez juste appeler dans postman l'url envoyé à votre email
-      </p>
     </div>
   </div>
 </template>
@@ -126,9 +70,6 @@ export default {
   data() {
     return {
       Qtt: '',
-      errorMessageKey: '',
-      errorMessage: '',
-      showConfirmationModal: false,
       transactionType: '',
       cryptoId: [],
       socket: null,
@@ -166,12 +107,13 @@ export default {
         })
 
         return
+      } else if (type === 'sell') {
+        if (crypto.valeur <= 0) {
+          UtilClass.blinkText('qtyLab' + crypto.crypto.id_crypto)
+          return
+        }
+        this.$router.push('/app/v1/vente?id=' + crypto.crypto.id_crypto)
       }
-
-      this.errorMessage = ''
-      this.transactionType = type === 'buy' ? 'Achats' : 'Vente'
-      this.cryptoId = crypto
-      this.showConfirmationModal = true
     },
     formatDate(date) {
       return new Date(date).toLocaleDateString('fr-FR', {
@@ -179,17 +121,6 @@ export default {
         month: 'short',
         year: 'numeric',
       })
-    },
-    async confirmAccount() {
-      if (!this.Qtt) {
-        this.errorMessageKey = 'Veuillez entrer une clé de confirmation.'
-        return
-      }
-    },
-    closeModalAcc() {
-      this.confirmationKey = ''
-      this.errorMessageKey = ''
-      ;(this.showConfirmationModal = false), (this.cryptoId = [])
     },
     initializeWebSocket() {
       const socket = new WebSocket(UtilClass.BACKEND_SOCKET_BASE_UR + '/ws/crypto')
@@ -221,14 +152,7 @@ export default {
       })
     },
     formatCurrency(value) {
-      const formatted = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(value)
-
-      return formatted.replace('$', '$ ')
+      return UtilClass.formatCurrency(value)
     },
   },
 }
@@ -258,25 +182,19 @@ h4 {
   --bs-table-color: inherit !important;
 }
 
-.table th,
 .table td {
   padding: 10px;
-  color: rgb(161, 160, 160);
+  /* color: #c1c1c1; */
 }
 
 .unit {
-  font-weight: 600;
-  color: #fdf8f8;
+  font-weight: 700;
+  color: #fff;
 }
 
 .table tbody tr {
   height: initial;
 }
-
-td {
-  color: antiquewhite;
-}
-
 .btn {
   border-radius: 5px;
   font-size: 1rem;

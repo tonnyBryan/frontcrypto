@@ -94,7 +94,7 @@ import TradingView from '../util/TradingView.vue'
         <div style="margin-top: 2rem" class="card shadow-sm bg-dark text-light">
           <div class="card-body">
             <h3 class="card-title text-light">You have</h3>
-            <h1 class="mb-0">
+            <h1 class="mb-0" id="qtyLab">
               {{ quantite }}
               <span style="font-size: large; color: #cbcbcb" class="unit">{{
                 crypto ? crypto.crypto.unit_nom : 'crypto'
@@ -104,7 +104,11 @@ import TradingView from '../util/TradingView.vue'
               <span style="color: rgb(203, 203, 203)">equals to </span
               >{{ formatCurrency(estimation) }}
             </h4>
-            <button style="margin-top: 2rem; font-weight: 700" class="btn btn-warning w-100">
+            <button
+              @click="handleSell"
+              style="margin-top: 2rem; font-weight: 700"
+              class="btn btn-warning w-100"
+            >
               Sell
             </button>
           </div>
@@ -167,19 +171,19 @@ export default {
         name: 'cryptoAchat',
       })
     },
+    handleSell() {
+      if (!this.quantite || this.quantite <= 0) {
+        UtilClass.blinkText('qtyLab')
+        return
+      }
 
+      this.$router.push('/app/v1/vente?id=' + this.crypto.crypto.id_crypto)
+    },
     getCryptoId() {
       return this.$route.query.id
     },
     formatCurrency(value) {
-      const formatted = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(value)
-
-      return formatted.replace('$', '$ ')
+      return UtilClass.formatCurrency(value)
     },
     formatAmount(amount) {
       return new Intl.NumberFormat('fr-FR', {
@@ -312,6 +316,7 @@ export default {
     },
   },
   mounted() {
+    window.scrollTo(0, 0)
     this.connectWebSocket()
   },
   beforeUnmount() {
