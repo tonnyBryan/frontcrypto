@@ -78,7 +78,7 @@ export default {
 
         this.lineSeries.setData(initialData)
       } catch (error) {
-        console.error('Erreur lors de la récupération des données initiales :', error)
+        console.error('Error retrieving initial data :', error)
       }
     },
     async initChart() {

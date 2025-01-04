@@ -8,7 +8,7 @@
           style="width: 100%; text-align: center; padding-top: 1rem; padding-bottom: 1.5rem"
         >
           <div class="row">
-            <span class="type">Retrait</span>
+            <span class="type">Withdraw</span>
           </div>
           <div class="row justify-content-center align-items-center">
             <div class="col-sm-4 center" style="justify-content: right">
@@ -33,7 +33,7 @@
           style="width: 100%; text-align: center; padding-top: 1rem; padding-bottom: 1.5rem"
         >
           <div class="row">
-            <span class="type">Depot</span>
+            <span class="type">Deposit</span>
           </div>
           <div class="row justify-content-center align-items-center">
             <div class="col-sm-4 center" style="justify-content: right">
@@ -56,7 +56,7 @@
 
     <div class="row">
       <div class="balance-section">
-        <div class="balance-label">Nouveau solde :</div>
+        <div class="balance-label">New balance:</div>
         <div class="balance-amount">
           <h1>{{ formatAmount(details.NouveauSolde) }}</h1>
         </div>

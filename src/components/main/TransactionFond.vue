@@ -6,7 +6,7 @@
         <thead>
           <tr>
             <th scope="col" class="d-none d-sm-table-cell">Ref</th>
-            <th scope="col">Valeur</th>
+            <th scope="col">Value</th>
             <th scope="col">Type</th>
             <th scope="col">Date</th>
           </tr>
@@ -28,7 +28,7 @@
         <div class="icon-container">
           <i class="bi bi-file-earmark fs-1 text-secondary"></i>
         </div>
-        <p class="mt-3">Historique de transaction vide !</p>
+        <p class="mt-3">Transaction history is empty !</p>
       </div>
     </div>
   </div>
@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     title() {
-      return 'Historique Transactions Fonds'
+      return 'Transaction history'
     },
     paginatedTransactions() {
       return this.limit ? this.transactions.slice(0, this.limit) : this.transactions
@@ -86,7 +86,6 @@ export default {
       if (status === 'down') {
         return 'retrait'
       }
-
       return 'dépot'
     },
   },

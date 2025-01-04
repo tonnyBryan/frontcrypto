@@ -12,11 +12,11 @@ import LoaderV from './LoaderV.vue'
       <table class="table table-dark tba">
         <thead>
           <tr>
-            <th scope="col">Nom</th>
-            <th scope="col">Prix</th>
-            <th scope="col" class="d-none d-sm-table-cell">Variation</th>
-            <th scope="col" class="d-none d-sm-table-cell">Volume 24h</th>
-            <th scope="col" class="d-none d-sm-table-cell">Capitalisation</th>
+            <th scope="col">Name</th>
+            <th scope="col">Price</th>
+            <th scope="col" class="d-none d-sm-table-cell">Change</th>
+            <th scope="col" class="d-none d-sm-table-cell">24H volume</th>
+            <th scope="col" class="d-none d-sm-table-cell">Market Cap</th>
             <th scope="col">Actions</th>
           </tr>
         </thead>
@@ -49,7 +49,7 @@ import LoaderV from './LoaderV.vue'
                 class="btn btn-sm btn-secondary icon-button"
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
-                title="Voir les détails"
+                title="View details"
               >
                 <i class="bi bi-graph-up-arrow"></i>
               </button>
@@ -87,12 +87,12 @@ export default {
       }
 
       socket.onopen = () => {
-        console.log('WebSocket connecté')
+        console.log('WebSocket connected')
         this.getLastCour()
       }
 
       socket.onclose = () => {
-        console.log('WebSocket déconnecté')
+        console.log('WebSocket disconnected')
         this.isConnected = false
         this.cryptos = []
       }
@@ -156,7 +156,7 @@ export default {
           }))
         } else {
           throw new Error(
-            data.message || 'Erreur lors de la récupération des informations utilisateur.',
+            data.message || 'Error retrieving user information',
           )
         }
       } catch (error) {

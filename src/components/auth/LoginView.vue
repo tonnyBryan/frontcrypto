@@ -24,7 +24,7 @@
             v-model="email"
             class="form-control"
             :class="{ 'is-invalid': errors.email }"
-            placeholder="Entrez votre e-mail"
+            placeholder="Enter your e-mail"
             style="background-color: transparent; padding: 13px"
             autocomplete="off"
             required
@@ -35,7 +35,7 @@
         </div>
         <!-- Champ Mot de Passe -->
         <div class="mb-3">
-          <label for="password" class="form-label">Mot de passe</label>
+          <label for="password" class="form-label">Password</label>
           <div class="input-group" style="position: relative">
             <input
               :type="showPassword ? 'text' : 'password'"
@@ -75,9 +75,9 @@
           </div>
         </div>
 
-        <!-- Bouton Continuer -->
+        <!-- Bouton Continu -->
         <button id="submit-btn" type="submit" class="btn btn-warning w-100 mb-3 fw-bold">
-          Continuer
+          Continue
         </button>
       </form>
     </div>
@@ -101,8 +101,8 @@
         style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
       >
         <h5 class="mb-4 email">{{ email }}</h5>
-        <h3 class="mb-4">On veut s’assurer que c’est bien vous</h3>
-        <p class="text-muted">Veuillez entrer le code PIN à 6 chiffres envoyé à votre e-mail.</p>
+        <h3 class="mb-4">We want to make sure that it's really you</h3>
+        <p class="text-muted">Please enter the 6- digit PIN code sent to your e-mail.</p>
         <div class="d-flex justify-content-center mb-4">
           <input
             v-for="(digit, index) in pin"
@@ -123,7 +123,7 @@
         </div>
         <p class="text-danger mb-3" v-if="errorMessagePin">{{ errorMessagePin }}</p>
         <p class="text-muted mb-4">
-          Temps restant : <strong>{{ timer }}</strong> secondes
+          Remaining time : <strong>{{ timer }}</strong> seconds
         </p>
         <button
           id="confirmPinBtn"
@@ -131,7 +131,7 @@
           style="font-size: 1.2rem"
           @click="confirmPin"
         >
-          Confirmer
+          Confirm
         </button>
         <button @click="closePinModal" style="font-size: 1.2rem" class="btn w-100 annuler">
           Cancel
@@ -158,20 +158,20 @@
         style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
       >
         <h5 class="mb-4 email">{{ email }}</h5>
-        <h3 class="mb-4 text-warning">Confirmation de compte requise</h3>
+        <h3 class="mb-4 text-warning">Account confirmation required</h3>
         <p class="text-muted">
-          Veuillez entrer la clé de confirmation envoyée à votre e-mail pour activer votre compte.
+          Please enter the confirmation key sent to your email to activate your account .
         </p>
         <input
           type="text"
           v-model="confirmationKey"
           class="form-control mb-3 text-center"
           style="background-color: #444; color: #fff; border: none; border-radius: 5px"
-          placeholder="Entrez la clé de confirmation"
+          placeholder="Enter confirmation key"
         />
         <p class="text-danger mb-3" v-if="errorMessageKey">{{ errorMessageKey }}</p>
         <p class="text-muted">
-          or, vous pouvez juste appeler dans postman l'url envoyé à votre email
+          or, you can call the URL sent to your email in Postman 
         </p>
         <button
           id="confirmAccBtn"
@@ -179,7 +179,7 @@
           style="font-size: 1.2rem; margin-top: 2rem"
           @click="confirmAccount"
         >
-          Confirmer
+          Confirm
         </button>
         <button @click="closeModalAcc" style="font-size: 1.2rem" class="btn w-100 annuler">
           Cancel
@@ -206,10 +206,10 @@
         style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
       >
         <h5 class="mb-4 email">{{ email }}</h5>
-        <h3 class="mb-4 text-danger">Votre compte est bloqué</h3>
-        <p class="text-muted">Veuillez demander une réinitialisation via votre e-mail.</p>
+        <h3 class="mb-4 text-danger">Your account has been locked !</h3>
+        <p class="text-muted">To regain access,please request a password reset through  your email address.</p>
 
-        <!-- Bouton pour demander une réinitialisation -->
+        <!-- Bouton pour Request a password reset -->
         <button
           id="demandeBtn"
           class="btn btn-warning w-100 fw-bold"
@@ -217,7 +217,7 @@
           @click="requestReset"
           :disabled="isResetRequested"
         >
-          Demander une réinitialisation
+          Request a password reset
         </button>
         <button
           v-if="!isResetRequested"
@@ -231,10 +231,10 @@
         <!-- Formulaire de réinitialisation -->
         <div v-if="isResetRequested">
           <p class="text-muted" style="margin-bottom: 0.5rem; margin-top: 2rem">
-            Veuillez saisir la clé de réinitialisation envoyée à votre e-mail.
+            Please enter the reset key that we send to your email adress.
           </p>
           <p class="text-muted">
-            or, vous pouvez juste appeler dans postman l'url envoyé à votre email
+            or, you can call the URL sent to your email in Postman 
           </p>
           <input
             type="text"
@@ -251,7 +251,7 @@
             style="font-size: 1.2rem; margin-top: 3rem"
             @click="confirmResetKey"
           >
-            Confirmer
+            Confirm
           </button>
           <button @click="closeModalBlocked" style="font-size: 1.2rem" class="btn w-100 annuler">
             Cancel
@@ -295,12 +295,12 @@ export default {
     async handleLogin() {
       this.errors = {}
       if (!this.email) {
-        this.errors.email = "L'adresse e-mail est obligatoire."
+        this.errors.email = "Email adress required."
       } else if (!UtilClass.validateEmail(this.email)) {
-        this.errors.email = 'Veuillez entrer une adresse e-mail valide.'
+        this.errors.email = 'Please enter an email adress valide.'
       }
       if (!this.password) {
-        this.errors.password = 'Le mot de passe est obligatoire.'
+        this.errors.password = 'Password required.'
       }
 
       if (Object.keys(this.errors).length === 0) {
@@ -319,7 +319,7 @@ export default {
           })
 
           const data = await response.json()
-          UtilClass.endLoadedButton(submitButton, 'Continuer')
+          UtilClass.endLoadedButton(submitButton, 'Continue')
 
           if (data.isSuccess) {
             this.aKey = data.data
@@ -335,9 +335,9 @@ export default {
             }
           }
         } catch (error) {
-          console.error('Erreur lors de la connexion :', error.message)
-          UtilClass.showErrorToast('Connection Perdue')
-          UtilClass.endLoadedButton(submitButton, 'Continuer')
+          console.error('Error during connection :', error.message)
+          UtilClass.showErrorToast('Connection lost')
+          UtilClass.endLoadedButton(submitButton, 'Continue')
         }
       }
     },
@@ -353,7 +353,7 @@ export default {
     async confirmPin() {
       const enteredPin = this.pin.join('')
       if (enteredPin.length !== 6) {
-        this.errorMessagePin = 'Veuillez entrer un code PIN complet.'
+        this.errorMessagePin = 'Please enter the full PIN code.'
         return
       }
 
@@ -372,7 +372,7 @@ export default {
         })
 
         const data = await response.json()
-        UtilClass.endLoadedButton(confirmPinButton, 'Confirmer')
+        UtilClass.endLoadedButton(confirmPinButton, 'Confirm')
 
         if (data.isSuccess) {
           const token = data.data.token
@@ -389,14 +389,14 @@ export default {
           }
         }
       } catch (error) {
-        UtilClass.endLoadedButton(confirmPinButton, 'Confirmer')
+        UtilClass.endLoadedButton(confirmPinButton, 'Confirm')
         this.errorMessagePin = error.message
       }
     },
 
     async confirmAccount() {
       if (!this.confirmationKey) {
-        this.errorMessageKey = 'Veuillez entrer une clé de confirmation.'
+        this.errorMessageKey = 'Please enter the confirmation key.'
         return
       }
 
@@ -414,7 +414,7 @@ export default {
         )
 
         const data = await response.json()
-        UtilClass.endLoadedButton(confirmAccButton, 'Confirmer')
+        UtilClass.endLoadedButton(confirmAccButton, 'Confirm')
 
         if (data.isSuccess) {
           const token = data.data.token
@@ -422,10 +422,10 @@ export default {
           this.closeModalAcc()
           this.$router.push('/app/v1')
         } else {
-          throw new Error(data.message || 'Clé de confirmation invalide.')
+          throw new Error(data.message || 'Invalid confirmation key.')
         }
       } catch (error) {
-        UtilClass.endLoadedButton(confirmAccButton, 'Confirmer')
+        UtilClass.endLoadedButton(confirmAccButton, 'Confirm')
         this.errorMessageKey = error.message
       }
     },
@@ -443,22 +443,22 @@ export default {
         })
 
         const data = await response.json()
-        UtilClass.endLoadedButton(demandeBtn, 'Demander une réinitialisation')
+        UtilClass.endLoadedButton(demandeBtn, 'Request a password reset')
 
         if (data.isSuccess) {
           this.isResetRequested = true
         } else {
-          throw new Error(data.message || 'Échec de la demande de réinitialisation.')
+          throw new Error(data.message || 'Reset request failed')
         }
       } catch (error) {
-        UtilClass.endLoadedButton(demandeBtn, 'Demander une réinitialisation')
+        UtilClass.endLoadedButton(demandeBtn, 'Request a password reset')
         UtilClass.showErrorToast(error.message)
       }
     },
 
     async confirmResetKey() {
       if (!this.resetKey) {
-        this.resetErrorMessage = 'Veuillez entrer une clé de réinitialisation.'
+        this.resetErrorMessage = 'Please enter reset key.'
         return
       }
 
@@ -477,16 +477,16 @@ export default {
         )
 
         const data = await response.json()
-        UtilClass.endLoadedButton(confirmResetButton, 'Confirmer')
+        UtilClass.endLoadedButton(confirmResetButton, 'Confirm')
 
         if (data.isSuccess) {
-          UtilClass.showSuccessToast('Votre compte a été réinitialisé.')
+          UtilClass.showSuccessToast('Your acount has been reset.')
           this.closeModalBlocked()
         } else {
-          throw new Error(data.message || 'Clé de réinitialisation invalide.')
+          throw new Error(data.message || 'Reset key invalid.')
         }
       } catch (error) {
-        UtilClass.endLoadedButton(confirmResetButton, 'Confirmer')
+        UtilClass.endLoadedButton(confirmResetButton, 'Confirm')
         this.resetErrorMessage = error.message
       }
     },

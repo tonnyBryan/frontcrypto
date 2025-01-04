@@ -242,11 +242,11 @@ export default {
         this.updateCryptoData(data)
       }
       this.socket.onopen = () => {
-        console.log('WebSocket connecté')
+        console.log('WebSocket connected')
         this.getLastCour()
       }
       this.socket.onclose = () => {
-        console.log('WebSocket déconnecté')
+        console.log('WebSocket disconnected')
       }
     },
     async getLastCour() {
@@ -273,7 +273,7 @@ export default {
           this.getUserWallet()
         } else {
           throw new Error(
-            data.message || 'Erreur lors de la récupération des informations utilisateur.',
+            data.message || 'Error retrieving user information',
           )
         }
       } catch (error) {
@@ -307,7 +307,7 @@ export default {
           this.updateEstimation()
         } else {
           throw new Error(
-            data.message || 'Erreur lors de la récupération des informations utilisateur.',
+            data.message || 'Error retrieving user information',
           )
         }
       } catch (error) {
