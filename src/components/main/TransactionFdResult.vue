@@ -58,7 +58,7 @@
       <div class="balance-section">
         <div class="balance-label">Nouveau solde :</div>
         <div class="balance-amount">
-          <h1>{{ formatAmount(details.NouveauSolde) }} <span class="unit">MGA</span></h1>
+          <h1>{{ formatAmount(details.NouveauSolde) }}</h1>
         </div>
       </div>
     </div>
@@ -66,6 +66,8 @@
 </template>
 
 <script>
+import UtilClass from '@/util/UtilClass'
+
 export default {
   props: {
     details: {
@@ -75,10 +77,7 @@ export default {
   },
   methods: {
     formatAmount(amount) {
-      return new Intl.NumberFormat('fr-FR', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(amount)
+      return UtilClass.formatCurrency(amount)
     },
   },
 }

@@ -8,6 +8,7 @@ import HomeView from '@/components/main/HomeView.vue'
 import ProfilView from '@/components/main/ProfilView.vue'
 import CryptoModel from '@/components/main/CryptoModel.vue'
 import AchatCrypto from '@/components/main/AchatCrypto.vue'
+import VenteCrypto from '@/components/main/VenteCrypto.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -58,6 +59,11 @@ const router = createRouter({
           path: 'achat',
           name: 'cryptoAchat',
           component: AchatCrypto,
+        },
+        {
+          path: 'vente',
+          name: 'cryptoVente',
+          component: VenteCrypto,
         },
       ],
     },

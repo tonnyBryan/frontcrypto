@@ -4,63 +4,33 @@
       <div class="card bg-dark text-light cd1" style="padding: 1rem; border: solid 1px #4b4b4b">
         <div class="card-body">
           <div>
-            <h3 class="card-title" style="margin-bottom: 25px; color: #dadada">Buy Crypto</h3>
-            <h3 class="card-title" style="margin-bottom: 25px; color: #dadada">
-              <i class="bi bi-credit-card"></i> :
-              <span v-if="user" style="color: #fff; font-weight: 700">{{
-                formatCurrency(user.monnaie)
-              }}</span>
+            <h3 class="card-title" style="margin-bottom: 25px; color: #dadada">Sell Crypto</h3>
+            <h3
+              v-if="crypto"
+              class="card-title"
+              style="margin-bottom: 25px; color: #dadada; display: flex"
+            >
+              <img
+                :src="'/assets/crypto/' + crypto.logo"
+                alt="logo"
+                class="crypto-logo"
+                width="32"
+              />&nbsp;:&nbsp;
+              <span v-if="userWallet" style="color: #fff; font-weight: 700"
+                >{{ userWallet }}&nbsp;{{ crypto.unit_nom }}</span
+              >
             </h3>
+            <div v-else style="margin-bottom: 2rem">
+              <LoaderV style="height: 20px !important; position: relative; right: 3rem"></LoaderV>
+            </div>
           </div>
 
           <div v-if="step === 1">
             <form @submit.prevent="nextStep">
-              <div class="mb-3">
-                <VueSelect
-                  v-if="cryptoOptions"
-                  v-model="selectedCrypto"
-                  :options="cryptoOptions"
-                  label="label"
-                  item-value="value"
-                  item-text="label"
-                  :clearable="false"
-                  placeholder="Choose crypto"
-                  @option-selected="(option) => handleChange(option.value)"
-                >
-                  <template #value="{ option }">
-                    <div class="custom-value d-flex align-items-center">
-                      <img
-                        :src="'/assets/crypto/' + option.logo"
-                        alt="crypto logo"
-                        class="me-2 img-responsive"
-                      />
-                      <h5 style="margin: 0" class="crypto-text">
-                        {{ option.unit }} <span style="color: #b2b2b2">{{ option.label }}</span>
-                      </h5>
-                    </div>
-                  </template>
-
-                  <template #option="{ option }">
-                    <div class="d-flex align-items-center">
-                      <img
-                        :src="'/assets/crypto/' + option.logo"
-                        alt="crypto logo"
-                        width="24"
-                        height="24"
-                        class="me-2"
-                      />
-                      <span>{{ option.label }}</span>
-                    </div>
-                  </template>
-                </VueSelect>
-                <div v-else class="loading">
-                  <LoaderV style="position: relative; top: -35px; left: -28px"></LoaderV>
-                </div>
-              </div>
-              <div class="mb-3 dip">
+              <div class="mb-3 dip" id="dipQty">
                 <div class="row">
                   <div class="col-4">
-                    <label for="quantity" class="form-label">Receive</label>
+                    <label for="quantity" class="form-label">Spend</label>
                     <input
                       type="number"
                       class="form-control"
@@ -90,7 +60,7 @@
                 </div>
               </div>
               <div class="mb-3 dip" id="div_dip">
-                <label for="spend" class="form-label">Spend</label>
+                <label for="spend" class="form-label">Earn</label>
                 <input
                   type="text"
                   class="form-control"
@@ -102,13 +72,13 @@
                 />
               </div>
               <button
-                id="buyBtn"
+                id="sellBtn"
                 type="submit"
                 class="btn btn-warning w-100"
                 style="margin-top: 3rem; font-size: larger; font-weight: 700"
-                :disabled="!canBuy"
+                :disabled="!canSell"
               >
-                Buy (need email validation)
+                Sell (need email validation)
               </button>
               <h6 style="font-size: small; color: #ababab; margin-top: 15px">
                 Warning: The price of a cryptocurrency can fluctuate over time
@@ -180,8 +150,8 @@
           ></button>
         </div>
         <div class="modal-body">
-          Congratulations on your crypto purchase! 🎉 We truly appreciate your trust, and we're
-          excited to accompany you on your crypto journey.
+          Thank you for your cryptocurrency sale! 😍 Your transaction has been successfully
+          processed. We appreciate your trust in our platform.
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -192,17 +162,12 @@
 </template>
 
 <script>
-import axios from 'axios'
 import UtilClass from '@/util/UtilClass'
-import CryptoJS from 'crypto-js'
-import VueSelect from 'vue3-select-component'
-import { ref } from 'vue'
 import LoaderV from '../util/LoaderV.vue'
 import * as bootstrap from 'bootstrap'
 
 export default {
   components: {
-    VueSelect,
     LoaderV,
   },
   computed: {
@@ -212,25 +177,20 @@ export default {
     formattedPriceOne() {
       return this.formatCurrency(this.priceOne)
     },
-    canBuy() {
+    canSell() {
       return (
-        this.cryptoOptions &&
         this.quantity !== 0 &&
         this.quantity &&
         this.selectedCrypto &&
-        this.user &&
-        this.estimation <= this.user.monnaie
+        this.userWallet &&
+        this.userWallet >= this.quantity
       )
     },
   },
   data() {
     return {
-      decryptedData: null,
-
       step: 1,
-      selectedCrypto: ref(null),
       quantity: 0,
-      cryptoOptions: null,
 
       estimation: 0,
       cryptoList: null,
@@ -241,54 +201,38 @@ export default {
       confirmationKey: '',
       errorMessageKey: '',
 
-      user: null,
+      userWallet: null,
+
+      selectedCrypto: null,
+
+      crypto: null,
     }
   },
   async mounted() {
     window.scrollTo(0, 0)
-    this.getUser()
-    await this.fetchCryptoOptions()
+    this.selectedCrypto = this.getCryptoId()
+    this.getUserWallet()
     await this.connectWebSocket()
-    try {
-      const encryptedData = localStorage.getItem('cryptoData')
-      if (encryptedData) {
-        const bytes = CryptoJS.AES.decrypt(encryptedData, UtilClass.SECRET_KET)
-        this.decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
-
-        this.selectedCrypto = this.decryptedData.cryptoId
-        this.quantity = this.decryptedData.quantity
-        this.updatePriceOne()
-      } else {
-        console.warn('Aucune donnée trouvée dans le localStorage.')
-      }
-    } catch (error) {
-      console.error('Erreur lors du décryptage ou de la récupération des données :', error)
-    }
   },
   beforeUnmount() {
-    localStorage.removeItem('cryptoData')
     if (this.socket) {
       this.socket.close()
     }
   },
   methods: {
+    getCryptoId() {
+      return this.$route.query.id
+    },
     updateSpend() {
-      this.estimation = this.priceOne * this.quantity
+      const div = document.getElementById('dipQty')
 
-      const div = document.getElementById('div_dip')
-      if (this.estimation > this.user.monnaie) {
+      if (this.userWallet && this.quantity > this.userWallet) {
         div.style.borderColor = '#922121'
       } else {
         div.style.borderColor = '#686868'
       }
-    },
-    handleChange(id_crypto) {
-      const id = id_crypto
-      if (this.cryptoList) {
-        const finded = this.cryptoList.find((crypto) => crypto.crypto.id_crypto === parseInt(id))
-        this.priceOne = finded.valeur
-        this.updateSpend()
-      }
+
+      this.estimation = this.priceOne * this.quantity
     },
     updatePriceOne() {
       if (this.cryptoList && this.selectedCrypto) {
@@ -302,31 +246,11 @@ export default {
     formatCurrency(value) {
       return UtilClass.formatCurrency(value)
     },
-    async fetchCryptoOptions() {
-      try {
-        const token = UtilClass.getLocalToken()
-        const response = await axios.get(UtilClass.BACKEND_BASE_URL + '/crypto', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        this.cryptoOptions = response.data.data.map((crypto) => ({
-          value: crypto.id_crypto,
-          label: crypto.nom,
-          logo: crypto.logo,
-          unit: crypto.unit_nom,
-        }))
-      } catch (error) {
-        console.error('Erreur lors de la récupération des cryptos:', error)
-      }
-    },
-
     connectWebSocket() {
       this.socket = new WebSocket(UtilClass.BACKEND_SOCKET_BASE_UR + '/ws/crypto')
       this.socket.onmessage = (event) => {
         this.cryptoList = JSON.parse(event.data)
         this.updatePriceOne()
-        this.updateSpend()
       }
       this.socket.onopen = () => {
         console.log('WebSocket connecté')
@@ -357,6 +281,13 @@ export default {
 
         if (data.success) {
           this.cryptoList = data.data
+          const finded = this.cryptoList.find(
+            (crypto) => crypto.crypto.id_crypto === parseInt(this.selectedCrypto),
+          )
+
+          if (finded) {
+            this.crypto = finded.crypto
+          }
           this.updatePriceOne()
         } else {
           throw new Error(
@@ -368,11 +299,7 @@ export default {
       }
     },
     async nextStep() {
-      if (this.estimation > this.user.monnaie) {
-        return
-      }
-
-      const trButton = document.getElementById('buyBtn')
+      const trButton = document.getElementById('sellBtn')
       UtilClass.loadButton(trButton)
 
       try {
@@ -395,7 +322,7 @@ export default {
           throw new Error("Une erreur est survenue lors de l'appel à l'API.")
         }
 
-        UtilClass.endLoadedButton(trButton, 'Buy (need email validation)')
+        UtilClass.endLoadedButton(trButton, 'Sell (need email validation)')
 
         if (!data.success) {
           UtilClass.showErrorToast(data.message || 'Erreur inconnue')
@@ -403,7 +330,7 @@ export default {
         }
         this.showConfirmationModal = true
       } catch (error) {
-        UtilClass.endLoadedButton(trButton, 'Buy (need email validation)')
+        UtilClass.endLoadedButton(trButton, 'Sell (need email validation)')
         UtilClass.showErrorToast("Une erreur s'est produite. Veuillez réessayer plus tard.")
         console.error(error)
       }
@@ -414,8 +341,6 @@ export default {
       this.showConfirmationModal = false
     },
     clearForm() {
-      this.selectedCrypto = null
-      this.priceOne = 0
       this.quantity = 0
     },
     async confirmAccount() {
@@ -427,7 +352,7 @@ export default {
       const confirmAccButton = document.getElementById('confirmAccBtn')
       UtilClass.loadButton(confirmAccButton)
       try {
-        const response = await fetch(UtilClass.BACKEND_BASE_URL + '/crypto/user/buy', {
+        const response = await fetch(UtilClass.BACKEND_BASE_URL + '/crypto/user/sell', {
           method: 'POST',
           headers: {
             Authorization: 'Bearer ' + UtilClass.getLocalToken(),
@@ -452,7 +377,7 @@ export default {
         UtilClass.endLoadedButton(confirmAccButton, 'Validate')
 
         if (data.success) {
-          await this.getUser()
+          await this.getUserWallet()
           this.closeModalAcc()
           this.clearForm()
 
@@ -462,10 +387,9 @@ export default {
           // const message = `
           //   <div style="display: flex; align-items: center;">
           //     <img src="/assets/crypto/${finded.crypto.logo}" alt="Logo" style="width: 30px; height: 30px; margin-right: 10px;">
-          //     <span>+ ${this.quantity}</span>
+          //     <span>- ${this.quantity}</span>
           //   </div>
           // `
-
           // this.clearForm()
           // UtilClass.showSuccessToastDelay(message, 100000)
 
@@ -479,15 +403,18 @@ export default {
         this.errorMessageKey = error.message
       }
     },
-    async getUser() {
+    async getUserWallet() {
       try {
-        const response = await fetch(UtilClass.BACKEND_BASE_URL + '/crypto/user/sm', {
-          method: 'GET',
-          headers: {
-            Authorization: 'Bearer ' + UtilClass.getLocalToken(),
-            'Content-Type': 'application/json',
+        const response = await fetch(
+          UtilClass.BACKEND_BASE_URL + '/crypto/user/wallet/' + this.selectedCrypto,
+          {
+            method: 'GET',
+            headers: {
+              Authorization: 'Bearer ' + UtilClass.getLocalToken(),
+              'Content-Type': 'application/json',
+            },
           },
-        })
+        )
 
         const data = await response.json()
 
@@ -499,7 +426,7 @@ export default {
         }
 
         if (data.success) {
-          this.user = data.data
+          this.userWallet = data.data.quantite
         } else {
           throw new Error(
             data.message || 'Erreur lors de la récupération des informations utilisateur.',
@@ -514,36 +441,6 @@ export default {
 </script>
 
 <style scoped>
-.v-select .vs__dropdown-toggle {
-  display: flex;
-  align-items: center;
-}
-
-.v-select .vs__dropdown-option img {
-  margin-right: 8px;
-}
-
-:deep(.vue-select .custom-value) {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-:deep(.vue-select .custom-option) {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: #171717;
-  font-weight: 500;
-  font-size: 16px;
-}
-
-:deep(.vue-select .custom-option small) {
-  color: #525252;
-  font-weight: 500;
-  font-size: 14px;
-}
-
 .card {
   background-color: transparent !important;
   border-radius: 10px;
@@ -571,27 +468,6 @@ h5 {
 
 input[type='number'] {
   color: #fff;
-}
-
-:deep(.single-value) {
-  color: #fff !important;
-  flex-direction: column;
-}
-
-:deep(.control) {
-  border-radius: 10px !important;
-  border: solid 1px #686868 !important;
-  height: 6rem;
-}
-
-:deep(.search-input) {
-  color: #fff !important;
-  position: absolute !important;
-  width: 100% !important;
-}
-
-:deep(.no-results) {
-  color: #fff !important;
 }
 
 .dip {

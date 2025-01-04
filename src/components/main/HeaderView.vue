@@ -7,18 +7,24 @@
     <nav :class="{ open: isMenuOpen }">
       <ul>
         <li>
-          <RouterLink to="/app/v1/home"><i class="bi bi-house-door"></i> Home</RouterLink>
+          <RouterLink to="/app/v1/home" @click="closeMenu">
+            <i class="bi bi-house"></i> Home
+          </RouterLink>
         </li>
         <li>
-          <RouterLink to="/app/v1/achat"><i class="bi bi-box"></i> Buy crypto</RouterLink>
+          <RouterLink to="/app/v1/achat" @click="closeMenu">
+            <i class="bi bi-box"></i> Buy crypto
+          </RouterLink>
         </li>
         <li>
-          <RouterLink to="/app/v1/profil"
-            ><i class="bi bi-person-circle"></i> My Profile</RouterLink
-          >
+          <RouterLink to="/app/v1/profil" @click="closeMenu">
+            <i class="bi bi-person-circle"></i> My Profile
+          </RouterLink>
         </li>
         <li>
-          <a href="#" @click.prevent="logout"><i class="bi bi-box-arrow-right"></i> Log out</a>
+          <a href="#" @click.prevent="confirmLogout">
+            <i class="bi bi-box-arrow-right"></i> Log out
+          </a>
         </li>
       </ul>
     </nav>
@@ -28,10 +34,39 @@
       <span :class="{ open: isMenuOpen }"></span>
     </button>
   </header>
+
+  <!-- Modal de confirmation Bootstrap -->
+  <div
+    class="modal fade"
+    id="logoutModal"
+    tabindex="-1"
+    aria-labelledby="logoutModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">Are you sure you want to log out?</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" @click="logout">Yes, Log out</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import UtilClass from '@/util/UtilClass'
+import * as bootstrap from 'bootstrap'
 
 export default {
   data() {
@@ -40,8 +75,16 @@ export default {
     }
   },
   methods: {
+    closeMenu() {
+      this.isMenuOpen = false
+    },
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen
+    },
+    // Déclenche l'affichage du modal de confirmation
+    confirmLogout() {
+      const logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'))
+      logoutModal.show()
     },
     async logout() {
       try {
@@ -63,9 +106,17 @@ export default {
         }
 
         if (data.success) {
+          const logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'))
+          logoutModal.hide()
+
+          const backdrop = document.querySelector('.modal-backdrop')
+          if (backdrop) {
+            backdrop.remove()
+          }
+
           this.$router.push('/app')
         } else {
-          throw new Error(data.message || 'Erreur lors de la deconnection')
+          throw new Error(data.message || 'Erreur lors de la déconnexion')
         }
       } catch (error) {
         console.error(error)
@@ -129,7 +180,7 @@ nav ul li RouterLink:hover {
 }
 
 nav ul li i {
-  margin-right: 8px; /* Espacement entre l'icône et le texte */
+  margin-right: 8px;
   font-size: 1.2rem;
 }
 
@@ -137,8 +188,8 @@ nav ul li i {
   display: none;
   flex-direction: column;
   justify-content: space-around;
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 25px;
   background: none;
   border: none;
   cursor: pointer;
@@ -173,7 +224,7 @@ nav ul li i {
     position: absolute;
     top: 100%;
     right: 0;
-    background: #333;
+    background: #181a20;
     width: 100%;
     text-align: center;
   }
@@ -186,8 +237,27 @@ nav ul li i {
     flex-direction: column;
   }
 
+  nav ul li a {
+    margin-left: 2rem;
+  }
+
   .hamburger {
     display: flex;
   }
+}
+
+.modal-content {
+  background-color: #181a20;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  border-bottom: 1px solid #444;
+}
+
+.modal-footer {
+  border-top: 1px solid #444;
 }
 </style>

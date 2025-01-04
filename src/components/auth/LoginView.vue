@@ -61,6 +61,7 @@
                 top: 50%;
                 transform: translateY(-50%);
                 height: 20px;
+                z-index: 999;
               "
             >
               <i
@@ -96,21 +97,9 @@
       "
     >
       <div
-        class="card p-5 text-center shadow-lg cd"
-        style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+        class="card fade-in p-5 text-center shadow-lg cd"
+        style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
       >
-        <button
-          class="btn-close position-absolute"
-          style="
-            top: 10px;
-            right: 10px;
-            color: white;
-            background-color: transparent;
-            font-size: 1.5rem;
-          "
-          @click="closePinModal"
-        ></button>
-
         <h5 class="mb-4 email">{{ email }}</h5>
         <h3 class="mb-4">On veut s’assurer que c’est bien vous</h3>
         <p class="text-muted">Veuillez entrer le code PIN à 6 chiffres envoyé à votre e-mail.</p>
@@ -144,6 +133,9 @@
         >
           Confirmer
         </button>
+        <button @click="closePinModal" style="font-size: 1.2rem" class="btn w-100 annuler">
+          Cancel
+        </button>
       </div>
     </div>
 
@@ -162,21 +154,9 @@
       "
     >
       <div
-        class="card p-5 text-center shadow-lg cd"
-        style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+        class="card fade-in p-5 text-center shadow-lg cd"
+        style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
       >
-        <button
-          class="btn-close position-absolute"
-          style="
-            top: 10px;
-            right: 10px;
-            color: white;
-            background-color: transparent;
-            font-size: 1.5rem;
-          "
-          @click="closeModalAcc"
-        ></button>
-
         <h5 class="mb-4 email">{{ email }}</h5>
         <h3 class="mb-4 text-warning">Confirmation de compte requise</h3>
         <p class="text-muted">
@@ -190,17 +170,20 @@
           placeholder="Entrez la clé de confirmation"
         />
         <p class="text-danger mb-3" v-if="errorMessageKey">{{ errorMessageKey }}</p>
+        <p class="text-muted">
+          or, vous pouvez juste appeler dans postman l'url envoyé à votre email
+        </p>
         <button
           id="confirmAccBtn"
           class="btn btn-warning w-100 fw-bold"
-          style="font-size: 1.2rem"
+          style="font-size: 1.2rem; margin-top: 2rem"
           @click="confirmAccount"
         >
           Confirmer
         </button>
-        <p class="text-muted">
-          or, vous pouvez juste appeler dans postman l'url envoyé à votre email
-        </p>
+        <button @click="closeModalAcc" style="font-size: 1.2rem" class="btn w-100 annuler">
+          Cancel
+        </button>
       </div>
     </div>
 
@@ -219,21 +202,9 @@
       "
     >
       <div
-        class="card p-5 text-center shadow-lg cd"
-        style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+        class="card fade-in p-5 text-center shadow-lg cd"
+        style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
       >
-        <button
-          class="btn-close position-absolute"
-          style="
-            top: 10px;
-            right: 10px;
-            color: white;
-            background-color: transparent;
-            font-size: 1.5rem;
-          "
-          @click="closeModalBlocked"
-        ></button>
-
         <h5 class="mb-4 email">{{ email }}</h5>
         <h3 class="mb-4 text-danger">Votre compte est bloqué</h3>
         <p class="text-muted">Veuillez demander une réinitialisation via votre e-mail.</p>
@@ -241,18 +212,29 @@
         <!-- Bouton pour demander une réinitialisation -->
         <button
           id="demandeBtn"
-          class="btn btn-warning w-100 fw-bold mb-3"
+          class="btn btn-warning w-100 fw-bold"
           style="font-size: 1.2rem"
           @click="requestReset"
           :disabled="isResetRequested"
         >
           Demander une réinitialisation
         </button>
+        <button
+          v-if="!isResetRequested"
+          @click="closeModalBlocked"
+          style="font-size: 1.2rem"
+          class="btn w-100 annuler"
+        >
+          Cancel
+        </button>
 
         <!-- Formulaire de réinitialisation -->
         <div v-if="isResetRequested">
-          <p class="text-muted">
+          <p class="text-muted" style="margin-bottom: 0.5rem; margin-top: 2rem">
             Veuillez saisir la clé de réinitialisation envoyée à votre e-mail.
+          </p>
+          <p class="text-muted">
+            or, vous pouvez juste appeler dans postman l'url envoyé à votre email
           </p>
           <input
             type="text"
@@ -261,18 +243,19 @@
             placeholder="Clé de réinitialisation"
             style="background-color: #444; color: #fff"
           />
+          <p class="text-danger mt-3" v-if="resetErrorMessage">{{ resetErrorMessage }}</p>
+
           <button
             id="confirmResetBtn"
             class="btn btn-success w-100 fw-bold"
-            style="font-size: 1.2rem"
+            style="font-size: 1.2rem; margin-top: 3rem"
             @click="confirmResetKey"
           >
             Confirmer
           </button>
-          <p class="text-danger mt-3" v-if="resetErrorMessage">{{ resetErrorMessage }}</p>
-          <p class="text-muted">
-            or, vous pouvez juste appeler dans postman l'url envoyé à votre email
-          </p>
+          <button @click="closeModalBlocked" style="font-size: 1.2rem" class="btn w-100 annuler">
+            Cancel
+          </button>
         </div>
       </div>
     </div>
@@ -545,15 +528,15 @@ input {
 }
 
 input:focus {
-  color: #ffffff; /* Texte jaune vif au focus */
-  border-color: #ffc107; /* Bordure bleu clair au focus */
-  outline: none; /* Enlever le contour par défaut */
-  box-shadow: none; /* Enlever le contour bleu spécifique à Bootstrap */
+  color: #ffffff;
+  border-color: #ffc107;
+  outline: none;
+  box-shadow: none;
 }
 
 input:-webkit-autofill {
-  background-color: #1e1e1e !important; /* Remettre un fond sombre */
-  color: #c7c6c6 !important; /* Garder le texte en blanc */
+  background-color: #1e1e1e !important;
+  color: #c7c6c6 !important;
 }
 
 .border-red {

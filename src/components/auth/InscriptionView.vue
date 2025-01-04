@@ -90,21 +90,9 @@
     "
   >
     <div
-      class="card p-5 text-center shadow-lg cd"
-      style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+      class="card fade-in p-5 text-center shadow-lg cd"
+      style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
     >
-      <button
-        class="btn-close position-absolute"
-        style="
-          top: 10px;
-          right: 10px;
-          color: white;
-          background-color: transparent;
-          font-size: 1.5rem;
-        "
-        @click="closeModalAcc"
-      ></button>
-
       <h5 class="mb-4 email">{{ email }}</h5>
       <h3 class="mb-4 text-warning">Valider votre email pour continuer</h3>
       <p class="text-muted">
@@ -118,17 +106,20 @@
         placeholder="Entrez la clé de confirmation"
       />
       <p class="text-danger mb-3" v-if="errorMessageKey">{{ errorMessageKey }}</p>
+      <p class="text-muted">
+        or, vous pouvez juste appeler dans postman l'url envoyé à votre email
+      </p>
       <button
         id="confirmAccBtn"
         class="btn btn-warning w-100 fw-bold"
-        style="font-size: 1.2rem"
+        style="font-size: 1.2rem; margin-top: 2rem"
         @click="confirmAccount"
       >
         Confirmer
       </button>
-      <p class="text-muted">
-        or, vous pouvez juste appeler dans postman l'url envoyé à votre email
-      </p>
+      <button @click="closeModalAcc" style="font-size: 1.2rem" class="btn w-100 annuler">
+        Cancel
+      </button>
     </div>
   </div>
 </template>

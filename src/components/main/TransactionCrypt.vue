@@ -25,7 +25,7 @@
               />
               {{ transaction.crypto.nom }}
             </td>
-            <td class="unit">{{ formatAmount(transaction.cour) }}</td>
+            <td class="unit">{{ formatCurrency(transaction.cour) }}</td>
             <td class="unit">{{ transaction.qtty }}</td>
             <td>
               <div :class="getStatusBadgeClass(transaction.type.etat)">
@@ -40,13 +40,15 @@
         <div class="icon-container">
           <i class="bi bi-file-earmark fs-1 text-secondary"></i>
         </div>
-        <p class="mt-3 ">Historique de transaction vide !</p>
+        <p class="mt-3">Historique de transaction vide !</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import UtilClass from '@/util/UtilClass'
+
 export default {
   name: 'TransactionFond',
   props: {
@@ -80,6 +82,9 @@ export default {
         style: 'currency',
         currency: 'MGA',
       }).format(amount)
+    },
+    formatCurrency(value) {
+      return UtilClass.formatCurrency(value)
     },
     getStatusBadgeClass(status) {
       if (status === 'down') {

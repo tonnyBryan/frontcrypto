@@ -3,7 +3,11 @@ import LoaderV from '../util/LoaderV.vue'
 </script>
 
 <template>
-  <div style="padding-top: 2rem; padding-bottom: 3rem; overflow-x: hidden" v-if="user">
+  <div
+    class="container-fluid"
+    style="padding-top: 2rem; padding-bottom: 3rem; overflow-x: hidden"
+    v-if="user"
+  >
     <div class="row">
       <div class="col-md-4">
         <div class="row m-1 d-flex align-items-center">
@@ -32,13 +36,13 @@ import LoaderV from '../util/LoaderV.vue'
                 @click="openTransactionModal('depot')"
                 class="btn btn-secondary btn-sm bt bt-depot"
               >
-                <i class="bi bi-arrow-bar-down"></i> Dépôt
+                <i class="bi bi-arrow-bar-up"></i> Dépôt
               </button>
               <button
                 @click="openTransactionModal('retrait')"
                 class="btn btn-secondary btn-sm bt bt-retrait"
               >
-                <i class="bi bi-arrow-bar-up"></i> Retrait
+                <i class="bi bi-arrow-bar-down"></i> Retrait
               </button>
             </div>
           </div>
@@ -90,21 +94,9 @@ import LoaderV from '../util/LoaderV.vue'
     "
   >
     <div
-      class="card p-5 shadow-lg cd"
-      style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+      class="card fade-in p-5 shadow-lg cd"
+      style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
     >
-      <button
-        class="btn-close position-absolute"
-        style="
-          top: 10px;
-          right: 10px;
-          color: white;
-          background-color: transparent;
-          font-size: 1.5rem;
-        "
-        @click="closeTransactionModal"
-      ></button>
-
       <h5 class="mb-4" style="font-size: x-large">
         {{ transactionType }}
         <span style="font-size: x-large; color: #aaacab">@{{ user.email }}</span>
@@ -129,6 +121,9 @@ import LoaderV from '../util/LoaderV.vue'
       >
         Confirmer
       </button>
+      <button @click="closeTransactionModal" style="font-size: 1.2rem" class="btn w-100 annuler">
+        Cancel
+      </button>
     </div>
   </div>
 
@@ -147,20 +142,9 @@ import LoaderV from '../util/LoaderV.vue'
     "
   >
     <div
-      class="card p-5 text-center shadow-lg cd"
-      style="width: 35rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+      class="card fade-in p-5 text-center shadow-lg cd"
+      style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
     >
-      <button
-        class="btn-close position-absolute"
-        style="
-          top: 10px;
-          right: 10px;
-          color: white;
-          background-color: transparent;
-          font-size: 1.5rem;
-        "
-        @click="closeModalAcc"
-      ></button>
       <h5 class="mb-4 email" style="text-align: left; font-size: x-large">Confirmation Requise</h5>
       <div class="card bg-dark p-4" style="border: solid 1px #676767">
         <div class="row align-items-center">
@@ -183,7 +167,7 @@ import LoaderV from '../util/LoaderV.vue'
         </div>
       </div>
 
-      <p style="margin-top: 5rem; text-align: left">
+      <p style="margin-top: 4rem; text-align: left">
         Veuillez entrer la clé de confirmation envoyée à votre e-mail pour confirmer transaction.
       </p>
       <input
@@ -199,14 +183,14 @@ import LoaderV from '../util/LoaderV.vue'
       <button
         id="confirmAccBtn"
         class="btn btn-warning w-100 fw-bold"
-        style="font-size: 1.2rem"
+        style="font-size: 1.2rem; margin-top: 3rem"
         @click="confirmAccount"
       >
         Confirmer
       </button>
-      <p class="text-muted">
-        or, vous pouvez juste appeler dans postman l'url envoyé à votre email
-      </p>
+      <button @click="closeModalAcc" style="font-size: 1.2rem" class="btn w-100 annuler">
+        Cancel
+      </button>
     </div>
   </div>
 
@@ -225,22 +209,13 @@ import LoaderV from '../util/LoaderV.vue'
     "
   >
     <div
-      class="card p-5 shadow-lg cd"
-      style="width: 40rem; background-color: #2c2c2c; border-radius: 15px; color: #fff"
+      class="card fade-in p-5 shadow-lg cd"
+      style="width: 40rem; background-color: #1e2329; border-radius: 15px; color: #fff"
     >
-      <button
-        class="btn-close position-absolute"
-        style="
-          top: 10px;
-          right: 10px;
-          color: white;
-          background-color: transparent;
-          font-size: 1.5rem;
-        "
-        @click="closeResultModal"
-      ></button>
-
       <TransactionFdResult :details="dtll"></TransactionFdResult>
+      <button @click="closeResultModal" style="font-size: 1.2rem" class="btn w-100 annuler">
+        Close
+      </button>
     </div>
   </div>
 </template>
@@ -491,14 +466,7 @@ export default {
       this.showConfirmationModal = false
     },
     formatCurrency(value) {
-      const formatted = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(value)
-
-      return formatted.replace('$', '$ ')
+      return UtilClass.formatCurrency(value)
     },
   },
 }
@@ -566,7 +534,7 @@ export default {
 }
 
 .center {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
