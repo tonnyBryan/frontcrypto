@@ -141,7 +141,7 @@
         v-model="confirmationKey"
         class="form-control mb-3 text-center inp2"
         style="background-color: #444; color: #fff; border: none; border-radius: 5px"
-        placeholder="Entrez la clé de confirmation"
+        placeholder="Enter confirmation key"
       />
       <div v-if="errorMessageKey" class="alert alert-danger" role="alert">
         {{ errorMessageKey }}
@@ -259,10 +259,10 @@ export default {
         this.quantity = this.decryptedData.quantity
         this.updatePriceOne()
       } else {
-        console.warn('Aucune donnée trouvée dans le localStorage.')
+        console.warn('No data found in the localStorage.')
       }
     } catch (error) {
-      console.error('Erreur lors du décryptage ou de la récupération des données :', error)
+      console.error('Error while decrypting or recovering data :', error)
     }
   },
   beforeUnmount() {
@@ -317,7 +317,7 @@ export default {
           unit: crypto.unit_nom,
         }))
       } catch (error) {
-        console.error('Erreur lors de la récupération des cryptos:', error)
+        console.error('Error recovering crypto:', error)
       }
     },
 
@@ -329,11 +329,11 @@ export default {
         this.updateSpend()
       }
       this.socket.onopen = () => {
-        console.log('WebSocket connecté')
+        console.log('WebSocket connected')
         this.getLastCour()
       }
       this.socket.onclose = () => {
-        console.log('WebSocket déconnecté')
+        console.log('WebSocket disconnected')
       }
     },
     async getLastCour() {
@@ -360,7 +360,7 @@ export default {
           this.updatePriceOne()
         } else {
           throw new Error(
-            data.message || 'Erreur lors de la récupération des informations utilisateur.',
+            data.message || 'Error retrieving user information',
           )
         }
       } catch (error) {
@@ -392,19 +392,19 @@ export default {
             this.$router.push('/app/login')
             return
           }
-          throw new Error("Une erreur est survenue lors de l'appel à l'API.")
+          throw new Error("An error occurred while calling the API.")
         }
 
         UtilClass.endLoadedButton(trButton, 'Buy (need email validation)')
 
         if (!data.success) {
-          UtilClass.showErrorToast(data.message || 'Erreur inconnue')
+          UtilClass.showErrorToast(data.message || 'Unknown error')
           return
         }
         this.showConfirmationModal = true
       } catch (error) {
         UtilClass.endLoadedButton(trButton, 'Buy (need email validation)')
-        UtilClass.showErrorToast("Une erreur s'est produite. Veuillez réessayer plus tard.")
+        UtilClass.showErrorToast("An error occurred ! Please try again later")
         console.error(error)
       }
     },
@@ -420,7 +420,7 @@ export default {
     },
     async confirmAccount() {
       if (!this.confirmationKey) {
-        this.errorMessageKey = 'Veuillez entrer une clé de confirmation.'
+        this.errorMessageKey = 'Please enter a confirmation key'
         return
       }
 
@@ -472,7 +472,7 @@ export default {
           const thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'))
           thankYouModal.show()
         } else {
-          throw new Error(data.message || 'Clé de confirmation invalide.')
+          throw new Error(data.message || 'Invalid confirmation key.')
         }
       } catch (error) {
         UtilClass.endLoadedButton(confirmAccButton, 'Validate')
@@ -502,7 +502,7 @@ export default {
           this.user = data.data
         } else {
           throw new Error(
-            data.message || 'Erreur lors de la récupération des informations utilisateur.',
+            data.message || 'Error retrieving user information',
           )
         }
       } catch (error) {

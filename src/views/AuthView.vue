@@ -11,8 +11,8 @@ import HelloWorld from '../components/util/HelloWorld.vue'
         <div class="wrapper">
           <HelloWorld msg="WELCOME" />
           <nav>
-            <RouterLink to="/app/login">Se connecter</RouterLink>
-            <RouterLink to="/app/inscription">Inscription</RouterLink>
+            <RouterLink to="/app/login">Log in</RouterLink>
+            <RouterLink to="/app/inscription">Sign up</RouterLink>
           </nav>
         </div>
       </header>

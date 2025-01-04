@@ -11,7 +11,7 @@
       "
     >
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="text-left">Inscription</h2>
+        <h2 class="text-left">Sign up</h2>
         <img src="@/assets/binance-logo.svg" alt="Logo" style="width: 30px; height: 30px" />
       </div>
       <form @submit.prevent="handleInscription" novalidate>
@@ -24,7 +24,7 @@
             v-model="username"
             class="form-control"
             :class="{ 'is-invalid': errors.username }"
-            placeholder="Entrez votre Username"
+            placeholder="Enter your  Username"
             style="background-color: transparent; padding: 13px"
             autocomplete="off"
             required
@@ -41,7 +41,7 @@
             v-model="email"
             class="form-control"
             :class="{ 'is-invalid': errors.email }"
-            placeholder="Entrez votre e-mail"
+            placeholder="Enter your e-mail"
             style="background-color: transparent; padding: 13px"
             autocomplete="off"
             required
@@ -52,14 +52,14 @@
         </div>
         <!-- Champ Mot de Passe -->
         <div class="mb-3">
-          <label for="password" class="form-label">Mot de passe</label>
+          <label for="password" class="form-label">Password</label>
           <input
             type="password"
             id="password"
             v-model="password"
             class="form-control"
             :class="{ 'is-invalid': errors.password }"
-            placeholder="Entrez votre mot de passe"
+            placeholder="Enter your Password"
             style="background-color: transparent; padding: 13px"
             required
           />
@@ -67,9 +67,9 @@
             {{ errors.password }}
           </div>
         </div>
-        <!-- Bouton Continuer -->
+        <!-- Bouton Continuee-->
         <button id="submit-btn" type="submit" class="btn btn-warning w-100 mb-3 fw-bold">
-          Continuer
+          Continue
         </button>
       </form>
     </div>
@@ -94,20 +94,20 @@
       style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
     >
       <h5 class="mb-4 email">{{ email }}</h5>
-      <h3 class="mb-4 text-warning">Valider votre email pour continuer</h3>
+      <h3 class="mb-4 text-warning">Validate your email to continue</h3>
       <p class="text-muted">
-        Veuillez entrer la clé de confirmation envoyée à votre e-mail pour activer votre compte.
+       Please enter the confirmation key sent to your email to activate your account .
       </p>
       <input
         type="text"
         v-model="confirmationKey"
         class="form-control mb-3 text-center"
         style="background-color: #444; color: #fff; border: none; border-radius: 5px"
-        placeholder="Entrez la clé de confirmation"
+        placeholder="Enter confirmation key"
       />
       <p class="text-danger mb-3" v-if="errorMessageKey">{{ errorMessageKey }}</p>
       <p class="text-muted">
-        or, vous pouvez juste appeler dans postman l'url envoyé à votre email
+        or, you can call the URL sent to your email in Postman 
       </p>
       <button
         id="confirmAccBtn"
@@ -115,7 +115,7 @@
         style="font-size: 1.2rem; margin-top: 2rem"
         @click="confirmAccount"
       >
-        Confirmer
+        Confirm
       </button>
       <button @click="closeModalAcc" style="font-size: 1.2rem" class="btn w-100 annuler">
         Cancel
@@ -145,15 +145,15 @@ export default {
     async handleInscription() {
       this.errors = {}
       if (!this.username) {
-        this.errors.username = 'Username Obligatoire'
+        this.errors.username = 'Username required'
       }
       if (!this.email) {
-        this.errors.email = "L'adresse e-mail est obligatoire."
+        this.errors.email = "E-mail adress  required."
       } else if (!UtilClass.validateEmail(this.email)) {
-        this.errors.email = 'Veuillez entrer une adresse e-mail valide.'
+        this.errors.email = 'Please enter a valid e-mail adresse.'
       }
       if (!this.password) {
-        this.errors.password = 'Le mot de passe est obligatoire.'
+        this.errors.password = 'Password required.'
       }
 
       if (Object.keys(this.errors).length === 0) {
@@ -173,7 +173,7 @@ export default {
           })
 
           const data = await response.json()
-          UtilClass.endLoadedButton(submitButton, 'Continuer')
+          UtilClass.endLoadedButton(submitButton, 'Continue')
 
           if (data.isSuccess) {
             this.showConfirmationModal = true
@@ -183,15 +183,15 @@ export default {
             }
           }
         } catch (error) {
-          console.error('Erreur lors de la connexion :', error.message)
-          UtilClass.showErrorToast('Connection Perdue')
-          UtilClass.endLoadedButton(submitButton, 'Continuer')
+          console.error('Error during connection :', error.message)
+          UtilClass.showErrorToast('Connection lost')
+          UtilClass.endLoadedButton(submitButton, 'Continue')
         }
       }
     },
     async confirmAccount() {
       if (!this.confirmationKey) {
-        this.errorMessageKey = 'Veuillez entrer une clé de confirmation.'
+        this.errorMessageKey = 'Please enter confirmation key.'
         return
       }
 
@@ -209,7 +209,7 @@ export default {
         )
 
         const data = await response.json()
-        UtilClass.endLoadedButton(confirmAccButton, 'Confirmer')
+        UtilClass.endLoadedButton(confirmAccButton, 'Confirm')
 
         if (data.isSuccess) {
           const token = data.data.token
@@ -217,10 +217,10 @@ export default {
           this.closeModalAcc()
           this.$router.push('/app/v1')
         } else {
-          throw new Error(data.message || 'Clé de confirmation invalide.')
+          throw new Error(data.message || 'Invalid confirmation key.')
         }
       } catch (error) {
-        UtilClass.endLoadedButton(confirmAccButton, 'Confirmer')
+        UtilClass.endLoadedButton(confirmAccButton, 'Confirm')
         this.errorMessageKey = error.message
       }
     },

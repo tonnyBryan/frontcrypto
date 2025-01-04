@@ -28,7 +28,7 @@ import LoaderV from '../util/LoaderV.vue'
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-start">
             <div>
-              <h5 class="card-title mb-2">Solde réel <i class="bi bi-eye"></i></h5>
+              <h5 class="card-title mb-2">Balance<i class="bi bi-eye"></i></h5>
               <h1 class="mb-0">{{ formatAmount(user.monnaie) }} <span class="unit">USD</span></h1>
             </div>
             <div class="d-flex gap-2 flex-sm-row flex-column">
@@ -36,13 +36,13 @@ import LoaderV from '../util/LoaderV.vue'
                 @click="openTransactionModal('depot')"
                 class="btn btn-secondary btn-sm bt bt-depot"
               >
-                <i class="bi bi-arrow-bar-up"></i> Dépôt
+                <i class="bi bi-arrow-bar-up"></i> Deposit
               </button>
               <button
                 @click="openTransactionModal('retrait')"
                 class="btn btn-secondary btn-sm bt bt-retrait"
               >
-                <i class="bi bi-arrow-bar-down"></i> Retrait
+                <i class="bi bi-arrow-bar-down"></i> Withdraw
               </button>
             </div>
           </div>
@@ -106,10 +106,10 @@ import LoaderV from '../util/LoaderV.vue'
           type="text"
           v-model="formattedSolde"
           class="form-control inp"
-          placeholder="Entrez le montant"
+          placeholder="Please enter the amount "
           @input="formatNumber"
         />
-        <span class="usd-icon">$</span>
+        <span class="usd-icon">USD</span>
       </div>
 
       <p class="text-danger mb-3" v-if="errorMessage">{{ errorMessage }}</p>
@@ -119,7 +119,7 @@ import LoaderV from '../util/LoaderV.vue'
         class="btn btn-warning w-100 fw-bold"
         @click="proceedToConfirmation"
       >
-        Confirmer
+        Confirm
       </button>
       <button @click="closeTransactionModal" style="font-size: 1.2rem" class="btn w-100 annuler">
         Cancel
@@ -145,7 +145,7 @@ import LoaderV from '../util/LoaderV.vue'
       class="card fade-in p-5 text-center shadow-lg cd"
       style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
     >
-      <h5 class="mb-4 email" style="text-align: left; font-size: x-large">Confirmation Requise</h5>
+      <h5 class="mb-4 email" style="text-align: left; font-size: x-large">Transaction</h5>
       <div class="card bg-dark p-4" style="border: solid 1px #676767">
         <div class="row align-items-center">
           <div class="col-md-8">
@@ -156,7 +156,7 @@ import LoaderV from '../util/LoaderV.vue'
               style="border: solid 2px"
               :class="[
                 'badge',
-                transactionType === 'Dépôt'
+                transactionType === 'Deposit'
                   ? 'border-warning text-warning'
                   : 'border-success text-success',
               ]"
@@ -166,16 +166,15 @@ import LoaderV from '../util/LoaderV.vue'
           </div>
         </div>
       </div>
-
       <p style="margin-top: 4rem; text-align: left">
-        Veuillez entrer la clé de confirmation envoyée à votre e-mail pour confirmer transaction.
+        Please enter the reset key that we send to your email adress to confirm transaction.
       </p>
       <input
         type="text"
         v-model="confirmationKey"
         class="form-control mb-3 text-center inp2"
         style="background-color: #444; color: #fff; border: none; border-radius: 5px"
-        placeholder="Entrez la clé de confirmation"
+        placeholder="Enter confirmation key"
       />
       <div v-if="errorMessageKey" class="alert alert-danger" role="alert">
         {{ errorMessageKey }}
@@ -186,7 +185,7 @@ import LoaderV from '../util/LoaderV.vue'
         style="font-size: 1.2rem; margin-top: 3rem"
         @click="confirmAccount"
       >
-        Confirmer
+        Confirm
       </button>
       <button @click="closeModalAcc" style="font-size: 1.2rem" class="btn w-100 annuler">
         Cancel
@@ -262,10 +261,10 @@ export default {
   },
   computed: {
     fundButtonText() {
-      return this.fundExpanded ? 'Voir Moins' : 'Voir Plus'
+      return this.fundExpanded ? 'Show less' : 'Show more'
     },
     cryptoButtonText() {
-      return this.cryptoExpanded ? 'Voir Moins' : 'Voir Plus'
+      return this.cryptoExpanded ? 'Show less' : 'Show more'
     },
   },
   methods: {
@@ -320,7 +319,7 @@ export default {
           this.cryptoTransactions = data.data.transactionCryptos
         } else {
           throw new Error(
-            data.message || 'Erreur lors de la récupération des informations utilisateur.',
+            data.message || 'Error retrieving user information',
           )
         }
       } catch (error) {
@@ -336,14 +335,14 @@ export default {
     },
 
     openTransactionModal(type) {
-      this.transactionType = type === 'depot' ? 'Dépôt' : 'Retrait'
+      this.transactionType = type === 'depot' ? 'Deposit' : 'Withdraw'
       this.solde = ''
       this.formattedSolde = ''
       this.errorMessage = ''
       this.showTransactionModal = true
     },
     getType(tpdata) {
-      return tpdata === 'Dépôt' ? 'depot' : 'retrait'
+      return tpdata === 'Deposit' ? 'depot' : 'retrait'
     },
     closeTransactionModal() {
       this.showTransactionModal = false
@@ -353,13 +352,13 @@ export default {
     },
     async proceedToConfirmation() {
       if (!this.solde || this.solde <= 0) {
-        this.errorMessage = 'Veuillez entrer un montant valide.'
+        this.errorMessage = 'Please enter a valid amount.'
         return
       }
 
       if (this.getType(this.transactionType) === 'retrait') {
         if (this.user.monnaie < this.solde) {
-          this.errorMessage = 'Veuillez entrer un montant valide.'
+          this.errorMessage = 'Please enter a valid.'
           return
         }
       }
@@ -384,27 +383,27 @@ export default {
             this.$router.push('/app/login')
             return
           }
-          throw new Error("Une erreur est survenue lors de l'appel à l'API.")
+          throw new Error("An error occurred while calling the API.")
         }
 
-        UtilClass.endLoadedButton(trButton, 'Confirmer')
+        UtilClass.endLoadedButton(trButton, 'confirm')
 
         if (!data.success) {
-          UtilClass.showErrorToast(data.message || 'Erreur inconnue')
+          UtilClass.showErrorToast(data.message || 'Unknown error')
           return
         }
         this.showTransactionModal = false
         this.showConfirmationModal = true
       } catch (error) {
-        UtilClass.endLoadedButton(trButton, 'Confirmer')
-        UtilClass.showErrorToast("Une erreur s'est produite. Veuillez réessayer plus tard.")
+        UtilClass.endLoadedButton(trButton, 'confirm')
+        UtilClass.showErrorToast("An error occurred ! Please try again later")
         console.error(error)
       }
     },
 
     async confirmAccount() {
       if (!this.confirmationKey) {
-        this.errorMessageKey = 'Veuillez entrer une clé de confirmation.'
+        this.errorMessageKey = 'Please enter a confirmation key'
         return
       }
 
@@ -449,14 +448,14 @@ export default {
           }
 
           await this.getUserInfo()
-          UtilClass.endLoadedButton(confirmAccButton, 'Confirmer')
+          UtilClass.endLoadedButton(confirmAccButton, 'Confirm')
           this.showResultModal = true
         } else {
-          UtilClass.endLoadedButton(confirmAccButton, 'Confirmer')
-          throw new Error(data.message || 'Clé de confirmation invalide.')
+          UtilClass.endLoadedButton(confirmAccButton, 'Confirm')
+          throw new Error(data.message || 'Invalid confirmation key.')
         }
       } catch (error) {
-        UtilClass.endLoadedButton(confirmAccButton, 'Confirmer')
+        UtilClass.endLoadedButton(confirmAccButton, 'Confirm')
         this.errorMessageKey = error.message
       }
     },

@@ -61,7 +61,7 @@ export default {
 
         this.lineSeries.setData(initialData)
       } catch (error) {
-        console.error('Erreur lors de la récupération des données initiales :', error)
+        console.error('Error retrieving initial data :', error)
       }
     },
     async initChart() {
@@ -126,10 +126,10 @@ export default {
         this.updateChartData(selectedCrypto)
       }
       this.socket.onopen = () => {
-        console.log('WebSocket connecté')
+        console.log('WebSocket connected')
       }
       this.socket.onclose = () => {
-        console.log('WebSocket déconnecté')
+        console.log('WebSocket disconnected')
       }
     },
 
