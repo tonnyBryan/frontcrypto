@@ -102,7 +102,7 @@
       >
         <h5 class="mb-4 email">{{ email }}</h5>
         <h3 class="mb-4">We want to make sure that it's really you</h3>
-        <p class="text-muted">Please enter the 6- digit PIN code sent to your e-mail.</p>
+        <p class="text-muted">Please enter the PIN code sent to your e-mail.</p>
         <div class="d-flex justify-content-center mb-4">
           <input
             v-for="(digit, index) in pin"
@@ -170,9 +170,7 @@
           placeholder="Enter confirmation key"
         />
         <p class="text-danger mb-3" v-if="errorMessageKey">{{ errorMessageKey }}</p>
-        <p class="text-muted">
-          or, you can call the URL sent to your email in Postman 
-        </p>
+        <p class="text-muted">or, you can call the URL sent to your email in Postman</p>
         <button
           id="confirmAccBtn"
           class="btn btn-warning w-100 fw-bold"
@@ -207,7 +205,9 @@
       >
         <h5 class="mb-4 email">{{ email }}</h5>
         <h3 class="mb-4 text-danger">Your account has been locked !</h3>
-        <p class="text-muted">To regain access,please request a password reset through  your email address.</p>
+        <p class="text-muted">
+          To regain access,please request a password reset through your email address.
+        </p>
 
         <!-- Bouton pour Request a password reset -->
         <button
@@ -233,9 +233,7 @@
           <p class="text-muted" style="margin-bottom: 0.5rem; margin-top: 2rem">
             Please enter the reset key that we send to your email adress.
           </p>
-          <p class="text-muted">
-            or, you can call the URL sent to your email in Postman 
-          </p>
+          <p class="text-muted">or, you can call the URL sent to your email in Postman</p>
           <input
             type="text"
             v-model="resetKey"
@@ -295,7 +293,7 @@ export default {
     async handleLogin() {
       this.errors = {}
       if (!this.email) {
-        this.errors.email = "Email adress required."
+        this.errors.email = 'Email adress required.'
       } else if (!UtilClass.validateEmail(this.email)) {
         this.errors.email = 'Please enter an email adress valide.'
       }

@@ -36,13 +36,13 @@ import LoaderV from '../util/LoaderV.vue'
                 @click="openTransactionModal('depot')"
                 class="btn btn-secondary btn-sm bt bt-depot"
               >
-                <i class="bi bi-arrow-bar-up"></i> Deposit
+                <i class="bi bi-arrow-bar-up"></i> Depot
               </button>
               <button
                 @click="openTransactionModal('retrait')"
                 class="btn btn-secondary btn-sm bt bt-retrait"
               >
-                <i class="bi bi-arrow-bar-down"></i> Withdraw
+                <i class="bi bi-arrow-bar-down"></i> Retrait
               </button>
             </div>
           </div>
@@ -156,7 +156,7 @@ import LoaderV from '../util/LoaderV.vue'
               style="border: solid 2px"
               :class="[
                 'badge',
-                transactionType === 'Deposit'
+                transactionType === 'Depot'
                   ? 'border-warning text-warning'
                   : 'border-success text-success',
               ]"
@@ -318,9 +318,7 @@ export default {
           this.fundTransactions = data.data.transactionFond
           this.cryptoTransactions = data.data.transactionCryptos
         } else {
-          throw new Error(
-            data.message || 'Error retrieving user information',
-          )
+          throw new Error(data.message || 'Error retrieving user information')
         }
       } catch (error) {
         console.error(error)
@@ -335,14 +333,14 @@ export default {
     },
 
     openTransactionModal(type) {
-      this.transactionType = type === 'depot' ? 'Deposit' : 'Withdraw'
+      this.transactionType = type === 'depot' ? 'Depot' : 'Retrait'
       this.solde = ''
       this.formattedSolde = ''
       this.errorMessage = ''
       this.showTransactionModal = true
     },
     getType(tpdata) {
-      return tpdata === 'Deposit' ? 'depot' : 'retrait'
+      return tpdata === 'Depot' ? 'depot' : 'retrait'
     },
     closeTransactionModal() {
       this.showTransactionModal = false
@@ -383,7 +381,7 @@ export default {
             this.$router.push('/app/login')
             return
           }
-          throw new Error("An error occurred while calling the API.")
+          throw new Error('An error occurred while calling the API.')
         }
 
         UtilClass.endLoadedButton(trButton, 'confirm')
@@ -396,7 +394,7 @@ export default {
         this.showConfirmationModal = true
       } catch (error) {
         UtilClass.endLoadedButton(trButton, 'confirm')
-        UtilClass.showErrorToast("An error occurred ! Please try again later")
+        UtilClass.showErrorToast('An error occurred ! Please try again later')
         console.error(error)
       }
     },
@@ -576,12 +574,13 @@ export default {
 
 .usd-icon {
   position: absolute;
-  top: 41%;
+  top: 50%;
   right: 20px;
   transform: translateY(-50%);
   font-size: 1.2rem;
-  color: #999;
+  color: #ffffff;
   pointer-events: none;
+  font-weight: 700;
 }
 
 @media (max-width: 768px) {
