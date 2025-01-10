@@ -192,6 +192,9 @@ export default {
       }).format(amount)
     },
     formatVariation(variation) {
+      if (variation === undefined) {
+        return '--'
+      }
       return (
         new Intl.NumberFormat('en-US', {
           minimumFractionDigits: 2,
@@ -224,7 +227,6 @@ export default {
       if (selectedCrypto) {
         this.crypto = {
           ...selectedCrypto,
-          variation: Math.random() * 10 - 5,
           volume: Math.random() * 1000000000,
           capitalisation: selectedCrypto.valeur * 1000000,
         }
@@ -272,9 +274,7 @@ export default {
           this.updateCryptoData(data.data)
           this.getUserWallet()
         } else {
-          throw new Error(
-            data.message || 'Error retrieving user information',
-          )
+          throw new Error(data.message || 'Error retrieving user information')
         }
       } catch (error) {
         console.error(error)
@@ -306,9 +306,7 @@ export default {
           this.quantite = data.data.quantite
           this.updateEstimation()
         } else {
-          throw new Error(
-            data.message || 'Error retrieving user information',
-          )
+          throw new Error(data.message || 'Error retrieving user information')
         }
       } catch (error) {
         console.error(error)

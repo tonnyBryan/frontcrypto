@@ -29,7 +29,7 @@ import LoaderV from '../util/LoaderV.vue'
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <h5 class="card-title mb-2">Balance<i class="bi bi-eye"></i></h5>
-              <h1 class="mb-0">{{ formatAmount(user.monnaie) }} <span class="unit">USD</span></h1>
+              <h1 class="mb-0">{{ user.monnaie }} <span class="unit">USD</span></h1>
             </div>
             <div class="d-flex gap-2 flex-sm-row flex-column">
               <button
@@ -355,8 +355,10 @@ export default {
       }
 
       if (this.getType(this.transactionType) === 'retrait') {
+        console.log(this.user.monnaie)
+        console.log(this.solde)
         if (this.user.monnaie < this.solde) {
-          this.errorMessage = 'Please enter a valid.'
+          this.errorMessage = 'Please enter a valid j.'
           return
         }
       }

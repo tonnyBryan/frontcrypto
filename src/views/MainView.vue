@@ -35,7 +35,7 @@ const scrollToTop = () => {
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll) // Écouteur de défilement
-  //UtilClass.verifyToken(router)
+  UtilClass.verifyToken(router)
 })
 
 onUnmounted(() => {

@@ -73,7 +73,6 @@ export default {
     updateData(data) {
       this.cryptos = data.map((item) => ({
         ...item,
-        variation: Math.random() * 10 - 5,
         volume: Math.random() * 1000000000,
         capitalisation: item.valeur * 1000000,
       }))
@@ -103,6 +102,9 @@ export default {
       return UtilClass.formatCurrency(value)
     },
     formatVariation(variation) {
+      if (variation === undefined) {
+        return '--'
+      }
       return (
         new Intl.NumberFormat('en-US', {
           minimumFractionDigits: 2,
@@ -150,14 +152,11 @@ export default {
         if (data.success) {
           this.cryptos = data.data.map((item) => ({
             ...item,
-            variation: Math.random() * 10 - 5,
             volume: Math.random() * 1000000000,
             capitalisation: item.valeur * 1000000,
           }))
         } else {
-          throw new Error(
-            data.message || 'Error retrieving user information',
-          )
+          throw new Error(data.message || 'Error retrieving user information')
         }
       } catch (error) {
         console.error(error)

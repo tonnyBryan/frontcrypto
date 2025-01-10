@@ -359,15 +359,17 @@ export default {
           this.cryptoList = data.data
           this.updatePriceOne()
         } else {
-          throw new Error(
-            data.message || 'Error retrieving user information',
-          )
+          throw new Error(data.message || 'Error retrieving user information')
         }
       } catch (error) {
         console.error(error)
       }
     },
     async nextStep() {
+      if (!this.canBuy) {
+        return
+      }
+
       if (this.estimation > this.user.monnaie) {
         return
       }
@@ -392,7 +394,7 @@ export default {
             this.$router.push('/app/login')
             return
           }
-          throw new Error("An error occurred while calling the API.")
+          throw new Error('An error occurred while calling the API.')
         }
 
         UtilClass.endLoadedButton(trButton, 'Buy (need email validation)')
@@ -404,7 +406,7 @@ export default {
         this.showConfirmationModal = true
       } catch (error) {
         UtilClass.endLoadedButton(trButton, 'Buy (need email validation)')
-        UtilClass.showErrorToast("An error occurred ! Please try again later")
+        UtilClass.showErrorToast('An error occurred ! Please try again later')
         console.error(error)
       }
     },
@@ -501,9 +503,7 @@ export default {
         if (data.success) {
           this.user = data.data
         } else {
-          throw new Error(
-            data.message || 'Error retrieving user information',
-          )
+          throw new Error(data.message || 'Error retrieving user information')
         }
       } catch (error) {
         console.error(error)

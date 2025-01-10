@@ -7,7 +7,8 @@
           <tr>
             <th scope="col" class="d-none d-sm-table-cell">Ref</th>
             <th scope="col">Crypto</th>
-            <th scope="col">Rate</th>
+            <th scope="col">Total</th>
+            <th scope="col">Price</th>
             <th scope="col">Quantity</th>
             <th scope="col">Type</th>
             <th scope="col" class="d-none d-sm-table-cell">Date</th>
@@ -25,6 +26,7 @@
               />
               {{ transaction.crypto.nom }}
             </td>
+            <td class="unit">{{ total(transaction) }}</td>
             <td class="unit">{{ formatCurrency(transaction.cour) }}</td>
             <td class="unit">{{ transaction.qtty }}</td>
             <td>
@@ -70,6 +72,9 @@ export default {
     },
   },
   methods: {
+    total(transaction) {
+      return this.formatCurrency(transaction.cour * transaction.qtty)
+    },
     formatDate(date) {
       return new Date(date).toLocaleDateString('fr-FR', {
         day: '2-digit',
