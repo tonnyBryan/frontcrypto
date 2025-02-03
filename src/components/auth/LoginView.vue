@@ -11,8 +11,8 @@
       "
     >
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="text-left">Connexion</h2>
-        <img src="@/assets/binance-logo.svg" alt="Logo" style="width: 30px; height: 30px" />
+        <h2 class="text-left">Log In</h2>
+        <img src="@/assets/App-icon.png" alt="Logo" style="width: 30px; height: 30px" />
       </div>
       <form @submit.prevent="handleLogin" novalidate>
         <!-- Champ Email -->

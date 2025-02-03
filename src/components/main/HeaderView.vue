@@ -1,7 +1,7 @@
 <template>
   <header class="modern-header">
     <div class="logo">
-      <img src="@/assets/binance-logo.svg" alt="Logo" class="logo-icon" />
+      <img src="@/assets/App-icon.png" alt="Logo" class="logo-icon" />
       Crypto-G
     </div>
     <nav :class="{ open: isMenuOpen }">

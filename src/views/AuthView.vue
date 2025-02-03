@@ -7,7 +7,7 @@ import HelloWorld from '../components/util/HelloWorld.vue'
   <div class="container-fluid">
     <div class="row">
       <header class="col-12 col-md-6" style="gap: 2rem">
-        <img class="logo" src="@/assets/binance-logo.svg" width="125" height="125" />
+        <img class="logo" src="@/assets/App-icon.png" width="125" height="125" />
         <div class="wrapper">
           <HelloWorld msg="WELCOME" />
           <nav>

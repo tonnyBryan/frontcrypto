@@ -106,14 +106,14 @@ export default {
     },
     formatVariation(variation) {
       if (variation === undefined) {
-        return '--'
+        return '--';
       }
-      return (
-        new Intl.NumberFormat('en-US', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        }).format(variation) + '%'
-      )
+      const formattedValue = new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(variation);
+
+      return (variation > 0 ? `+${formattedValue}` : formattedValue) + '%';
     },
     formatVolume(volume) {
       return (

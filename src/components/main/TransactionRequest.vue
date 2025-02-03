@@ -143,7 +143,7 @@ onMounted(fetchDemandes);
         </td>
       </tr>
       <tr v-if="demandes.length === 0">
-        <td colspan="5" class="text-center">Aucune demande disponible.</td>
+        <td colspan="5" class="text-center">Empty 🎯</td>
       </tr>
       </tbody>
     </table>

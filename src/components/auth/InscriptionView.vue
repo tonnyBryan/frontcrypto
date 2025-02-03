@@ -12,7 +12,7 @@
     >
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="text-left">Sign up</h2>
-        <img src="@/assets/binance-logo.svg" alt="Logo" style="width: 30px; height: 30px" />
+        <img src="@/assets/App-icon.png" alt="Logo" style="width: 30px; height: 30px" />
       </div>
       <form @submit.prevent="handleInscription" novalidate>
         <!-- Champ Email -->
@@ -107,7 +107,7 @@
       />
       <p class="text-danger mb-3" v-if="errorMessageKey">{{ errorMessageKey }}</p>
       <p class="text-muted">
-        or, you can call the URL sent to your email in Postman 
+        or, you can call the URL sent to your email in Postman
       </p>
       <button
         id="confirmAccBtn"

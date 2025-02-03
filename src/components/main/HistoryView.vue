@@ -113,6 +113,8 @@
     </div>
   </div>
   <div class="row">
+    <div class="filter-header" style="width: 88%; margin: auto; color: #f0f0f0;">
+    </div>
     <div class="table-container">
       <div class="table-responsive">
         <table v-if="transactions.length" class="table table-dark tba" style="width: 90%">
@@ -137,7 +139,9 @@
                 width="20"
                 class="me-2"
               />
-              <span class="unit">{{ transaction.utilisateur.nom }}</span>
+              <span class="unit cursor-pointer" @click="filterByUser(transaction.utilisateur)">
+                {{ transaction.utilisateur.nom }}
+              </span>
             </td>
             <td>
               <img
@@ -218,6 +222,7 @@ export default {
     this.getTransactionsData(null)
     await this.fetchCryptoOptions()
     await this.fetchUserOptions()
+    this.addHeader("History for all")
   },
   methods: {
     showErrorModal() {
@@ -225,29 +230,50 @@ export default {
       this.modalInstance.show();
     },
     sync() {
-      this.getTransactionsData(null)
+      this.getTransactionsData(null);
+      this.addHeader("Historique de transaction pour tous");
     },
     filterData() {
       let url = UtilClass.BACKEND_BASE_URL + "/crypto/user/transactions";
+      let filterHeader =  "History for ";
 
       if (this.selectedUser || this.selectedCrypto) {
         let params = [];
         if (this.selectedUser) {
           params.push("idu=" + this.selectedUser);
+          const user = this.userOptions.find(user => user.value === this.selectedUser);
+          filterHeader += "user "+ user.label + " ";
         }
         if (this.selectedCrypto) {
           params.push("idc=" + this.selectedCrypto);
+          if (this.selectedUser) {
+            filterHeader += "et ";
+          }
+          const crypto = this.cryptoOptions.find(crypto => crypto.value === this.selectedCrypto);
+          filterHeader += "crypto "+ crypto.label;
         }
 
         if (params.length > 0) {
           url += "?" + params.join("&");
         }
 
-        console.log(url)
         this.getTransactionsData(url);
+        this.addHeader(filterHeader);
       } else {
         this.errorMessage = 'Select user or crypto to filter';
         this.showErrorModal();
+      }
+    },
+    filterByUser(utilisateur) {
+      let url = UtilClass.BACKEND_BASE_URL + "/crypto/user/transactions";
+      url += "?idu=" + utilisateur.id_utilisateur;
+      this.getTransactionsData(url);
+      this.addHeader("History for user " + utilisateur.nom);
+    },
+    addHeader(text) {
+      const headerContainer = document.querySelector('.filter-header');
+      if (headerContainer) {
+        headerContainer.innerHTML = `<h4>👁️ ${text}</h4>`;
       }
     },
     formatDateTime(dateString) {
@@ -303,13 +329,6 @@ export default {
         return '/assets/images/default-logo.jpg'
       }
       return logo
-    },
-    formatDate(date) {
-      return new Date(date).toLocaleDateString('fr-FR', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      })
     },
     formatCurrency(value) {
       return UtilClass.formatCurrency(value)
@@ -549,5 +568,9 @@ td {
   height: 6rem;
   display: flex;
   align-items: center;
+}
+
+.cursor-pointer{
+  cursor: pointer;
 }
 </style>
