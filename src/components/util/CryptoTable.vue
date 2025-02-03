@@ -1,9 +1,11 @@
 <script setup>
-import UtilClass from '@/util/UtilClass'
 import LoaderV from './LoaderV.vue'
 </script>
 
 <template>
+  <div class="row" style="width: 90%; margin: auto; margin-top: 2rem; margin-bottom: 1rem !important;">
+    <h2 style="color: #fdf8f8; font-weight: 700;"><i class="bi bi-clipboard-data-fill"></i> Real-time price table</h2>
+  </div>
   <div v-if="cryptos.length === 0" class="loading-overlay">
     <LoaderV></LoaderV>
   </div>
@@ -28,7 +30,7 @@ import LoaderV from './LoaderV.vue'
             @click="goToCryptoDetails(crypto.crypto.id_crypto)"
           >
             <td>
-              <img :src="getLogoUrl(crypto.crypto.logo)" alt="logo" class="crypto-logo" />
+              <img :src="getLogoUrl(crypto.crypto.unit_nom)" alt="logo" class="crypto-logo" />
               <span class="unit">{{ crypto.crypto.unit_nom }}</span> {{ crypto.crypto.nom }}
             </td>
             <td class="unit">{{ formatCurrency(crypto.valeur) }}</td>
@@ -62,6 +64,8 @@ import LoaderV from './LoaderV.vue'
 </template>
 
 <script>
+import UtilClass from '@/util/UtilClass.js'
+
 export default {
   name: 'CryptoTable',
   data() {
@@ -92,7 +96,6 @@ export default {
 
       socket.onclose = () => {
         console.log('WebSocket disconnected')
-        this.isConnected = false
         this.cryptos = []
       }
 
@@ -125,7 +128,7 @@ export default {
       if (!logo) {
         return '/assets/crypto/default-logo.png'
       }
-      return `/assets/crypto/${logo}`
+      return `/assets/images/logo/${logo}.png`
     },
     goToCryptoDetails(idCrypto) {
       this.$router.push('/app/v1/crypto?id=' + idCrypto)
@@ -187,7 +190,7 @@ export default {
 
 .table th,
 .table td {
-  padding: 10px;
+  padding: 15px;
 }
 
 th {

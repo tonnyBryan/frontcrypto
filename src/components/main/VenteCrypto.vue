@@ -4,14 +4,14 @@
       <div class="card bg-dark text-light cd1" style="padding: 1rem; border: solid 1px #4b4b4b">
         <div class="card-body">
           <div>
-            <h3 class="card-title" style="margin-bottom: 25px; color: #dadada">Sell Crypto</h3>
+            <h3 class="card-title" style="margin-bottom: 25px; color: rgb(253, 248, 248); font-weight: 700">Sell Crypto</h3>
             <h3
               v-if="crypto"
               class="card-title"
               style="margin-bottom: 25px; color: #dadada; display: flex"
             >
               <img
-                :src="'/assets/crypto/' + crypto.logo"
+                :src="'/assets/images/logo/' + crypto.unit_nom + '.png'"
                 alt="logo"
                 class="crypto-logo"
                 width="32"
@@ -60,7 +60,7 @@
                 </div>
               </div>
               <div class="mb-3 dip" id="div_dip">
-                <label for="spend" class="form-label">Earn</label>
+                <label for="spend" class="form-label">Earn <span style="color: #a6a6a6">(with {{ commission_vente }}% commission)</span></label>
                 <input
                   type="text"
                   class="form-control"
@@ -172,7 +172,7 @@ export default {
   },
   computed: {
     formattedSpendAmount() {
-      return this.formatCurrency(this.estimation)
+      return this.formatCurrency(this.getSpendAmountWithCommission())
     },
     formattedPriceOne() {
       return this.formatCurrency(this.priceOne)
@@ -206,6 +206,9 @@ export default {
       selectedCrypto: null,
 
       crypto: null,
+
+      commission_vente: null
+
     }
   },
   async mounted() {
@@ -213,6 +216,7 @@ export default {
     this.selectedCrypto = this.getCryptoId()
     this.getUserWallet()
     await this.connectWebSocket()
+    await this.fetchCommissions()
   },
   beforeUnmount() {
     if (this.socket) {
@@ -220,6 +224,31 @@ export default {
     }
   },
   methods: {
+    getSpendAmountWithCommission() {
+      if (this.commission_vente === 0) {
+        return this.estimation
+      }
+      else if (this.commission_vente && this.estimation) {
+        const co = this.estimation * (this.commission_vente / 100);
+        return this.estimation - co;
+      }
+
+      return 0;
+    },
+    async fetchCommissions() {
+      try {
+        const response = await fetch(UtilClass.BACKEND_BASE_URL + "/crypto/commission");
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          this.commission_vente = result.data.commission_vente;
+        } else {
+          console.error("Erreur dans les données reçues :", result.message);
+        }
+      } catch (error) {
+        console.error("Erreur lors de l'appel à l'API :", error);
+      }
+    },
     getCryptoId() {
       return this.$route.query.id
     },

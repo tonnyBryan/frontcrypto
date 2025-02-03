@@ -9,6 +9,10 @@ import ProfilView from '@/components/main/ProfilView.vue'
 import CryptoModel from '@/components/main/CryptoModel.vue'
 import AchatCrypto from '@/components/main/AchatCrypto.vue'
 import VenteCrypto from '@/components/main/VenteCrypto.vue'
+import MainViewAdmin from '@/views/MainViewAdmin.vue'
+import TransactionRequest from '@/components/main/TransactionRequest.vue'
+import AppConfig from '@/components/main/AppConfig.vue'
+import HistoryView from '@/components/main/HistoryView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -65,7 +69,30 @@ const router = createRouter({
           name: 'cryptoVente',
           component: VenteCrypto,
         },
+        {
+          path: 'history',
+          name: 'history',
+          component: HistoryView,
+        },
       ],
+    },
+    {
+      path: '/app/backoffice',
+      name: 'adminpage',
+      component: MainViewAdmin,
+      redirect: '/app/backoffice/request',
+      children: [
+        {
+          path: 'request',
+          name: 'request',
+          component: TransactionRequest,
+        },
+        {
+          path: 'config',
+          name: 'config',
+          component: AppConfig,
+        }
+      ]
     },
     {
       path: '/:catchAll(.*)',

@@ -10,7 +10,7 @@ import TradingView from '../util/TradingView.vue'
       <div class="col-lg-8 col-md-6 mb-4">
         <div v-if="crypto">
           <div class="crypto-header d-flex align-items-center mb-3">
-            <img :src="getLogoUrl(crypto.crypto.logo)" alt="logo" class="crypto-logo me-3" />
+            <img :src="getLogoUrl(crypto.crypto.unit_nom)" alt="logo" class="crypto-logo me-3" />
             <h2 class="mb-0 bold">{{ crypto.crypto.nom }} ({{ crypto.crypto.unit_nom }})</h2>
           </div>
           <div class="crypto-details">
@@ -60,7 +60,7 @@ import TradingView from '../util/TradingView.vue'
                   />
                   <img
                     v-if="crypto"
-                    :src="getLogoUrl(crypto.crypto.logo)"
+                    :src="getLogoUrl(crypto.crypto.unit_nom)"
                     alt="Logo"
                     style="
                       position: absolute;
@@ -141,6 +141,9 @@ export default {
   },
   methods: {
     updateSpend() {
+      if (this.buyAmount < 0) {
+        this.buyAmount = 0
+      }
       if (this.crypto && this.crypto.valeur) {
         this.spendAmount = (this.buyAmount * this.crypto.valeur).toFixed(2)
       }
@@ -215,7 +218,7 @@ export default {
       if (!logo) {
         return '/assets/crypto/default-logo.png'
       }
-      return `/assets/crypto/${logo}`
+      return `/assets/images/logo/${logo}.png`
     },
     updateCryptoData(data) {
       const selectedCrypto = data.find(

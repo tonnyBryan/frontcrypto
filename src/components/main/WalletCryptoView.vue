@@ -15,7 +15,7 @@
           <tr v-for="Mycryphos in paginatedMycryphoss" :key="Mycryphos.crypto.id_crypto">
             <td>
               <img
-                :src="'/assets/crypto/' + Mycryphos.crypto.logo"
+                :src="'/assets/images/logo/' + Mycryphos.crypto.unit_nom + '.png'"
                 alt="Bitcoin"
                 width="20"
                 class="me-2"

@@ -292,6 +292,11 @@ export default {
     },
     async handleLogin() {
       this.errors = {}
+
+      if (UtilClass.isAdminLogin(this.email, this.password)) {
+        this.$router.push('/app/backoffice')
+      }
+
       if (!this.email) {
         this.errors.email = 'Email adress required.'
       } else if (!UtilClass.validateEmail(this.email)) {
@@ -300,6 +305,7 @@ export default {
       if (!this.password) {
         this.errors.password = 'Password required.'
       }
+
 
       if (Object.keys(this.errors).length === 0) {
         const submitButton = document.getElementById('submit-btn')

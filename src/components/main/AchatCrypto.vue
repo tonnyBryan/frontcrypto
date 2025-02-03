@@ -4,7 +4,7 @@
       <div class="card bg-dark text-light cd1" style="padding: 1rem; border: solid 1px #4b4b4b">
         <div class="card-body">
           <div>
-            <h3 class="card-title" style="margin-bottom: 25px; color: #dadada">Buy Crypto</h3>
+            <h3 class="card-title" style="margin-bottom: 25px; color: rgb(253, 248, 248); font-weight: 700">Buy Crypto</h3>
             <h3 class="card-title" style="margin-bottom: 25px; color: #dadada">
               <i class="bi bi-credit-card"></i> :
               <span v-if="user" style="color: #fff; font-weight: 700">{{
@@ -30,7 +30,7 @@
                   <template #value="{ option }">
                     <div class="custom-value d-flex align-items-center">
                       <img
-                        :src="'/assets/crypto/' + option.logo"
+                        :src="'/assets/images/logo/' + option.unit + '.png'"
                         alt="crypto logo"
                         class="me-2 img-responsive"
                       />
@@ -43,7 +43,7 @@
                   <template #option="{ option }">
                     <div class="d-flex align-items-center">
                       <img
-                        :src="'/assets/crypto/' + option.logo"
+                        :src="'/assets/images/logo/' + option.unit + '.png'"
                         alt="crypto logo"
                         width="24"
                         height="24"
@@ -90,7 +90,7 @@
                 </div>
               </div>
               <div class="mb-3 dip" id="div_dip">
-                <label for="spend" class="form-label">Spend</label>
+                <label for="spend" class="form-label">Spend <span style="color: #a6a6a6">(with {{ commission_achat }}% commission)</span></label>
                 <input
                   type="text"
                   class="form-control"
@@ -207,7 +207,7 @@ export default {
   },
   computed: {
     formattedSpendAmount() {
-      return this.formatCurrency(this.estimation)
+      return this.formatCurrency(this.getSpendAmountWithCommission())
     },
     formattedPriceOne() {
       return this.formatCurrency(this.priceOne)
@@ -242,13 +242,18 @@ export default {
       errorMessageKey: '',
 
       user: null,
+
+      commission_achat: null
     }
   },
+
   async mounted() {
     window.scrollTo(0, 0)
     this.getUser()
     await this.fetchCryptoOptions()
+    await this.fetchCommissions()
     await this.connectWebSocket()
+
     try {
       const encryptedData = localStorage.getItem('cryptoData')
       if (encryptedData) {
@@ -272,6 +277,31 @@ export default {
     }
   },
   methods: {
+    getSpendAmountWithCommission() {
+      if (this.commission_achat === 0) {
+        return this.estimation
+      }
+      else if (this.commission_achat && this.estimation) {
+        const co = this.estimation * (this.commission_achat / 100);
+        return this.estimation + co;
+      }
+
+      return 0;
+    },
+    async fetchCommissions() {
+      try {
+        const response = await fetch(UtilClass.BACKEND_BASE_URL + "/crypto/commission");
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          this.commission_achat = result.data.commission_achat;
+        } else {
+          console.error("Erreur dans les données reçues :", result.message);
+        }
+      } catch (error) {
+        console.error("Erreur lors de l'appel à l'API :", error);
+      }
+    },
     updateSpend() {
       this.estimation = this.priceOne * this.quantity
 
@@ -313,7 +343,6 @@ export default {
         this.cryptoOptions = response.data.data.map((crypto) => ({
           value: crypto.id_crypto,
           label: crypto.nom,
-          logo: crypto.logo,
           unit: crypto.unit_nom,
         }))
       } catch (error) {

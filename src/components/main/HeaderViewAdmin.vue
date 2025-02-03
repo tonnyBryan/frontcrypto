@@ -7,23 +7,13 @@
     <nav :class="{ open: isMenuOpen }">
       <ul>
         <li>
-          <RouterLink to="/app/v1/home" @click="closeMenu">
-            <i class="bi bi-house"></i> Home
+          <RouterLink to="/app/backoffice/request" @click="closeMenu">
+            <i class="bi bi-bookmark-dash"></i> all requests
           </RouterLink>
         </li>
         <li>
-          <RouterLink to="/app/v1/achat" @click="closeMenu">
-            <i class="bi bi-box"></i> Buy crypto
-          </RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/app/v1/profil" @click="closeMenu">
-            <i class="bi bi-person-circle"></i> My Profile
-          </RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/app/v1/history" @click="closeMenu">
-            <i class="bi bi-calendar2-check"></i> History
+          <RouterLink to="/app/backoffice/config" @click="closeMenu">
+            <i class="bi bi-gear"></i> Config
           </RouterLink>
         </li>
         <li>
@@ -70,7 +60,6 @@
 </template>
 
 <script>
-import UtilClass from '@/util/UtilClass'
 import * as bootstrap from 'bootstrap'
 
 export default {
@@ -86,47 +75,21 @@ export default {
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen
     },
-    // Déclenche l'affichage du modal de confirmation
     confirmLogout() {
       const logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'))
       logoutModal.show()
     },
     async logout() {
-      try {
-        const response = await fetch(UtilClass.BACKEND_BASE_URL + '/crypto/user/logout', {
-          method: 'GET',
-          headers: {
-            Authorization: 'Bearer ' + UtilClass.getLocalToken(),
-            'Content-Type': 'application/json',
-          },
-        })
-
-        const data = await response.json()
-
-        if (!response.ok) {
-          if (UtilClass.isInvalidTokenError(data)) {
-            UtilClass.removeLocalToken()
-            this.$router.push('/app/login')
-          }
-        }
-
-        if (data.success) {
-          const logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'))
-          logoutModal.hide()
-
-          const backdrop = document.querySelector('.modal-backdrop')
-          if (backdrop) {
-            backdrop.remove()
-          }
-
-          this.$router.push('/app')
-        } else {
-          throw new Error(data.message || 'Erreur lors de la déconnexion')
-        }
-      } catch (error) {
-        console.error(error)
+      const logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'))
+      logoutModal.hide()
+      const backdrop = document.querySelector('.modal-backdrop')
+      if (backdrop) {
+        backdrop.remove()
       }
-    },
+
+      localStorage.removeItem('ad_data');
+      this.$router.push('/app')
+    }
   },
 }
 </script>

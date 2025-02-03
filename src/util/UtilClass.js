@@ -1,6 +1,7 @@
 import axios from 'axios'
 import toastr from 'toastr'
 import 'toastr/build/toastr.min.css'
+import CryptoJS from 'crypto-js'
 
 export default class UtilClass {
   static LOCAL_TOKEN_NAME = 'token'
@@ -9,6 +10,8 @@ export default class UtilClass {
   static BACKEND_SOCKET_BASE_UR = 'ws://localhost:8080'
 
   static SECRET_KET = 'secretkey123456789'
+  static EM_ADMIN = 'em_admin';
+  static PW_ADMIN = 'pw_admin';
 
   static redirectToLogin(router) {
     router.push('/app')
@@ -124,5 +127,38 @@ export default class UtilClass {
     }).format(value)
 
     return formatted.replace('$', '$ ')
+  }
+
+  static isAdminAuth() {
+    const encryptedData = localStorage.getItem('ad_data')
+    if (!encryptedData) {
+      return false;
+    }
+
+    const bytes = CryptoJS.AES.decrypt(encryptedData, UtilClass.SECRET_KET)
+    try {
+      const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
+      if (!decryptedData.email || !decryptedData.password) {
+        return false;
+      }
+      return decryptedData.email === UtilClass.EM_ADMIN && decryptedData.password === UtilClass.PW_ADMIN;
+    } catch {
+      return false;
+    }
+  }
+
+  static isAdminLogin(email, password) {
+    if (!email || !password) {
+      return false;
+    }
+    var eas = email === UtilClass.EM_ADMIN && password === UtilClass.PW_ADMIN;
+    if (eas) {
+      const encryptedData = CryptoJS.AES.encrypt(
+        JSON.stringify({ email: email, password: password }),
+        UtilClass.SECRET_KET,
+      ).toString()
+      localStorage.setItem('ad_data', encryptedData)
+    }
+    return eas;
   }
 }

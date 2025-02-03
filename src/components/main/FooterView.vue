@@ -23,22 +23,22 @@
           <h3 class="tl">Members</h3>
           <ul class="list-unstyled nav-links">
             <li>
-              <a href="https://www.facebook.com/bryan.to.7927"
+              <a target="_blank" href="https://www.facebook.com/bryan.to.7927"
                 ><i class="bi bi-person"></i> ANDERSON Tonny Bryan ETU2768</a
               >
             </li>
             <li>
-              <a href="https://www.facebook.com/helena.candy.29"
+              <a target="_blank" href="https://www.facebook.com/helena.candy.29"
                 ><i class="bi bi-person"></i> RIJARILANTO Helena Candy ETU2638</a
               >
             </li>
             <li>
-              <a href="https://www.facebook.com/mamirazana.isisaxel.1"
+              <a target="_blank" href="https://www.facebook.com/mamirazana.isisaxel.1"
                 ><i class="bi bi-person"></i> MAMIRAZANA Isis Axel ETU2442</a
               >
             </li>
             <li>
-              <a href="https://www.facebook.com/voahary.RM21"
+              <a target="_blank" href="https://www.facebook.com/voahary.RM21"
                 ><i class="bi bi-person"></i> Voahary Mihaja ETU2535</a
               >
             </li>
@@ -80,7 +80,7 @@
       <!-- Modal -->
       <div
         class="modal fade"
-        id="thankYouModal"
+        id="merci"
         tabindex="-1"
         aria-labelledby="thankYouModalLabel"
         aria-hidden="true"
@@ -153,7 +153,7 @@ export default {
           this.feedback.content = ''
           this.submitted = false
 
-          const thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'))
+          const thankYouModal = new bootstrap.Modal(document.getElementById('merci'))
           thankYouModal.show()
         } else {
           UtilClass.showErrorToast('Something went wrong! Please try again.')

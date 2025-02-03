@@ -4,15 +4,14 @@ import LoaderV from '../util/LoaderV.vue'
 
 <template>
   <div
-    class="container-fluid"
-    style="padding-top: 2rem; padding-bottom: 3rem; overflow-x: hidden"
+    style="padding-top: 2rem; padding-bottom: 3rem; overflow-x: hidden; width: 90%; margin: auto"
     v-if="user"
   >
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-12">
         <div class="row m-1 d-flex align-items-center">
           <div class="col-auto">
-            <img src="@/assets/bruce-mars.jpg" alt="profile_image" class="avatar" />
+            <img :src="getUserLogo(user.imageUrl)" alt="profile_image" class="avatar" />
           </div>
           <div class="col">
             <h5 class="username">{{ user.nom }}</h5>
@@ -28,7 +27,7 @@ import LoaderV from '../util/LoaderV.vue'
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-start">
             <div>
-              <h5 class="card-title mb-2">Balance<i class="bi bi-eye"></i></h5>
+              <h5 class="card-title mb-2">Balance  <i class="bi bi-eye"></i></h5>
               <h1 class="mb-0">{{ user.monnaie }} <span class="unit">USD</span></h1>
             </div>
             <div class="d-flex gap-2 flex-sm-row flex-column">
@@ -51,7 +50,7 @@ import LoaderV from '../util/LoaderV.vue'
     </div>
     <hr style="border-top: 4px solid gray" />
     <div class="row" style="padding-bottom: 2rem">
-      <WalletCryptoView :Mycryphoss="mycrypto" :limit="10" />
+      <WalletCryptoView :Mycryphoss="mycrypto" :limit="20" />
     </div>
     <div class="row">
       <div class="scrollable-container col-md-6">
@@ -101,7 +100,7 @@ import LoaderV from '../util/LoaderV.vue'
         {{ transactionType }}
         <span style="font-size: x-large; color: #aaacab">@{{ user.email }}</span>
       </h5>
-      <div class="position-relative">
+      <div class="position-relative mb-4">
         <input
           type="text"
           v-model="formattedSolde"
@@ -112,14 +111,16 @@ import LoaderV from '../util/LoaderV.vue'
         <span class="usd-icon">USD</span>
       </div>
 
-      <p class="text-danger mb-3" v-if="errorMessage">{{ errorMessage }}</p>
+      <div v-if="errorMessage" class="alert alert-danger" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>  {{ errorMessage }}
+      </div>
       <button
-        style="margin-top: 5rem"
+        style="margin-top: 3rem"
         id="trscBtn"
         class="btn btn-warning w-100 fw-bold"
         @click="proceedToConfirmation"
       >
-        Confirm
+        Request
       </button>
       <button @click="closeTransactionModal" style="font-size: 1.2rem" class="btn w-100 annuler">
         Cancel
@@ -127,96 +128,32 @@ import LoaderV from '../util/LoaderV.vue'
     </div>
   </div>
 
-  <!-- Modal pour la confirmation du compte -->
   <div
-    class="modal d-flex justify-content-center align-items-center"
-    v-if="showConfirmationModal"
-    style="
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 1050;
-    "
+    class="modal fade"
+    id="thankYouModal"
+    tabindex="-1"
+    aria-labelledby="thankYouModalLabel"
+    aria-hidden="true"
   >
-    <div
-      class="card fade-in p-5 text-center shadow-lg cd"
-      style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
-    >
-      <h5 class="mb-4 email" style="text-align: left; font-size: x-large">Transaction</h5>
-      <div class="card bg-dark p-4" style="border: solid 1px #676767">
-        <div class="row align-items-center">
-          <div class="col-md-8">
-            <h5 class="text-white" style="text-align: left">{{ formatAmount(solde) }} $</h5>
-          </div>
-          <div class="col-md-4 og">
-            <div
-              style="border: solid 2px"
-              :class="[
-                'badge',
-                transactionType === 'Depot'
-                  ? 'border-warning text-warning'
-                  : 'border-success text-success',
-              ]"
-            >
-              {{ transactionType }}
-            </div>
-          </div>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="thankYouModalLabel">Thank You!</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">Please wait while admin accept it ❤️🦄</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
-      <p style="margin-top: 4rem; text-align: left">
-        Please enter the reset key that we send to your email adress to confirm transaction.
-      </p>
-      <input
-        type="text"
-        v-model="confirmationKey"
-        class="form-control mb-3 text-center inp2"
-        style="background-color: #444; color: #fff; border: none; border-radius: 5px"
-        placeholder="Enter confirmation key"
-      />
-      <div v-if="errorMessageKey" class="alert alert-danger" role="alert">
-        {{ errorMessageKey }}
-      </div>
-      <button
-        id="confirmAccBtn"
-        class="btn btn-warning w-100 fw-bold"
-        style="font-size: 1.2rem; margin-top: 3rem"
-        @click="confirmAccount"
-      >
-        Confirm
-      </button>
-      <button @click="closeModalAcc" style="font-size: 1.2rem" class="btn w-100 annuler">
-        Cancel
-      </button>
     </div>
   </div>
 
-  <!-- Modal pour la resultat du compte -->
-  <div
-    class="modal d-flex justify-content-center align-items-center"
-    v-if="showResultModal"
-    style="
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 1050;
-    "
-  >
-    <div
-      class="card fade-in p-5 shadow-lg cd"
-      style="width: 40rem; background-color: #1e2329; border-radius: 15px; color: #fff"
-    >
-      <TransactionFdResult :details="dtll"></TransactionFdResult>
-      <button @click="closeResultModal" style="font-size: 1.2rem" class="btn w-100 annuler">
-        Close
-      </button>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -224,7 +161,7 @@ import UtilClass from '@/util/UtilClass'
 import TransactionView from './TransactionFond.vue'
 import WalletCryptoView from './WalletCryptoView.vue'
 import TransactionCrypt from './TransactionCrypt.vue'
-import TransactionFdResult from './TransactionFdResult.vue'
+import * as bootstrap from 'bootstrap'
 
 export default {
   components: {
@@ -234,12 +171,9 @@ export default {
   data() {
     return {
       user: null,
-      confirmationKey: '',
-      errorMessageKey: '',
       errorMessage: '',
       solde: '',
       formattedSolde: '',
-      showConfirmationModal: false,
       showTransactionModal: false,
       transactionType: '',
 
@@ -268,6 +202,12 @@ export default {
     },
   },
   methods: {
+    getUserLogo(logo) {
+      if (!logo || parseInt(logo) === 0) {
+        return '/assets/images/default-logo.jpg'
+      }
+      return logo
+    },
     formatNumber() {
       const rawValue = this.formattedSolde.replace(/\s/g, '') // Retirer les espaces existants
       if (!isNaN(rawValue)) {
@@ -324,14 +264,6 @@ export default {
         console.error(error)
       }
     },
-
-    formatAmount(amount) {
-      return new Intl.NumberFormat('fr-FR', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(amount)
-    },
-
     openTransactionModal(type) {
       this.transactionType = type === 'depot' ? 'Depot' : 'Retrait'
       this.solde = ''
@@ -344,21 +276,19 @@ export default {
     },
     closeTransactionModal() {
       this.showTransactionModal = false
-    },
-    closeResultModal() {
-      this.showResultModal = false
+      this.solde = ''
+      this.formattedSolde = ''
+      this.errorMessage = ''
     },
     async proceedToConfirmation() {
       if (!this.solde || this.solde <= 0) {
-        this.errorMessage = 'Please enter a valid amount.'
+        this.errorMessage = 'Please enter a valid amount'
         return
       }
 
       if (this.getType(this.transactionType) === 'retrait') {
-        console.log(this.user.monnaie)
-        console.log(this.solde)
         if (this.user.monnaie < this.solde) {
-          this.errorMessage = 'Please enter a valid j.'
+          this.errorMessage = 'Not enough money'
           return
         }
       }
@@ -366,49 +296,6 @@ export default {
       const trButton = document.getElementById('trscBtn')
       UtilClass.loadButton(trButton)
 
-      try {
-        const response = await fetch(UtilClass.BACKEND_BASE_URL + '/crypto/user/vdrequest', {
-          method: 'GET',
-          headers: {
-            Authorization: 'Bearer ' + UtilClass.getLocalToken(),
-            'Content-Type': 'application/json',
-          },
-        })
-
-        const data = await response.json()
-
-        if (!response.ok) {
-          if (UtilClass.isInvalidTokenError(data)) {
-            UtilClass.removeLocalToken()
-            this.$router.push('/app/login')
-            return
-          }
-          throw new Error('An error occurred while calling the API.')
-        }
-
-        UtilClass.endLoadedButton(trButton, 'confirm')
-
-        if (!data.success) {
-          UtilClass.showErrorToast(data.message || 'Unknown error')
-          return
-        }
-        this.showTransactionModal = false
-        this.showConfirmationModal = true
-      } catch (error) {
-        UtilClass.endLoadedButton(trButton, 'confirm')
-        UtilClass.showErrorToast('An error occurred ! Please try again later')
-        console.error(error)
-      }
-    },
-
-    async confirmAccount() {
-      if (!this.confirmationKey) {
-        this.errorMessageKey = 'Please enter a confirmation key'
-        return
-      }
-
-      const confirmAccButton = document.getElementById('confirmAccBtn')
-      UtilClass.loadButton(confirmAccButton)
       try {
         const response = await fetch(
           UtilClass.BACKEND_BASE_URL + '/crypto/user/' + this.getType(this.transactionType),
@@ -421,7 +308,6 @@ export default {
             body: JSON.stringify({
               email: this.user.email,
               solde: this.solde,
-              key: this.confirmationKey,
             }),
           },
         )
@@ -436,37 +322,21 @@ export default {
         }
 
         if (data.success) {
-          this.closeModalAcc()
+          this.closeTransactionModal()
+          UtilClass.endLoadedButton(trButton, 'Request')
 
-          this.dtll = {
-            type: this.getType(this.transactionType),
-            solde: this.solde,
-            NouveauSolde:
-              this.getType(this.transactionType) === 'depot'
-                ? parseFloat(this.user.monnaie) + parseFloat(this.solde)
-                : parseFloat(this.user.monnaie) - parseFloat(this.solde),
-          }
-
-          await this.getUserInfo()
-          UtilClass.endLoadedButton(confirmAccButton, 'Confirm')
-          this.showResultModal = true
+          this.showTransactionModal = false
+          const thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'))
+          thankYouModal.show()
         } else {
-          UtilClass.endLoadedButton(confirmAccButton, 'Confirm')
-          throw new Error(data.message || 'Invalid confirmation key.')
+          UtilClass.endLoadedButton(trButton, 'Request')
+          throw new Error(data.message || 'An error occured, Please try again later')
         }
       } catch (error) {
-        UtilClass.endLoadedButton(confirmAccButton, 'Confirm')
-        this.errorMessageKey = error.message
+        UtilClass.endLoadedButton(trButton, 'Request')
+        this.errorMessage = error.message
       }
-    },
-    closeModalAcc() {
-      this.confirmationKey = ''
-      this.errorMessageKey = ''
-      this.showConfirmationModal = false
-    },
-    formatCurrency(value) {
-      return UtilClass.formatCurrency(value)
-    },
+    }
   },
 }
 </script>
@@ -482,14 +352,6 @@ export default {
   border-radius: 10%;
 }
 
-.lg {
-  background-color: rgba(46, 37, 37, 0.5);
-  backdrop-filter: blur(3px);
-  color: #fff;
-}
-.CB {
-  color: #fff;
-}
 
 .username {
   font-size: 1.5rem;
@@ -593,10 +455,23 @@ export default {
     padding-top: 4rem !important;
   }
 
-  .og {
-    text-align: left;
-  }
 }
+
+.modal-content {
+  background-color: #181a20;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  border-bottom: 1px solid #444;
+}
+
+.modal-footer {
+  border-top: 1px solid #444;
+}
+
 .alert-danger {
   --bs-alert-bg: #2c0b0e !important;
   --bs-alert-color: #ea868f !important;

@@ -5,7 +5,6 @@
       <table v-if="paginatedTransactions.length" class="table table-dark tba">
         <thead>
           <tr>
-            <th scope="col" class="d-none d-sm-table-cell">Ref</th>
             <th scope="col">Crypto</th>
             <th scope="col">Total</th>
             <th scope="col">Price</th>
@@ -16,17 +15,16 @@
         </thead>
         <tbody>
           <tr v-for="transaction in paginatedTransactions" :key="transaction.id_transaction_crypto">
-            <td class="d-none d-sm-table-cell">{{ transaction.id_transaction_crypto }}</td>
             <td>
               <img
-                :src="'/assets/crypto/' + transaction.crypto.logo"
+                :src="'/assets/images/logo/' + transaction.crypto.unit_nom + '.png'"
                 alt="Bitcoin"
                 width="20"
                 class="me-2"
               />
               {{ transaction.crypto.nom }}
             </td>
-            <td class="unit">{{ total(transaction) }}</td>
+            <td class="unit">{{ formatCurrency(transaction.total_with_commission) }}</td>
             <td class="unit">{{ formatCurrency(transaction.cour) }}</td>
             <td class="unit">{{ transaction.qtty }}</td>
             <td>
@@ -72,21 +70,12 @@ export default {
     },
   },
   methods: {
-    total(transaction) {
-      return this.formatCurrency(transaction.cour * transaction.qtty)
-    },
     formatDate(date) {
       return new Date(date).toLocaleDateString('fr-FR', {
         day: '2-digit',
         month: 'short',
         year: 'numeric',
       })
-    },
-    formatAmount(amount) {
-      return new Intl.NumberFormat('fr-FR', {
-        style: 'currency',
-        currency: 'USD',
-      }).format(amount)
     },
     formatCurrency(value) {
       return UtilClass.formatCurrency(value)
