@@ -87,6 +87,12 @@ export default {
         backdrop.remove()
       }
 
+      if (document.body.classList.contains('modal-open')) {
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+      }
+
       localStorage.removeItem('ad_data');
       this.$router.push('/app')
     }

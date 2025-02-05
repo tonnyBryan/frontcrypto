@@ -140,7 +140,7 @@
             Cancel
           </button>
         </div>
-      </div>
+     </div>
 
     <!-- Modal pour la confirmation du compte -->
     <div

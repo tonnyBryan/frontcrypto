@@ -136,8 +136,10 @@
               <img
                 :src="getUserLogo(transaction.utilisateur.imageUrl)"
                 alt="logo"
-                width="20"
+                width="40"
                 class="me-2"
+                style="border-radius: 5px; cursor: pointer"
+                @click="filterByUser(transaction.utilisateur)"
               />
               <span class="unit cursor-pointer" @click="filterByUser(transaction.utilisateur)">
                 {{ transaction.utilisateur.nom }}
@@ -446,6 +448,20 @@ h4 {
 .table {
   margin: 0 auto;
   width: 100%;
+}
+
+.table tbody td {
+  vertical-align: middle;
+}
+
+.table tbody tr {
+  transition: background 0.3s ease;
+}
+
+.table tbody tr:hover {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .badge {

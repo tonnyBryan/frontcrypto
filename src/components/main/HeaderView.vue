@@ -119,6 +119,12 @@ export default {
             backdrop.remove()
           }
 
+          if (document.body.classList.contains('modal-open')) {
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+          }
+
           this.$router.push('/app')
         } else {
           throw new Error(data.message || 'Erreur lors de la déconnexion')

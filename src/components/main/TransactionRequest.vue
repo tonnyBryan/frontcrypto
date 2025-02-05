@@ -119,7 +119,7 @@ onMounted(fetchDemandes);
       <tbody>
       <tr v-for="demande in demandes" :key="demande.id_demande">
         <td class="unit">
-          <img :src="getUserLogo(demande.utilisateur.imageUrl)" alt="logo" width="20" class="me-2" />
+          <img :src="getUserLogo(demande.utilisateur.imageUrl)" alt="logo" width="40" class="me-2" style="border-radius: 5px" />
           {{ demande.utilisateur.nom }}
         </td>
         <td class="unit">
@@ -220,6 +220,11 @@ h4 {
   margin: 0 auto;
   width: 100%;
 }
+
+.table tbody td {
+  vertical-align: middle;
+}
+
 
 .table-dark {
   --bs-table-bg: transparent !important;
