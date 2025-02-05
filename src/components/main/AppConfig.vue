@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import * as bootstrap from 'bootstrap'
+import UtilClass from '@/util/UtilClass.js'
 
 
 // Variables réactives pour les commissions
@@ -13,7 +14,7 @@ const editedValue = ref(null); // Stocke la valeur modifiée
 // Fonction pour récupérer les données depuis l'API
 const fetchCommissions = async () => {
   try {
-    const response = await fetch("http://localhost:8080/crypto/commission");
+    const response = await fetch(UtilClass.BACKEND_BASE_URL + "/crypto/commission");
     const result = await response.json();
 
     if (result.success && result.data) {
@@ -45,7 +46,7 @@ const updateCommission = async () => {
       commission_vente: !isEditingAchat.value ? editedValue.value : commissionVente.value,
     };
 
-    const response = await fetch("http://localhost:8080/crypto/commission", {
+    const response = await fetch(UtilClass.BACKEND_BASE_URL + "/crypto/commission", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

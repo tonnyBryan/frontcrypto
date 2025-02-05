@@ -11,7 +11,7 @@
       "
     >
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="text-left">Log In</h2>
+        <h2 class="text-left">Connexion</h2>
         <img src="@/assets/App-icon.png" alt="Logo" style="width: 30px; height: 30px" />
       </div>
       <form @submit.prevent="handleLogin" novalidate>
@@ -83,61 +83,64 @@
     </div>
 
     <!-- Modale pour le code PIN -->
-    <div
-      class="modal d-flex justify-content-center align-items-center"
-      v-if="showPinModal"
-      style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 1050;
-      "
-    >
-      <div
-        class="card fade-in p-5 text-center shadow-lg cd"
-        style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
+     <div
+        class="modal d-flex justify-content-center align-items-center"
+        v-if="showPinModal"
+        style="
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.7);
+          z-index: 1050;
+        "
       >
-        <h5 class="mb-4 email">{{ email }}</h5>
-        <h3 class="mb-4">We want to make sure that it's really you</h3>
-        <p class="text-muted">Please enter the PIN code sent to your e-mail.</p>
-        <div class="d-flex justify-content-center mb-4">
-          <input
-            v-for="(digit, index) in pin"
-            :key="index"
-            type="text"
-            maxlength="1"
-            v-model="pin[index]"
-            class="form-control text-center mx-2"
-            style="
-              width: 3rem;
-              font-size: 2rem;
-              background-color: #444;
-              color: #fff;
-              border: none;
-              border-radius: 5px;
-            "
-          />
-        </div>
-        <p class="text-danger mb-3" v-if="errorMessagePin">{{ errorMessagePin }}</p>
-        <p class="text-muted mb-4">
-          Remaining time : <strong>{{ timer }}</strong> seconds
-        </p>
-        <button
-          id="confirmPinBtn"
-          class="btn btn-warning w-100 fw-bold"
-          style="font-size: 1.2rem"
-          @click="confirmPin"
+        <div
+          class="card fade-in p-5 text-center shadow-lg cd"
+          style="width: 35rem; background-color: #1e2329; border-radius: 15px; color: #fff"
         >
-          Confirm
-        </button>
-        <button @click="closePinModal" style="font-size: 1.2rem" class="btn w-100 annuler">
-          Cancel
-        </button>
+          <h5 class="mb-4 email">{{ email }}</h5>
+          <h3 class="mb-4">We want to make sure that it's really you</h3>
+          <p class="text-muted">Please enter the PIN code sent to your e-mail.</p>
+          <div class="d-flex justify-content-center mb-4">
+            <input
+              v-for="(digit, index) in pin"
+              :key="index"
+              type="text"
+              maxlength="1"
+              v-model="pin[index]"
+              ref="pinInput"
+              class="form-control text-center mx-2"
+              style="
+                width: 3rem;
+                font-size: 2rem;
+                background-color: #444;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+              "
+              @input="handleInput(index, $event)"
+              @keydown="handleKeyDown(index, $event)"
+            />
+          </div>
+          <p class="text-danger mb-3" v-if="errorMessagePin">{{ errorMessagePin }}</p>
+          <p class="text-muted mb-4">
+            Remaining time : <strong>{{ timer }}</strong> seconds
+          </p>
+          <button
+            id="confirmPinBtn"
+            class="btn btn-warning w-100 fw-bold"
+            style="font-size: 1.2rem"
+            @click="confirmPin"
+          >
+            Confirm
+          </button>
+          <button @click="closePinModal" style="font-size: 1.2rem" class="btn w-100 annuler">
+            Cancel
+          </button>
+        </div>
       </div>
-    </div>
 
     <!-- Modal pour la confirmation du compte -->
     <div
@@ -287,6 +290,35 @@ export default {
     }
   },
   methods: {
+    handleKeyDown(index, event) {
+      // Vérifier si la touche appuyée est "Backspace"
+      if (event.key === "Backspace") {
+        // Si le champ courant est vide et qu'il existe un champ précédent
+        if (!this.pin[index] && index > 0) {
+          event.preventDefault(); // Empêcher le comportement par défaut
+          this.$nextTick(() => {
+            const inputs = this.$refs.pinInput;
+            if (inputs && inputs[index - 1]) {
+              // Optionnel : effacer la valeur du champ précédent si besoin
+              this.pin[index - 1] = "";
+              inputs[index - 1].focus();
+            }
+          });
+        }
+      }
+    },
+    handleInput(index, event) {
+      const value = event.target.value;
+      if (value && value.length === 1) {
+        // On attend que le DOM soit mis à jour
+        this.$nextTick(() => {
+          const inputs = this.$refs.pinInput;
+          if (inputs && inputs[index + 1]) {
+            inputs[index + 1].focus();
+          }
+        });
+      }
+    },
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword
     },

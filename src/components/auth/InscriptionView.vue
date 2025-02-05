@@ -53,16 +53,36 @@
         <!-- Champ Mot de Passe -->
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>
-          <input
-            type="password"
-            id="password"
-            v-model="password"
-            class="form-control"
-            :class="{ 'is-invalid': errors.password }"
-            placeholder="Enter your Password"
-            style="background-color: transparent; padding: 13px"
-            required
-          />
+          <div class="input-group" style="position: relative">
+            <input
+              :type="showPassword ? 'text' : 'password'"
+              id="password"
+              v-model="password"
+              class="form-control"
+              :class="{ 'is-invalid': errors.password }"
+              placeholder="Enter your Password"
+              style="background-color: transparent; padding: 13px; border-radius: var(--bs-border-radius) !important"
+              autocomplete="off"
+              required
+            />
+              <span
+              @click="togglePasswordVisibility"
+              class="hide"
+              style="
+                position: absolute;
+                right: 18px;
+                top: 50%;
+                transform: translateY(-50%);
+                height: 20px;
+                z-index: 999;
+              "
+            >
+              <i
+                style="cursor: pointer"
+                :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"
+              ></i>
+            </span>
+          </div>
           <div class="invalid-feedback">
             {{ errors.password }}
           </div>
@@ -139,9 +159,13 @@ export default {
       confirmationKey: '',
       errorMessageKey: '',
       showConfirmationModal: false,
+      showPassword: false,
     }
   },
   methods: {
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword
+    },
     async handleInscription() {
       this.errors = {}
       if (!this.username) {

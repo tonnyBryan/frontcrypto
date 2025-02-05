@@ -5,14 +5,14 @@ import * as bootstrap from 'bootstrap'
 
 const demandes = ref([]);
 const selectedDemande = ref(null);
-const actionType = ref(""); // "allow" ou "denie"
+const actionType = ref("");
 const modalInstance = ref(null);
 const errorMessage = ref("");
 
 
 const fetchDemandes = async () => {
   try {
-    const response = await fetch("http://localhost:8080/crypto/demande/list");
+    const response = await fetch(UtilClass.BACKEND_BASE_URL + "/crypto/demande/list");
     const result = await response.json();
 
     if (result.success && result.data) {
@@ -67,10 +67,13 @@ const confirmAction = async () => {
 
   const url =
     actionType.value === "allow"
-      ? `http://localhost:8080/crypto/demande/valider/${selectedDemande.value.id_demande}`
-      : `http://localhost:8080/crypto/demande/refuser/${selectedDemande.value.id_demande}`;
+      ? UtilClass.BACKEND_BASE_URL + `/crypto/demande/valider/${selectedDemande.value.id_demande}`
+      : UtilClass.BACKEND_BASE_URL + `/crypto/demande/refuser/${selectedDemande.value.id_demande}`;
 
   try {
+    const btn = document.getElementById('cf');
+    UtilClass.loadButton(btn);
+
     const response = await fetch(url, { method: "PUT" });
     const responseBody = await response.json();
 
@@ -78,13 +81,16 @@ const confirmAction = async () => {
       setTimeout(() => {
         modalInstance.value.hide();
       }, 300);
+      UtilClass.endLoadedButton(btn, 'Confirm');
       if (responseBody.success) {
         demandes.value = demandes.value.filter((d) => d.id_demande !== selectedDemande.value.id_demande);
       }
     } else {
+      UtilClass.endLoadedButton(btn, 'Confirm');
       throw new Error(responseBody.message || "La demande n'a pas pu être mise à jour.");
     }
   } catch (error) {
+    UtilClass.endLoadedButton(btn, 'Confirm');
     errorMessage.value = error.message;
 
     setTimeout(() => {
@@ -169,9 +175,9 @@ onMounted(fetchDemandes);
           cette demande ?
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-          <button type="button" class="btn" :class="actionType === 'allow' ? 'btn-success' : 'btn-danger'" @click="confirmAction">
-            Confirmer
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button id="cf" type="button" class="btn" :class="actionType === 'allow' ? 'btn-success' : 'btn-danger'" @click="confirmAction">
+            Confirm
           </button>
         </div>
       </div>
