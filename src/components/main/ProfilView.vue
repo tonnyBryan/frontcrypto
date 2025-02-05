@@ -28,7 +28,7 @@ import LoaderV from '../util/LoaderV.vue'
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <h5 class="card-title mb-2">Balance  <i class="bi bi-eye"></i></h5>
-              <h1 class="mb-0">{{ user.monnaie }} <span class="unit">USD</span></h1>
+              <h1 class="mb-0">{{ formatCurrency(user.monnaie) }} <span class="unit">USD</span></h1>
             </div>
             <div class="d-flex gap-2 flex-sm-row flex-column">
               <button
@@ -45,9 +45,13 @@ import LoaderV from '../util/LoaderV.vue'
               </button>
             </div>
           </div>
+          <div class="row justify-content-between align-items-center mt-4">
+            <Requestfrom :request="requetpending" />
+          </div>
         </div>
       </div>
     </div>
+    
     <hr style="border-top: 4px solid gray" />
     <div class="row" style="padding-bottom: 2rem">
       <WalletCryptoView :Mycryphoss="mycrypto" :limit="20" />
@@ -128,6 +132,8 @@ import LoaderV from '../util/LoaderV.vue'
     </div>
   </div>
 
+ 
+
   <div
     class="modal fade"
     id="thankYouModal"
@@ -161,6 +167,7 @@ import UtilClass from '@/util/UtilClass'
 import TransactionView from './TransactionFond.vue'
 import WalletCryptoView from './WalletCryptoView.vue'
 import TransactionCrypt from './TransactionCrypt.vue'
+import Requestfrom from '../util/MyHistoryRequest.vue'
 import * as bootstrap from 'bootstrap'
 
 export default {
@@ -188,10 +195,14 @@ export default {
 
       showResultModal: false,
       dtll: null,
+
+      requetpending:null,
     }
   },
   created() {
     this.getUserInfo()
+    this.getpendingRequest()
+
   },
   computed: {
     fundButtonText() {
@@ -202,6 +213,10 @@ export default {
     },
   },
   methods: {
+    formatCurrency(value) {
+      const roundedValue = value.toFixed(2);
+      return new Intl.NumberFormat('fr-FR').format(roundedValue);
+    },
     getUserLogo(logo) {
       if (!logo || parseInt(logo) === 0) {
         return '/assets/images/default-logo.jpg'
@@ -251,7 +266,6 @@ export default {
             this.$router.push('/app/login')
           }
         }
-
         if (data.success) {
           this.user = data.data
           this.mycrypto = data.data.portefeuille.cryptoValeurs
@@ -259,6 +273,33 @@ export default {
           this.cryptoTransactions = data.data.transactionCryptos
         } else {
           throw new Error(data.message || 'Error retrieving user information')
+        }
+
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async getpendingRequest(){
+      try {
+        const response = await fetch(UtilClass.BACKEND_BASE_URL + '/crypto/user/demande/attente', {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + UtilClass.getLocalToken(),
+            'Content-Type': 'application/json',
+          },
+        })
+        const datas= await response.json()
+
+        if (!response.ok) {
+          if (UtilClass.isInvalidTokenError(datas)) {
+            UtilClass.removeLocalToken()
+            this.$router.push('/app/login')
+          }
+        }
+        if (datas.success) {
+          this.requetpending = datas.data
+        } else {
+          throw new Error(datas.message || 'Error retrieving pending request')
         }
       } catch (error) {
         console.error(error)

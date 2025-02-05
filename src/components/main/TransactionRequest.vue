@@ -87,7 +87,7 @@ const confirmAction = async () => {
       }
     } else {
       UtilClass.endLoadedButton(btn, 'Confirm');
-      throw new Error(responseBody.message || "La demande n'a pas pu être mise à jour.");
+      throw new Error(responseBody.message || "The request could not be updated.");
     }
   } catch (error) {
     UtilClass.endLoadedButton(btn, 'Confirm');

@@ -130,7 +130,7 @@
       class="card fade-in p-5 text-center shadow-lg cd"
       style="width: 35rem; background-color: #1e2329 !important; border-radius: 15px; color: #fff"
     >
-      <h5 class="mb-4 email" style="text-align: left; font-size: x-large">Confirmation Requise</h5>
+      <h5 class="mb-4 email" style="text-align: left; font-size: x-large">Confirmation required</h5>
 
       <p style="margin-top: 4rem; text-align: left">
         A code has been sent to your email address. Please check your inbox and enter the code to
