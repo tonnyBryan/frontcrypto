@@ -99,8 +99,8 @@ export default {
   },
   computed: {
     type() {
-      if (this.request.type.eta === 'down') {
-        return 'Retrait'
+      if (this.request.type.etat === 'down') {
+        return 'Withdraw'
       } else {
         return 'Deposit'
       }
@@ -139,8 +139,9 @@ export default {
             this.modalInstance.hide(); // Cache la modal après l'action
           }, 300);
           if (responseBody.success) {
+            this.$emit('request-changed');
             UtilClass.endLoadedButton(btn, 'Confirm');
-            
+
           }
           else{
             UtilClass.endLoadedButton(btn, 'Confirm');
@@ -159,6 +160,7 @@ export default {
       }
     }
   },
+  
 }
 </script>
 

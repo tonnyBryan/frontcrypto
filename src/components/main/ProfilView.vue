@@ -46,7 +46,7 @@ import LoaderV from '../util/LoaderV.vue'
             </div>
           </div>
           <div class="row justify-content-between align-items-center mt-4">
-            <Requestfrom :request="requetpending" />
+            <Requestfrom :request="requetpending" @request-changed="getpendingRequest" />
           </div>
         </div>
       </div>
@@ -369,6 +369,8 @@ export default {
           this.showTransactionModal = false
           const thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'))
           thankYouModal.show()
+          this.getpendingRequest()
+          
         } else {
           UtilClass.endLoadedButton(trButton, 'Request')
           throw new Error(data.message || 'An error occured, Please try again later')
@@ -379,6 +381,7 @@ export default {
       }
     }
   },
+ 
 }
 </script>
 <style scoped>
