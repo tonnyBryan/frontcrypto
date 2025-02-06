@@ -117,8 +117,14 @@
     <div class="input-group d-flex align-items-center justify-content-between mt-3 mb-4" style="width:88%; margin: auto;">
       <div class="filter-header ml-3" style="flex-grow: 1; color: #f0f0f0;"></div>
       <div class="date-inputs d-flex  gap-2 mb-2 ">
-        <input v-model="startDate" id="startDate" type="datetime-local" class="form-control small-datetime " @change="filterTransactions" />
-        <input v-model="endDate" id="endDate" type="datetime-local" class="form-control small-datetime " @change="filterTransactions" />
+        <input v-model="startDate" id="startDate" type="datetime-local" class="form-control small-datetime " @change="handleDateChange" :disabled="!filterActive" />
+        <input v-model="endDate" id="endDate" type="datetime-local" class="form-control small-datetime " @change="handleDateChange" :disabled="!filterActive" />
+        
+        <label class="switch">
+          <input type="checkbox" v-model="filterActive" @change="handleToggle">
+          <span class="slider"></span>
+        </label>
+        
       </div>
     </div>
 
@@ -221,6 +227,7 @@ export default {
   components: { LoaderV, VueSelect },
   data() {
     return {
+      filterActive: false,
       transactions: [],
       filteredTransactions: [],
       selectedCrypto: ref(null),
@@ -238,23 +245,33 @@ export default {
     this.addHeader("History for all")
   },
   methods: {
-    resetDates() {
-      this.startDate = null;
-      this.endDate = null;
-      this.filterTransactions();
-    },
-    filterTransactions() {
-      let filtered = this.transactions;
-      if (this.startDate) {
-        let start = new Date(this.startDate);
-        filtered = filtered.filter(transaction => new Date(transaction.date_action) >= start);
-      }
-      if (this.endDate) {
-        let end = new Date(this.endDate);
-        filtered = filtered.filter(transaction => new Date(transaction.date_action) <= end);
-      }
-      this.filteredTransactions = filtered;
-    },
+      handleToggle() {
+        if (!this.filterActive) {
+          this.resetDates();
+        }
+      },
+      handleDateChange() {
+        if (this.filterActive) {
+          this.filterTransactions();
+        }
+      },
+      resetDates() {
+        this.startDate = null;
+        this.endDate = null;
+        this.filteredTransactions = [...this.transactions];
+      },
+      filterTransactions() {
+        let filtered = [...this.transactions];
+        if (this.startDate) {
+          let start = new Date(this.startDate);
+          filtered = filtered.filter(transaction => new Date(transaction.date_action) >= start);
+        }
+        if (this.endDate) {
+          let end = new Date(this.endDate);
+          filtered = filtered.filter(transaction => new Date(transaction.date_action) <= end);
+        }
+        this.filteredTransactions = filtered;
+      },
     showErrorModal() {
       this.modalInstance = new bootstrap.Modal(document.getElementById('errorModal'));
       this.modalInstance.show();
@@ -401,6 +418,7 @@ export default {
 
         if (data.success) {
           this.transactions = data.data
+          this.filteredTransactions = [...this.transactions];
           this.resetDates();
         } else {
           throw new Error(data.message || 'Error retrieving user information')
@@ -635,5 +653,62 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     filter: invert(1); /* Inverse la couleur pour rendre l'icône blanche */
     cursor: pointer;
 }
+
+/* From Uiverse.io by TimTrayler */
+.switch {
+ font-size: 17px;
+ position: relative;
+ display: inline-block;
+ width: 3.7em;
+ height: 1.8em;
+}
+
+.switch input {
+ display: none;
+ opacity: 0;
+ width: 0;
+ height: 0;
+}
+
+.slider {
+ position: absolute;
+ cursor: pointer;
+ top: 0;
+ left: 0;
+ right: 0;
+ bottom: 0;
+ background-color: #181a20;
+ transition: .2s;
+ border-radius: 30px;
+}
+
+.slider:before {
+ position: absolute;
+ content: "";
+ height: 1.4em;
+ width: 1.4em;
+ border-radius: 20px;
+ left: 0.2em;
+ bottom: 0.2em;
+ background-color: #aeaaae;
+ transition: .4s;
+}
+
+input:checked + .slider::before {
+ background-color: #ffc107;
+}
+
+input:checked + .slider {
+ background-color: #181a20;
+}
+
+input:focus + .slider {
+ box-shadow: 0 0 1px #181a20;
+}
+
+input:checked + .slider:before {
+ transform: translateX(1.9em);
+}
+
 
 </style>
