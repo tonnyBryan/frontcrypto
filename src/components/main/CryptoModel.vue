@@ -2,6 +2,7 @@
 import LoaderV from '../util/LoaderV.vue'
 import UtilClass from '@/util/UtilClass'
 import TradingView from '../util/TradingView.vue'
+
 </script>
 
 <template>

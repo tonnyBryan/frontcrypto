@@ -1,13 +1,14 @@
 import axios from 'axios'
-import toastr from 'toastr'
-import 'toastr/build/toastr.min.css'
 import CryptoJS from 'crypto-js'
+import './footer/mystyle.css';
+
+
 
 export default class UtilClass {
   static LOCAL_TOKEN_NAME = 'token'
 
-  static BACKEND_BASE_URL = 'http://192.168.1.108:8080'
-  static BACKEND_SOCKET_BASE_UR = 'ws://192.168.1.108:8080'
+  static BACKEND_BASE_URL = 'http://192.168.43.107:8080'
+  static BACKEND_SOCKET_BASE_UR = 'ws://192.168.43.107:8080'
 
   static SECRET_KET = 'secretkey123456789'
   static EM_ADMIN = 'em_admin';
@@ -64,34 +65,69 @@ export default class UtilClass {
     button.innerHTML = initialtext
     button.disabled = false
   }
+ 
+  static showAlert(type, message, duration = 5000) {
+    const icon = type === 'success' 
+        ? '<i class="bi bi-check-circle-fill text-success"></i>' // ✅ Icône verte pour succès
+        : '<i class="bi bi-exclamation-triangle-fill text-danger"></i>'; // ⚠️ Icône rouge pour erreur
 
-  static showErrorToast(message) {
-    toastr.error(message || 'Une erreur est survenue. Veuillez réessayer.', 'Erreur', {
-      closeButton: true,
-      progressBar: true,
-      timeOut: 5000,
-      positionClass: 'toast-top-right',
-    })
+    // Créer l'élément de l'alerte
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-dismissible fade show d-flex align-items-center custom-alert`;
+    alertDiv.setAttribute('role', 'alert');
+    alertDiv.innerHTML = `
+      ${icon}
+      <span class="ms-2">${message}</span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    
+    // Définir la classe pour la couleur initiale
+    alertDiv.classList.add(type === 'success' ? 'alert-success' : 'alert-danger');
+    
+    // Ajouter une animation d'entrée depuis le haut
+    alertDiv.style.transform = 'translateY(-100px)';
+    alertDiv.style.opacity = '0';
+    alertDiv.style.transition = 'transform 0.5s ease-out, opacity 0.5s ease-out';
+    
+    // Ajouter l'alerte dans un conteneur centré en haut de la page
+    let alertContainer = document.getElementById('alert-container');
+    if (!alertContainer) {
+      alertContainer = document.createElement('div');
+      alertContainer.id = 'alert-container';
+      alertContainer.className = 'position-fixed start-50 translate-middle-x';
+      alertContainer.style.top = '20px';
+      alertContainer.style.zIndex = '1050';
+      alertContainer.style.width = '400px';
+      document.body.appendChild(alertContainer);
+    }
+    
+    alertContainer.appendChild(alertDiv);
+    
+    // Appliquer l'effet d'apparition
+    setTimeout(() => {
+      alertDiv.style.transform = 'translateY(0)';
+      alertDiv.style.opacity = '1';
+    }, 100);
+    
+    // Supprimer l'alerte après la durée spécifiée
+    setTimeout(() => {
+      alertDiv.style.transform = 'translateY(-100px)';
+      alertDiv.style.opacity = '0';
+      setTimeout(() => alertDiv.remove(), 500);
+    }, duration);
   }
 
-  static showSuccessToast(message) {
-    toastr.success(message, 'Succès', {
-      closeButton: true,
-      progressBar: true,
-      timeOut: 5000,
-      positionClass: 'toast-top-right',
-    })
+
+
+  // ✅ Afficher une alerte de succès
+  static showSuccessToast(message, duration = 5000) {
+    this.showAlert('success', message, duration);
   }
 
-  static showSuccessToastDelay(message, delay) {
-    toastr.success(message, 'Succès', {
-      closeButton: true,
-      progressBar: true,
-      timeOut: delay,
-      positionClass: 'toast-top-center',
-    })
+  // ✅ Afficher une alerte d'erreur
+  static showErrorToast(message, duration = 5000) {
+    this.showAlert('error', message, duration);
   }
-
   static formatNumber(value) {
     return new Intl.NumberFormat('en-US', {
       style: 'decimal',
