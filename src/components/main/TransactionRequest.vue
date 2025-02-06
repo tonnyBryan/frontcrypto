@@ -143,7 +143,7 @@ onMounted(fetchDemandes);
               Allow
             </button>
             <button class="btn btn-sm btn-outline-danger fw-bold" @click="openModal(demande, 'denie')">
-              Denie
+              Deny
             </button>
           </div>
         </td>
@@ -285,4 +285,5 @@ th {
   --bs-alert-color: #ea868f !important;
   --bs-alert-border-color: #842029 !important;
 }
+
 </style>
