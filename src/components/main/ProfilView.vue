@@ -35,13 +35,13 @@ import LoaderV from '../util/LoaderV.vue'
                 @click="openTransactionModal('depot')"
                 class="btn btn-secondary btn-sm bt bt-depot"
               >
-                <i class="bi bi-arrow-bar-up"></i> Depot
+                <i class="bi bi-arrow-bar-up"></i> Deposit
               </button>
               <button
                 @click="openTransactionModal('retrait')"
                 class="btn btn-secondary btn-sm bt bt-retrait"
               >
-                <i class="bi bi-arrow-bar-down"></i> Retrait
+                <i class="bi bi-arrow-bar-down"></i> Withdraw
               </button>
             </div>
           </div>
@@ -51,7 +51,7 @@ import LoaderV from '../util/LoaderV.vue'
         </div>
       </div>
     </div>
-    
+
     <hr style="border-top: 4px solid gray" />
     <div class="row" style="padding-bottom: 2rem">
       <WalletCryptoView :Mycryphoss="mycrypto" :limit="20" />
@@ -132,7 +132,7 @@ import LoaderV from '../util/LoaderV.vue'
     </div>
   </div>
 
- 
+
 
   <div
     class="modal fade"
@@ -174,6 +174,8 @@ export default {
   components: {
     TransactionView,
     WalletCryptoView,
+    Requestfrom,
+    TransactionCrypt,
   },
   data() {
     return {
@@ -306,6 +308,11 @@ export default {
       }
     },
     openTransactionModal(type) {
+      if (!UtilClass.hasInternetAccess()) {
+        UtilClass.showErrorToast("Oups! Check your network and try again")
+        return;
+      }
+
       this.transactionType = type === 'depot' ? 'Depot' : 'Retrait'
       this.solde = ''
       this.formattedSolde = ''
@@ -370,7 +377,7 @@ export default {
           const thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'))
           thankYouModal.show()
           this.getpendingRequest()
-          
+
         } else {
           UtilClass.endLoadedButton(trButton, 'Request')
           throw new Error(data.message || 'An error occured, Please try again later')
@@ -381,7 +388,7 @@ export default {
       }
     }
   },
- 
+
 }
 </script>
 <style scoped>
@@ -408,7 +415,7 @@ export default {
 }
 
 .bt {
-  width: 7rem;
+  width: 8rem;
   border: none;
   font-size: medium;
   font-weight: 700;

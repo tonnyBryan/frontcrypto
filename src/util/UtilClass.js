@@ -2,8 +2,6 @@ import axios from 'axios'
 import CryptoJS from 'crypto-js'
 import './footer/mystyle.css';
 
-
-
 export default class UtilClass {
   static LOCAL_TOKEN_NAME = 'token'
 
@@ -16,6 +14,10 @@ export default class UtilClass {
 
   static redirectToLogin(router) {
     router.push('/app')
+  }
+
+  static hasInternetAccess() {
+    return navigator.onLine;
   }
 
   static getLocalToken() {
@@ -65,9 +67,9 @@ export default class UtilClass {
     button.innerHTML = initialtext
     button.disabled = false
   }
- 
+
   static showAlert(type, message, duration = 5000) {
-    const icon = type === 'success' 
+    const icon = type === 'success'
         ? '<i class="bi bi-check-circle-fill text-success"></i>' // ✅ Icône verte pour succès
         : '<i class="bi bi-exclamation-triangle-fill text-danger"></i>'; // ⚠️ Icône rouge pour erreur
 
@@ -80,15 +82,15 @@ export default class UtilClass {
       <span class="ms-2">${message}</span>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     `;
-    
+
     // Définir la classe pour la couleur initiale
     alertDiv.classList.add(type === 'success' ? 'alert-success' : 'alert-danger');
-    
+
     // Ajouter une animation d'entrée depuis le haut
     alertDiv.style.transform = 'translateY(-100px)';
     alertDiv.style.opacity = '0';
     alertDiv.style.transition = 'transform 0.5s ease-out, opacity 0.5s ease-out';
-    
+
     // Ajouter l'alerte dans un conteneur centré en haut de la page
     let alertContainer = document.getElementById('alert-container');
     if (!alertContainer) {
@@ -100,15 +102,15 @@ export default class UtilClass {
       alertContainer.style.width = '400px';
       document.body.appendChild(alertContainer);
     }
-    
+
     alertContainer.appendChild(alertDiv);
-    
+
     // Appliquer l'effet d'apparition
     setTimeout(() => {
       alertDiv.style.transform = 'translateY(0)';
       alertDiv.style.opacity = '1';
     }, 100);
-    
+
     // Supprimer l'alerte après la durée spécifiée
     setTimeout(() => {
       alertDiv.style.transform = 'translateY(-100px)';

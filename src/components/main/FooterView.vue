@@ -130,6 +130,11 @@ export default {
         return
       }
 
+      if (!UtilClass.hasInternetAccess()) {
+        UtilClass.showErrorToast("Oups! Check your network and try again")
+        return;
+      }
+
       const btn = document.getElementById('sbt')
 
       try {

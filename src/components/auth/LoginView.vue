@@ -516,7 +516,7 @@ export default {
         UtilClass.endLoadedButton(confirmResetButton, 'Confirm')
 
         if (data.isSuccess) {
-          UtilClass.showSuccessToast('Your acount has been reset.')
+          UtilClass.showSuccessToast('Your account is now clean.')
           this.closeModalBlocked()
         } else {
           throw new Error(data.message || 'Reset key invalid.')

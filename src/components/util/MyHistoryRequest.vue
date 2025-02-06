@@ -11,7 +11,7 @@
       </button>
     </div>
     <div v-else class="d-flex p-3 alert alert-info justify-content-between align-items-center" >
-      <h6 class="mb-0 text-white d-flex">🔵 No request pending for you !</h6>
+      <h6 class="mb-0 text-white d-flex">🔵 You are free to request a deposit or withdraw money</h6>
     </div>
   </div>
 
@@ -113,6 +113,11 @@ export default {
     },
     // Ouvre la modal de confirmation
     openModal() {
+      if (!UtilClass.hasInternetAccess()) {
+        UtilClass.showErrorToast("Oups! Check your network and try again")
+        return;
+      }
+
       this.modalInstance = new bootstrap.Modal(document.getElementById("confirmationModal"));
       this.modalInstance.show();
     },
@@ -124,7 +129,6 @@ export default {
       const requestUrl = `${UtilClass.BACKEND_BASE_URL}/crypto/demande/annuler/${this.request.id_demande}`;
       const btn = document.getElementById('cf'); // Vérifie que le bouton existe
       if (!btn) {
-        console.error('Button not found');
         return;
       }
 
@@ -141,7 +145,7 @@ export default {
           if (responseBody.success) {
             this.$emit('request-changed');
             UtilClass.endLoadedButton(btn, 'Confirm');
-
+            UtilClass.showSuccessToast('your request has been canceled')
           }
           else{
             UtilClass.endLoadedButton(btn, 'Confirm');
@@ -160,7 +164,7 @@ export default {
       }
     }
   },
-  
+
 }
 </script>
 

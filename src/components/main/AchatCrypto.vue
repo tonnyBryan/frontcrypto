@@ -399,6 +399,11 @@ export default {
         return
       }
 
+      if (!UtilClass.hasInternetAccess()) {
+        UtilClass.showErrorToast("Oups! Check your network and try again")
+        return;
+      }
+
       if (this.estimation > this.user.monnaie) {
         return
       }

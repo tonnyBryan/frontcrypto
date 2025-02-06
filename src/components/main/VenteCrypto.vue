@@ -328,6 +328,15 @@ export default {
       }
     },
     async nextStep() {
+      if (!this.canBuy) {
+        return
+      }
+
+      if (!UtilClass.hasInternetAccess()) {
+        UtilClass.showErrorToast("Oups! Check your network and try again")
+        return;
+      }
+
       const trButton = document.getElementById('sellBtn')
       UtilClass.loadButton(trButton)
 
