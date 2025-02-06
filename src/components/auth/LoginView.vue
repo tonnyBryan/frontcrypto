@@ -338,6 +338,10 @@ export default {
         this.errors.password = 'Password required.'
       }
 
+      if (!UtilClass.hasInternetAccess()) {
+        UtilClass.showErrorToast("Oups! Check your network and try again")
+        return;
+      }
 
       if (Object.keys(this.errors).length === 0) {
         const submitButton = document.getElementById('submit-btn')
