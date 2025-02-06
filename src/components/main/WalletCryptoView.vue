@@ -1,6 +1,10 @@
 <template>
   <div class="table-container">
-    <h4 style="margin-left: 7px">Cryptho-Wallet</h4>
+    <h4 style="margin-left: 7px">
+      Cryptho-Wallet :
+      <span class="text-success ms-2" style="color: rgba(22, 216, 22, 0.445);font-weight: 700;">{{ formatCurrency(capitalValue) }}</span>
+      
+    </h4>
     <div class="table-responsive">
       <table class="table table-dark tba">
         <thead>
@@ -12,7 +16,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="Mycryphos in paginatedMycryphoss" :key="Mycryphos.crypto.id_crypto">
+          <tr v-for="Mycryphos in paginatedMycryphoss" :key="Mycryphos.crypto.id_crypto" >
             <td>
               <img
                 :src="'/assets/images/logo/' + Mycryphos.crypto.unit_nom + '.png'"
@@ -85,7 +89,11 @@ export default {
   },
   computed: {
     paginatedMycryphoss() {
-      return this.limit ? this.Mycryphoss.slice(0, this.limit) : this.Mycryphoss
+      const filteredCryptos = this.Mycryphoss.filter(crypto => crypto.valeur > 0);
+      return this.limit ? filteredCryptos.slice(0, this.limit) : filteredCryptos;
+    },
+    capitalValue() {
+      return this.Mycryphoss.reduce((total, crypto) => total + crypto.estimation, 0);
     },
   },
   methods: {
@@ -213,6 +221,7 @@ h4 {
 th {
   font-weight: bold;
 }
+
 
 /* Réduire la taille des polices et masquer certaines colonnes sur les petits écrans */
 @media (max-width: 576px) {

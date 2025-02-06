@@ -1,14 +1,22 @@
+<script setup>
+import FavoriteBouton from './FavoriteBouton.vue';
+
+</script>
 <template>
   <div id="chart" ref="chart" style="width: 100%; height: 400px"></div>
-  <button style="margin-top: 1rem" class="btn btn-outline-secondary" @click="goToRealtime">
-    Go to realtime
-    <i class="bi bi-clock"></i>
-  </button>
+  <div class="d-flex gap-2 mt-3">
+    <button class="btn btn-outline-secondary gap-5" @click="goToRealtime">
+      Go to realtime
+      <i class="bi bi-clock"></i>
+    </button>
+    <FavoriteBouton />
+  </div>
 </template>
 
 <script>
 import UtilClass from '@/util/UtilClass'
 import { createChart } from 'lightweight-charts'
+
 
 export default {
   name: 'TradingView',

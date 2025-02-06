@@ -1,5 +1,6 @@
 <script setup>
 import LoaderV from './LoaderV.vue'
+
 </script>
 
 <template>
