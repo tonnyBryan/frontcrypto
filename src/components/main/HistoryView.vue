@@ -2,10 +2,10 @@
   <div class="row" style="width: 90%; margin: auto; margin-top: 2rem; margin-bottom: 2rem">
     <h2 style="color: #fdf8f8; font-weight: 700;"><i class="bi bi-calendar2-check"></i> Transaction History</h2>
   </div>
-  <div class="row" style="width: 90%; margin: auto; margin-top: 2rem; margin-bottom: 2rem">
+  <div class="row mb-2" style="width: 90%; margin: auto;">
     <div class="col-md-10">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 mb-2" >
           <div>
             <VueSelect
               v-if="userOptions"
@@ -50,7 +50,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 mb-2">
           <div>
             <VueSelect
               v-if="cryptoOptions"
@@ -97,13 +97,13 @@
         </div>
       </div>
     </div>
-    <div class="col-md-2">
-      <div class="row h-50">
-        <div class="col-md-12">
+    <div class="col-md-2 mb-2"  >
+      <div class="row h-50 ">
+        <div class="col-md-12 ">
           <button type="button" @click="filterData()" class="btn btn-outline-warning w-100 bt"><i class="bi bi-funnel"></i> Filter</button>
         </div>
       </div>
-      <div class="row h-50">
+      <div class="row h-50 ">
         <div class="col-md-12 d-flex flex-column" style="height: 100%;">
           <button type="button" @click="sync()" class="btn btn-outline-warning w-100 mt-auto bt sync">
             <i class="bi bi-arrow-clockwise"></i> Sync
@@ -112,9 +112,16 @@
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="filter-header" style="width: 88%; margin: auto; color: #f0f0f0;">
+
+  <div class="row ">
+    <div class="input-group d-flex align-items-center justify-content-between mt-3 mb-4" style="width:88%; margin: auto;">
+      <div class="filter-header ml-3" style="flex-grow: 1; color: #f0f0f0;"></div>
+      <div class="date-inputs d-flex  gap-2 mb-2 ">
+        <input v-model="startDate" id="startDate" type="datetime-local" class="form-control small-datetime " @change="filterTransactions" />
+        <input v-model="endDate" id="endDate" type="datetime-local" class="form-control small-datetime " @change="filterTransactions" />
+      </div>
     </div>
+
     <div class="table-container">
       <div class="table-responsive">
         <table v-if="transactions.length" class="table table-dark tba" style="width: 90%">
@@ -131,12 +138,13 @@
           </tr>
           </thead>
           <tbody>
-          <tr v-for="transaction in transactions" :key="transaction.id_transaction_crypto">
+          <tr v-for="transaction in filteredTransactions" :key="transaction.id_transaction_crypto">
             <td>
               <img
                 :src="getUserLogo(transaction.utilisateur.imageUrl)"
                 alt="logo"
                 width="40"
+                height="40"
                 class="me-2"
                 style="border-radius: 5px; cursor: pointer"
                 @click="filterByUser(transaction.utilisateur)"
@@ -175,6 +183,7 @@
         </div>
       </div>
     </div>
+
   </div>
 
   <!-- Modal d'erreur -->
@@ -206,12 +215,14 @@ import axios from 'axios'
 import * as bootstrap from 'bootstrap'
 import LoaderV from '@/components/util/LoaderV.vue'
 
+
 export default {
   name: 'HistoryView',
   components: { LoaderV, VueSelect },
   data() {
     return {
       transactions: [],
+      filteredTransactions: [],
       selectedCrypto: ref(null),
       selectedUser: ref(null),
       cryptoOptions: null,
@@ -227,13 +238,31 @@ export default {
     this.addHeader("History for all")
   },
   methods: {
+    resetDates() {
+      this.startDate = null;
+      this.endDate = null;
+      this.filterTransactions();
+    },
+    filterTransactions() {
+      let filtered = this.transactions;
+      if (this.startDate) {
+        let start = new Date(this.startDate);
+        filtered = filtered.filter(transaction => new Date(transaction.date_action) >= start);
+      }
+      if (this.endDate) {
+        let end = new Date(this.endDate);
+        filtered = filtered.filter(transaction => new Date(transaction.date_action) <= end);
+      }
+      this.filteredTransactions = filtered;
+    },
     showErrorModal() {
       this.modalInstance = new bootstrap.Modal(document.getElementById('errorModal'));
       this.modalInstance.show();
     },
     sync() {
       this.getTransactionsData(null);
-      this.addHeader("Historique de transaction pour tous");
+      this.addHeader("History for all");
+      this.resetDates();
     },
     filterData() {
       let url = UtilClass.BACKEND_BASE_URL + "/crypto/user/transactions";
@@ -372,6 +401,7 @@ export default {
 
         if (data.success) {
           this.transactions = data.data
+          this.resetDates();
         } else {
           throw new Error(data.message || 'Error retrieving user information')
         }
@@ -380,6 +410,8 @@ export default {
       }
     },
   },
+ 
+
 }
 </script>
 
@@ -589,4 +621,19 @@ td {
 .cursor-pointer{
   cursor: pointer;
 }
+
+.date-inputs input.small-datetime {
+  width: 150px !important; /* Ajuste la largeur */
+  font-size: 14px; /* Réduit la taille du texte */
+  padding: 5px; /* Réduit l’espace intérieur */
+  margin-right: 5px;
+  background-color: transparent;
+  color: #fff;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* Inverse la couleur pour rendre l'icône blanche */
+    cursor: pointer;
+}
+
 </style>

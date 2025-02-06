@@ -1,7 +1,7 @@
 <template>
   <div class="table-container m-">
     <div v-if="request" class="d-flex p-3 alert alert-warning justify-content-between align-items-center">
-      <h6 class="mb-0 text-white d-flex ">🟡 You have a pending request : <span class="ms-2">  {{ type }} of <strong> ${{ formatCurrency(request.valeur) }}</strong></span></h6>
+      <h6 class="mb-0 text-white d-flex ">🟡 You have a pending request : <span class="ms-2">  {{ type }} of <strong> $ {{ formatCurrency(request.valeur) }}</strong></span></h6>
       <button
         type="button"
         class="btn btn-outline-danger btn-sm"
