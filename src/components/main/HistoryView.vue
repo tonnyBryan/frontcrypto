@@ -1,3 +1,16 @@
+<script setup>
+  import flatpickr from 'vue-flatpickr-component';
+  import 'flatpickr/dist/themes/dark.css'; 
+  const config = {
+    enableTime: true,       
+    dateFormat: "d-m-Y H:i", 
+    time_24hr: true,
+    altFormat: "d-m-Y H:i", 
+    altInput: true,
+      
+  };
+</script>
+
 <template>
   <div class="row" style="width: 90%; margin: auto; margin-top: 2rem; margin-bottom: 2rem">
     <h2 style="color: #fdf8f8; font-weight: 700;"><i class="bi bi-calendar2-check"></i> Transaction History</h2>
@@ -117,9 +130,20 @@
     <div class="input-group d-flex align-items-center justify-content-between mt-3 mb-4" style="width:88%; margin: auto;">
       <div class="filter-header ml-3" style="flex-grow: 1; color: #f0f0f0;"></div>
       <div class="date-inputs d-flex  gap-2 mb-2 ">
-        <input v-model="startDate" id="startDate" type="datetime-local" class="form-control small-datetime " @change="handleDateChange" :disabled="!filterActive" />
-        <input v-model="endDate" id="endDate" type="datetime-local" class="form-control small-datetime " @change="handleDateChange" :disabled="!filterActive" />
-        
+        <flatpickr
+          v-model="startDate"
+          :config="config"
+          class="form-control small-datetime dark-picker"
+          @change="handleDateChange"
+          placeholder=" Date Min "
+        />
+        <flatpickr
+          v-model="endDate"
+          :config="config"
+          class="form-control small-datetime dark-picker"
+          @change="handleDateChange"
+          placeholder="Date Max"
+        />
         <label class="switch">
           <input type="checkbox" v-model="filterActive" @change="handleToggle">
           <span class="slider"></span>
@@ -220,6 +244,7 @@ import VueSelect from 'vue3-select-component'
 import axios from 'axios'
 import * as bootstrap from 'bootstrap'
 import LoaderV from '@/components/util/LoaderV.vue'
+
 
 
 export default {
@@ -592,7 +617,7 @@ td {
 }
 
 .modal-content {
-  background-color: #181a20;
+  background-color: #434343;
   color: #ffffff;
   border: none;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -638,14 +663,7 @@ td {
   cursor: pointer;
 }
 
-.date-inputs input.small-datetime {
-  width: 150px !important;
-  font-size: 14px; 
-  padding: 5px; 
-  margin-right: 5px;
-  background-color: transparent;
-  color: #fff;
-}
+
 
 input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     filter: invert(1); 
@@ -675,7 +693,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
  left: 0;
  right: 0;
  bottom: 0;
- background-color: #181a20;
+ background-color: #434343;
  transition: .2s;
  border-radius: 30px;
 }
@@ -697,16 +715,40 @@ input:checked + .slider::before {
 }
 
 input:checked + .slider {
- background-color: #181a20;
+ background-color: #434343;
 }
 
 input:focus + .slider {
- box-shadow: 0 0 1px #181a20;
+ box-shadow: 0 0 1px #434343;
 }
 
 input:checked + .slider:before {
  transform: translateX(1.9em);
 }
+
+.dark-picker {
+  background-color: black;
+  color: white;
+  border: 1px solid #444;
+}
+:deep(.flatpickr-day.selected){
+  background: #ffc107 !important ;
+  border-color: #ffc107 !important;
+}
+
+.small-datetime {
+  width: 150px !important;
+  font-size: 14px; 
+  padding: 5px; 
+  margin-right: 5px;
+  background-color: transparent;
+  color: #fff;
+}
+
+.flatpickr-input::placeholder {
+  color: #fff!important;
+}
+
 
 
 </style>

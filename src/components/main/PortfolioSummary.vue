@@ -1,43 +1,43 @@
+<script setup>
+  import flatpickr from 'vue-flatpickr-component';
+  import 'flatpickr/dist/themes/dark.css'; 
+  const config = {
+    enableTime: true,       
+    dateFormat: "d-m-Y H:i", 
+    time_24hr: true,        
+  };
+</script>
 <template>
     <div>
-      <div class="filter-section" style="width: 90%; margin: auto; margin-top: 2rem; margin-bottom: 2rem;">
-        <h2 style="color: #fdf8f8; font-weight: 700;">
+      <div class="col-md-12 d-flex flex-column flex-sm-row p-3 justify-content-between align-items-center" >
+        <h3 style="color: #fdf8f8; font-weight: 700;">
           <i class="bi bi-calendar2-check"></i> Portfolio Summary
-        </h2>
+        </h3>
         <div class="date-inputs" style="display: flex; gap: 10px; align-items: center; margin-top: 1rem;">
-          <input
-            v-model="startDate"
-            type="datetime-local"
-            class="form-control small-datetime"
-            @change="handleDateChange"
-            placeholder="Start Date"
-          />
-          <input
+          <flatpickr
             v-model="endDate"
-            type="datetime-local"
-            class="form-control small-datetime"
-            @change="handleDateChange"
-            placeholder="End Date"
+            :config="config"
+            class="form-control small-datetime dark-picker"
+            placeholder="Date max"
           />
-          <button @click="applyFilter" class="btn btn-outline-warning">
+          <button @click="handleDateChange" class="btn  btn-sm btn-outline-warning">
             <i class="bi bi-funnel"></i> Filter
           </button>
         </div>
       </div>
-  
-   
-      <div class="table-container" style="width: 90%; margin: auto;">
-        <table v-if="userSummaries.length" class="table table-dark">
+      
+      <div class="table-container table-responsive" style="width: 90%; margin: auto;">
+        <table v-if="transactions.length" class="table table-dark tba">
           <thead>
             <tr>
               <th>User</th>
-              <th>Total Achat</th>
-              <th>Total Vente</th>
-              <th>Valeur Portefeuille</th>
+              <th>Total Purchase</th>
+              <th>Total Sale</th>
+              <th>Wallet Value</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="summary in userSummaries" :key="summary.user.id_utilisateur">
+            <tr v-for="summary in transactions" :key="summary.user.id_utilisateur">
               <td>
                 <img
                   :src="getUserLogo(summary.user.imageUrl)"
@@ -59,7 +59,7 @@
           <div class="icon-container">
             <i class="bi bi-file-earmark fs-1 text-secondary"></i>
           </div>
-          <p class="mt-3">Aucune transaction n'est disponible pour les dates sélectionnées !</p>
+          <p class="mt-3">No transactions are available for the selected dates ! </p>
         </div>
       </div>
   
@@ -87,119 +87,85 @@
   </template>
   
   <script>
-  import UtilClass from '@/util/UtilClass'
-  import axios from 'axios'
-  import * as bootstrap from 'bootstrap'
-  
-  export default {
-    name: 'PortfolioSummary',
-    data() {
-      return {
-        transactions: [],
-        startDate: '', 
-        endDate: '',
-        errorMessage: '',
-        modalInstance: null,
-      }
-    },
-    computed: {
-      filteredTransactions() {
-        let filtered = this.transactions;
-        if (this.startDate) {
-          const start = new Date(this.startDate);
-          filtered = filtered.filter((t) => new Date(t.date_action) >= start);
+    import UtilClass from '@/util/UtilClass'
+    import axios from 'axios'
+    export default {
+      name: 'PortfolioSummary',
+      data() {
+        return {
+          transactions: [],
+          endDate: '',
+          errorMessage: '',
+          modalInstance: null,
         }
-        if (this.endDate) {
-          const end = new Date(this.endDate);
-          filtered = filtered.filter((t) => new Date(t.date_action) <= end);
-        }
-        return filtered;
       },
-    
-      userSummaries() {
-        const summaryMap = {};
-        this.filteredTransactions.forEach((t) => {
-          const userId = t.utilisateur.id_utilisateur;
-          if (!summaryMap[userId]) {
-            summaryMap[userId] = {
-              user: t.utilisateur,
-              totalAchat: 0,
-              totalVente: 0,
-              portfolioValue: 0,
-            };
-          }
-          if (t.type && t.type.etat === 'down') {
-            summaryMap[userId].totalVente += t.total_with_commission;
+      async created() {
+        this.getTransactionsData(null);
+      },
+      methods: {
+        handleDateChange(selectedDates) {
+          // mettez à jour endDate avec la date sélectionnée
+          this.endDate = selectedDates[0] ? selectedDates[0].toISOString() : null;
+          // Appliquer le filtre
+          this.applyFilter();
+        },
+        async applyFilter() {
+          if (this.endDate) {
+            const formattedDate = this.endDate ? this.endDate : new Date().toISOString();
+            const url = `${UtilClass.BACKEND_BASE_URL}/crypto/user/transactions?date=${encodeURIComponent(formattedDate)}`;
+          
+            this.getTransactionsData(url);
           } else {
-            summaryMap[userId].totalAchat += t.total_with_commission;
+            this.getTransactionsData(null);
           }
-        });
-        return Object.values(summaryMap).map((s) => {
-          s.portfolioValue = s.totalAchat - s.totalVente;
-          return s;
-        });
-      },
-    },
-    created() {
-      this.getTransactionsData();
-    },
-    methods: {
-      handleDateChange() {
-        // Optionnel : vous pouvez lancer l'actualisation automatiquement lors d'un changement
-        // this.applyFilter();
-      },
-      applyFilter() {
-        // Le filtrage s'effectue via la computed property filteredTransactions,
-        // il suffit donc de mettre à jour startDate et endDate.
-        // Vous pouvez ajouter ici des vérifications (ex. : startDate <= endDate)
-      },
-      getTransactionsData() {
-        const uri = UtilClass.BACKEND_BASE_URL + '/crypto/user/transactions';
-        fetch(uri, {
-          method: 'GET',
-          headers: {
-            Authorization: 'Bearer ' + UtilClass.getLocalToken(),
-            'Content-Type': 'application/json',
-          },
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (!data.success) {
+        },
+        async getTransactionsData(url) {
+          try {
+            const uri = (url) ? url : UtilClass.BACKEND_BASE_URL + '/crypto/user/transactions';
+            const response = await fetch(uri, {
+              method: 'GET',
+              headers: {
+                Authorization: 'Bearer ' + UtilClass.getLocalToken(),
+                'Content-Type': 'application/json',
+              },
+            })
+            const data = await response.json()
+
+            if (!response.ok) {
               if (UtilClass.isInvalidTokenError(data)) {
-                UtilClass.removeLocalToken();
-                this.$router.push('/app/login');
+                UtilClass.removeLocalToken()
+                this.$router.push('/app/login')
               }
-              throw new Error(data.message || 'Error retrieving transactions');
             }
-            this.transactions = data.data;
-          })
-          .catch((error) => {
-            console.error(error);
-            this.errorMessage = error.message || 'Error fetching transactions';
-            this.showErrorModal();
-          });
+            if (data.success) {
+              this.transactions = data.data
+              this.endDate=null
+            } else {
+              throw new Error(data.message || 'Error retrieving user information')
+            }
+          } catch (error) {
+            console.error(error)
+          }
+        },
+        getUserLogo(logo) {
+          if (!logo || parseInt(logo) === 0) {
+            return '/assets/images/default-logo.jpg';
+          }
+          return logo;
+        },
+        formatCurrency(value) {
+          return UtilClass.formatCurrency(value);
+        },
+        showErrorModal() {
+          this.modalInstance = new bootstrap.Modal(document.getElementById('errorModal'));
+          this.modalInstance.show();
+        },
       },
-      getUserLogo(logo) {
-        if (!logo || parseInt(logo) === 0) {
-          return '/assets/images/default-logo.jpg';
-        }
-        return logo;
-      },
-      formatCurrency(value) {
-        return UtilClass.formatCurrency(value);
-      },
-      showErrorModal() {
-        this.modalInstance = new bootstrap.Modal(document.getElementById('errorModal'));
-        this.modalInstance.show();
-      },
-    },
-  };
+    };
   </script>
   
   <style scoped>
-  .filter-section h2 {
-    margin-bottom: 1rem;
-  }
+  
   
   .date-inputs input.small-datetime {
     width: 150px !important;
@@ -231,6 +197,7 @@
     background: rgba(0, 0, 0, 0.5);
     transition: background 0.3s ease;
   }
+ 
   
   .btn-outline-warning {
     font-weight: 600;
@@ -255,5 +222,29 @@
     background-color: #332701 !important;
     border-color: #997404 !important;
   }
+    
+  .dark-picker {
+    background-color: black;
+    color: white;
+    border: 1px solid #444;
+  }
+  .flatpickr-day.selected{
+    background: #ffc107;
+    border-color: #ffc107;
+  }
+
+  .small-datetime {
+    width: 150px !important;
+    font-size: 14px; 
+    padding: 5px; 
+    margin-right: 5px;
+    background-color: transparent;
+    color: #fff;
+  }
+
+  .flatpickr-input::placeholder {
+    color: #ffffffa1!important;
+  }
+ 
   </style>
   

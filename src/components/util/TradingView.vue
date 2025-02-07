@@ -9,14 +9,13 @@ import FavoriteBouton from './FavoriteBouton.vue';
       Go to realtime
       <i class="bi bi-clock"></i>
     </button>
-    <FavoriteBouton />
+    <FavoriteBouton  :isFavorite="isfavories" :id_cryptho="idCrypto"  />
   </div>
 </template>
 
 <script>
 import UtilClass from '@/util/UtilClass'
 import { createChart } from 'lightweight-charts'
-
 
 export default {
   name: 'TradingView',
@@ -30,9 +29,15 @@ export default {
       required: false,
       default: null,
     },
+    isfavories:{
+      type: Object,
+      default:false,
+      required:true,
+    },
   },
   mounted() {
     this.initChart()
+
   },
   watch: {
     updatedCryptoData: {

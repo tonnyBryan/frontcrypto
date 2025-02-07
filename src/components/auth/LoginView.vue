@@ -1,3 +1,4 @@
+
 <template>
   <div class="container d-flex justify-content-center align-items-center vh-100">
     <div
@@ -14,6 +15,8 @@
         <h2 class="text-left">Connexion</h2>
         <img src="@/assets/App-icon.png" alt="Logo" style="width: 30px; height: 30px" />
       </div>
+
+
       <form @submit.prevent="handleLogin" novalidate>
         <div class="mb-3">
           <label for="email" class="form-label">E-mail</label>
@@ -549,9 +552,15 @@ export default {
 </script>
 
 <style scoped>
+
+
+
 .text-muted {
   color: #bbbbbb !important;
 }
+
+
+
 
 input::placeholder {
   color: #aaaaaa; 

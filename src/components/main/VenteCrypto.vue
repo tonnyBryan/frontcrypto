@@ -419,18 +419,7 @@ export default {
           this.closeModalAcc()
           this.clearForm()
 
-          // const finded = this.cryptoList.find(
-          //   (crypto) => crypto.crypto.id_crypto === parseInt(this.selectedCrypto),
-          // )
-          // const message = `
-          //   <div style="display: flex; align-items: center;">
-          //     <img src="/assets/crypto/${finded.crypto.logo}" alt="Logo" style="width: 30px; height: 30px; margin-right: 10px;">
-          //     <span>- ${this.quantity}</span>
-          //   </div>
-          // `
-          // this.clearForm()
-          // UtilClass.showSuccessToastDelay(message, 100000)
-
+          
           const thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'))
           thankYouModal.show()
         } else {
