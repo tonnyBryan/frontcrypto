@@ -5,8 +5,8 @@ import './footer/mystyle.css';
 export default class UtilClass {
   static LOCAL_TOKEN_NAME = 'token'
 
-  static BACKEND_BASE_URL = 'http://172.30.152.194:8080'
-  static BACKEND_SOCKET_BASE_UR = 'ws://172.30.152.194:8080'
+  static BACKEND_BASE_URL = 'http://localhost:8080'
+  static BACKEND_SOCKET_BASE_UR = 'ws://localhost:8080'
 
   static SECRET_KET = 'secretkey123456789'
   static EM_ADMIN = 'em_admin';
@@ -73,11 +73,11 @@ export default class UtilClass {
     ? '<i class="bi bi-check-circle-fill text-success"></i>'
     : type === 'danger'
       ? '<i class="bi bi-exclamation-triangle-fill text-danger"></i>'
-      : type === 'primary' 
+      : type === 'primary'
         ? '<i class="bi bi-info-circle-fill text-primary"></i>'
-        : ''; // 
+        : ''; //
 
-   
+
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-dismissible fade show d-flex align-items-center custom-alert`;
     alertDiv.setAttribute('role', 'alert');
@@ -87,6 +87,7 @@ export default class UtilClass {
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     `;
 
+    console.log(type)
     alertDiv.classList.add(
       type === 'success' ? 'alert-success' :
       type === 'danger' ? 'alert-danger' :
@@ -98,7 +99,7 @@ export default class UtilClass {
     alertDiv.style.opacity = '0';
     alertDiv.style.transition = 'transform 0.5s ease-out, opacity 0.5s ease-out';
 
-  
+
     let alertContainer = document.getElementById('alert-container');
     if (!alertContainer) {
       alertContainer = document.createElement('div');
@@ -117,7 +118,7 @@ export default class UtilClass {
       alertDiv.style.opacity = '1';
     }, 100);
 
-    
+
     setTimeout(() => {
       alertDiv.style.transform = 'translateY(-100px)';
       alertDiv.style.opacity = '0';
@@ -133,7 +134,7 @@ export default class UtilClass {
   }
 
   static showErrorToast(message, duration = 5000) {
-    this.showAlert('error', message, duration);
+    this.showAlert('danger', message, duration);
   }
   static formatNumber(value) {
     return new Intl.NumberFormat('en-US', {

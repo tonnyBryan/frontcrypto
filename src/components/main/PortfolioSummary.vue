@@ -1,10 +1,10 @@
 <script setup>
   import flatpickr from 'vue-flatpickr-component';
-  import 'flatpickr/dist/themes/dark.css'; 
+  import 'flatpickr/dist/themes/dark.css';
   const config = {
-    enableTime: true,       
-    dateFormat: "d-m-Y H:i", 
-    time_24hr: true,        
+    enableTime: true,
+    dateFormat: "d-m-Y H:i",
+    time_24hr: true,
   };
 </script>
 <template>
@@ -25,7 +25,7 @@
           </button>
         </div>
       </div>
-      
+
       <div class="table-container table-responsive" style="width: 90%; margin: auto;">
         <table v-if="transactions.length" class="table table-dark tba">
           <thead>
@@ -62,8 +62,8 @@
           <p class="mt-3">No transactions are available for the selected dates ! </p>
         </div>
       </div>
-  
-      
+
+
       <div id="errorModal" class="modal fade" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -82,10 +82,10 @@
           </div>
         </div>
       </div>
-  
+
     </div>
   </template>
-  
+
   <script>
     import UtilClass from '@/util/UtilClass'
     import axios from 'axios'
@@ -113,7 +113,7 @@
           if (this.endDate) {
             const formattedDate = this.endDate ? this.endDate : new Date().toISOString();
             const url = `${UtilClass.BACKEND_BASE_URL}/crypto/user/transactions?date=${encodeURIComponent(formattedDate)}`;
-          
+
             this.getTransactionsData(url);
           } else {
             this.getTransactionsData(null);
@@ -132,10 +132,10 @@
             const data = await response.json()
 
             if (!response.ok) {
-              if (UtilClass.isInvalidTokenError(data)) {
-                UtilClass.removeLocalToken()
-                this.$router.push('/app/login')
-              }
+              // if (UtilClass.isInvalidTokenError(data)) {
+              //   UtilClass.removeLocalToken()
+              //   this.$router.push('/app/login')
+              // }
             }
             if (data.success) {
               this.transactions = data.data
@@ -163,10 +163,10 @@
       },
     };
   </script>
-  
+
   <style scoped>
-  
-  
+
+
   .date-inputs input.small-datetime {
     width: 150px !important;
     font-size: 14px;
@@ -176,53 +176,53 @@
     border: 1px solid #686868;
     border-radius: 5px;
   }
-  
+
   input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
     cursor: pointer;
   }
-  
+
   .table {
     margin: 0 auto;
     width: 100%;
   }
-  
+
   .table th,
   .table td {
     padding: 10px;
     vertical-align: middle;
   }
-  
+
   .table tbody tr:hover {
     background: rgba(0, 0, 0, 0.5);
     transition: background 0.3s ease;
   }
- 
-  
+
+
   .btn-outline-warning {
     font-weight: 600;
   }
-  
+
   .modal-content {
     background-color: #181a20;
     color: #ffffff;
     border: none;
   }
-  
+
   .modal-header {
     border-bottom: 1px solid #444;
   }
-  
+
   .modal-footer {
     border-top: 1px solid #444;
   }
-  
+
   .alert-warning {
     color: #ffda6a !important;
     background-color: #332701 !important;
     border-color: #997404 !important;
   }
-    
+
   .dark-picker {
     background-color: black;
     color: white;
@@ -235,8 +235,8 @@
 
   .small-datetime {
     width: 150px !important;
-    font-size: 14px; 
-    padding: 5px; 
+    font-size: 14px;
+    padding: 5px;
     margin-right: 5px;
     background-color: transparent;
     color: #fff;
@@ -245,6 +245,5 @@
   .flatpickr-input::placeholder {
     color: #ffffffa1!important;
   }
- 
+
   </style>
-  

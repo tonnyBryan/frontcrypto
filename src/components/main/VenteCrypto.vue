@@ -90,7 +90,7 @@
     </div>
   </div>
 
- 
+
   <div
     class="modal d-flex justify-content-center align-items-center"
     v-if="showConfirmationModal"
@@ -328,7 +328,7 @@ export default {
       }
     },
     async nextStep() {
-      if (!this.canBuy) {
+      if (!this.canSell) {
         return
       }
 
@@ -419,7 +419,7 @@ export default {
           this.closeModalAcc()
           this.clearForm()
 
-          
+
           const thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'))
           thankYouModal.show()
         } else {

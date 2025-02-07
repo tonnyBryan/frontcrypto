@@ -58,7 +58,7 @@
     </div>
   </div>
 
-   
+
    <div id="errorModal" class="modal fade" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -88,7 +88,7 @@ export default {
   name: 'MyHistoryRequest',
   data() {
     return {
-      errorMessage: "", 
+      errorMessage: "",
     };
   },
   props: {
@@ -123,11 +123,11 @@ export default {
     },
     showErrorModal (){
       this.modalInstance = new bootstrap.Modal(document.getElementById('errorModal'));
-      this.modalInsance.show();
+      this.modalInstance.show();
     },
     async confirmAction() {
       const requestUrl = `${UtilClass.BACKEND_BASE_URL}/crypto/demande/annuler/${this.request.id_demande}`;
-      const btn = document.getElementById('cf'); 
+      const btn = document.getElementById('cf');
       if (!btn) {
         return;
       }
@@ -140,7 +140,7 @@ export default {
 
         if (response.ok) {
           setTimeout(() => {
-            this.modalInstance.hide(); 
+            this.modalInstance.hide();
           }, 300);
           if (responseBody.success) {
             this.$emit('request-changed');
@@ -158,6 +158,7 @@ export default {
       } catch (error) {
         UtilClass.endLoadedButton(btn, 'Confirm');
         this.errorMessage = error.message;
+        this.$emit('request-changed');
         setTimeout(() => {
           this.showErrorModal();
         }, 300);
