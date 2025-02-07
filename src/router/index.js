@@ -13,6 +13,8 @@ import MainViewAdmin from '@/views/MainViewAdmin.vue'
 import TransactionRequest from '@/components/main/TransactionRequest.vue'
 import AppConfig from '@/components/main/AppConfig.vue'
 import HistoryView from '@/components/main/HistoryView.vue'
+import RecapViewadmin from '@/components/main/PortfolioSummary.vue'
+import AnalyseCommission from '@/components/main/AnalyseCommission.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -91,6 +93,16 @@ const router = createRouter({
           path: 'config',
           name: 'config',
           component: AppConfig,
+        },
+        {
+          path: 'overview',
+          name: 'overview',
+          component: RecapViewadmin,
+        },
+        {
+          path: 'analyse',
+          name: 'analyse',
+          component: AnalyseCommission,
         }
       ]
     },

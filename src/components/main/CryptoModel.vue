@@ -31,7 +31,7 @@ import TradingView from '../util/TradingView.vue'
             </p>
           </div>
           <div class="crypto-chart">
-            <TradingView :idCrypto="getCryptoId()" :updatedCryptoData="socketData"></TradingView>
+            <TradingView :idCrypto="getCryptoId()" :updatedCryptoData="socketData" :isfavories="isfav"></TradingView>
           </div>
         </div>
 
@@ -127,6 +127,7 @@ export default {
   data() {
     return {
       crypto: null,
+      isfav:false,
       socket: null,
       buyAmount: '',
       spendAmount: 0,
@@ -139,6 +140,7 @@ export default {
     formattedSpendAmount() {
       return this.formatCurrency(this.spendAmount)
     },
+
   },
   methods: {
     updateSpend() {
@@ -316,10 +318,41 @@ export default {
         console.error(error)
       }
     },
+    async getFavorie() {
+      try {
+        const response = await fetch(
+          UtilClass.BACKEND_BASE_URL + '/crypto/user/favoris/' + this.getCryptoId(),
+          {
+            method: 'GET',
+            headers: {
+              Authorization: 'Bearer ' + UtilClass.getLocalToken(),
+              'Content-Type': 'application/json',
+            },
+          },
+        )
+        const data = await response.json()
+        if (!response.ok) {
+          if (UtilClass.isInvalidTokenError(data)) {
+            UtilClass.removeLocalToken()
+            this.$router.push('/app/login')
+          }
+        }
+        if (data.success) {
+          this.isfav = data.data
+          console.log( "tyyyy aaaa"+this.isfav );
+        } else {
+          throw new Error(data.message || 'Error retrieving user information')
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
+
   },
-  mounted() {
+  async mounted() {
     window.scrollTo(0, 0)
     this.connectWebSocket()
+    await this.getFavorie()
   },
   beforeUnmount() {
     if (this.socket) {

@@ -17,4 +17,8 @@
   background: linear-gradient(to bottom, rgba(22, 216, 22, 0.445), #444);
   border-color: rgba(22, 216, 22, 0.445);
 }
+.custom-alert.alert-primary{
+  background: linear-gradient(to bottom, rgba(43, 117, 228, 0.521), #444);
+  border-color: rgba(43, 117, 228, 0.521);
+}
 

@@ -5,8 +5,8 @@ import './footer/mystyle.css';
 export default class UtilClass {
   static LOCAL_TOKEN_NAME = 'token'
 
-  static BACKEND_BASE_URL = 'http://192.168.43.107:8080'
-  static BACKEND_SOCKET_BASE_UR = 'ws://192.168.43.107:8080'
+  static BACKEND_BASE_URL = 'http://172.30.152.194:8080'
+  static BACKEND_SOCKET_BASE_UR = 'ws://172.30.152.194:8080'
 
   static SECRET_KET = 'secretkey123456789'
   static EM_ADMIN = 'em_admin';
@@ -70,8 +70,12 @@ export default class UtilClass {
 
   static showAlert(type, message, duration = 5000) {
     const icon = type === 'success'
-        ? '<i class="bi bi-check-circle-fill text-success"></i>' 
-        : '<i class="bi bi-exclamation-triangle-fill text-danger"></i>'; 
+    ? '<i class="bi bi-check-circle-fill text-success"></i>'
+    : type === 'danger'
+      ? '<i class="bi bi-exclamation-triangle-fill text-danger"></i>'
+      : type === 'primary' 
+        ? '<i class="bi bi-info-circle-fill text-primary"></i>'
+        : ''; // 
 
    
     const alertDiv = document.createElement('div');
@@ -82,7 +86,14 @@ export default class UtilClass {
       <span class="ms-2">${message}</span>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     `;
-    alertDiv.classList.add(type === 'success' ? 'alert-success' : 'alert-danger');
+
+    alertDiv.classList.add(
+      type === 'success' ? 'alert-success' :
+      type === 'danger' ? 'alert-danger' :
+      type === 'primary' ? 'alert-primary' : ''
+    );
+
+
     alertDiv.style.transform = 'translateY(-100px)';
     alertDiv.style.opacity = '0';
     alertDiv.style.transition = 'transform 0.5s ease-out, opacity 0.5s ease-out';
@@ -114,6 +125,9 @@ export default class UtilClass {
     }, duration);
   }
 
+  static showPrimaryToast(message, duration =2000) {
+    this.showAlert('primary', message, duration);
+  }
   static showSuccessToast(message, duration = 5000) {
     this.showAlert('success', message, duration);
   }
