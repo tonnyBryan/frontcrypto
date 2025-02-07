@@ -77,7 +77,7 @@
         </div>
       </div>
 
-      <!-- Modal -->
+      
       <div
         class="modal fade"
         id="merci"

@@ -82,7 +82,7 @@ import LoaderV from '../util/LoaderV.vue'
   <div class="center" v-else>
     <LoaderV></LoaderV>
   </div>
-  <!-- Modal pour entrer le solde -->
+ 
   <div
     class="modal d-flex justify-content-center align-items-center"
     v-if="showTransactionModal"
@@ -226,12 +226,12 @@ export default {
       return logo
     },
     formatNumber() {
-      const rawValue = this.formattedSolde.replace(/\s/g, '') // Retirer les espaces existants
+      const rawValue = this.formattedSolde.replace(/\s/g, '')
       if (!isNaN(rawValue)) {
-        this.solde = rawValue // Stocker la valeur brute
-        this.formattedSolde = Number(rawValue).toLocaleString('fr-FR') // Ajouter les espaces
+        this.solde = rawValue 
+        this.formattedSolde = Number(rawValue).toLocaleString('fr-FR') 
       } else {
-        this.formattedSolde = this.solde // En cas de saisie invalide
+        this.formattedSolde = this.solde 
       }
     },
     toggleFundView() {

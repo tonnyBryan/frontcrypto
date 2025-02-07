@@ -15,7 +15,7 @@
     </div>
   </div>
 
-  <!-- Modal de confirmation -->
+
   <div
     id="confirmationModal"
     class="modal fade"
@@ -58,7 +58,7 @@
     </div>
   </div>
 
-   <!-- Modal d'erreur -->
+   
    <div id="errorModal" class="modal fade" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -88,7 +88,7 @@ export default {
   name: 'MyHistoryRequest',
   data() {
     return {
-      errorMessage: "", // Initialize with an empty string or a default error message
+      errorMessage: "", 
     };
   },
   props: {
@@ -111,7 +111,7 @@ export default {
       const roundedValue = value.toFixed(2);
       return new Intl.NumberFormat('fr-FR').format(roundedValue);
     },
-    // Ouvre la modal de confirmation
+
     openModal() {
       if (!UtilClass.hasInternetAccess()) {
         UtilClass.showErrorToast("Oups! Check your network and try again")
@@ -127,20 +127,20 @@ export default {
     },
     async confirmAction() {
       const requestUrl = `${UtilClass.BACKEND_BASE_URL}/crypto/demande/annuler/${this.request.id_demande}`;
-      const btn = document.getElementById('cf'); // Vérifie que le bouton existe
+      const btn = document.getElementById('cf'); 
       if (!btn) {
         return;
       }
 
       try {
-        UtilClass.loadButton(btn); // Ajoute un état de chargement au bouton
+        UtilClass.loadButton(btn);
 
         const response = await fetch(requestUrl, { method: "PUT" });
         const responseBody = await response.json();
 
         if (response.ok) {
           setTimeout(() => {
-            this.modalInstance.hide(); // Cache la modal après l'action
+            this.modalInstance.hide(); 
           }, 300);
           if (responseBody.success) {
             this.$emit('request-changed');
@@ -169,7 +169,6 @@ export default {
 </script>
 
 <style scoped>
-/* Ajout de styles personnalisés pour la modal et les alertes */
 .modal-content {
   background-color: #181a20;
   color: #ffffff;

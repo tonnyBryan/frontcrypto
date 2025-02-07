@@ -70,10 +70,10 @@ export default class UtilClass {
 
   static showAlert(type, message, duration = 5000) {
     const icon = type === 'success'
-        ? '<i class="bi bi-check-circle-fill text-success"></i>' // ✅ Icône verte pour succès
-        : '<i class="bi bi-exclamation-triangle-fill text-danger"></i>'; // ⚠️ Icône rouge pour erreur
+        ? '<i class="bi bi-check-circle-fill text-success"></i>' 
+        : '<i class="bi bi-exclamation-triangle-fill text-danger"></i>'; 
 
-    // Créer l'élément de l'alerte
+   
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-dismissible fade show d-flex align-items-center custom-alert`;
     alertDiv.setAttribute('role', 'alert');
@@ -82,16 +82,12 @@ export default class UtilClass {
       <span class="ms-2">${message}</span>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     `;
-
-    // Définir la classe pour la couleur initiale
     alertDiv.classList.add(type === 'success' ? 'alert-success' : 'alert-danger');
-
-    // Ajouter une animation d'entrée depuis le haut
     alertDiv.style.transform = 'translateY(-100px)';
     alertDiv.style.opacity = '0';
     alertDiv.style.transition = 'transform 0.5s ease-out, opacity 0.5s ease-out';
 
-    // Ajouter l'alerte dans un conteneur centré en haut de la page
+  
     let alertContainer = document.getElementById('alert-container');
     if (!alertContainer) {
       alertContainer = document.createElement('div');
@@ -105,13 +101,12 @@ export default class UtilClass {
 
     alertContainer.appendChild(alertDiv);
 
-    // Appliquer l'effet d'apparition
     setTimeout(() => {
       alertDiv.style.transform = 'translateY(0)';
       alertDiv.style.opacity = '1';
     }, 100);
 
-    // Supprimer l'alerte après la durée spécifiée
+    
     setTimeout(() => {
       alertDiv.style.transform = 'translateY(-100px)';
       alertDiv.style.opacity = '0';
@@ -119,14 +114,10 @@ export default class UtilClass {
     }, duration);
   }
 
-
-
-  // ✅ Afficher une alerte de succès
   static showSuccessToast(message, duration = 5000) {
     this.showAlert('success', message, duration);
   }
 
-  // ✅ Afficher une alerte d'erreur
   static showErrorToast(message, duration = 5000) {
     this.showAlert('error', message, duration);
   }

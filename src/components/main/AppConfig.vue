@@ -4,14 +4,13 @@ import * as bootstrap from 'bootstrap'
 import UtilClass from '@/util/UtilClass.js'
 
 
-// Variables réactives pour les commissions
+
 const errorMessage = ref(null);
 const commissionAchat = ref(null);
 const commissionVente = ref(null);
-const isEditingAchat = ref(false); // Détermine si l'on édite "achat" ou "vente"
-const editedValue = ref(null); // Stocke la valeur modifiée
+const isEditingAchat = ref(false); 
+const editedValue = ref(null); 
 
-// Fonction pour récupérer les données depuis l'API
 const fetchCommissions = async () => {
   try {
     const response = await fetch(UtilClass.BACKEND_BASE_URL + "/crypto/commission");
@@ -21,14 +20,14 @@ const fetchCommissions = async () => {
       commissionAchat.value = result.data.commission_achat;
       commissionVente.value = result.data.commission_vente;
     } else {
-      console.error("Erreur dans les données reçues :", result.message);
+      console.error("Error in received data:", result.message);
     }
   } catch (error) {
-    console.error("Erreur lors de l'appel à l'API :", error);
+    console.error("Error calling API:", error);
   }
 };
 
-// Fonction pour mettre à jour une commission
+
 const updateCommission = async () => {
   try {
     if (!editedValue.value && editedValue.value !== 0) {
@@ -69,10 +68,10 @@ const updateCommission = async () => {
         commissionVente.value = body.commission_vente;
       }
     } else {
-      console.error("Erreur lors de la mise à jour :", result.message);
+      console.error("Error while updating:", result.message);
     }
   } catch (error) {
-    console.error("Erreur réseau :", error);
+    console.error("Network error:", error);
   }
 };
 
@@ -124,13 +123,13 @@ const openEditModal = (isAchat) => {
     </div>
   </div>
 
-  <!-- Modal Bootstrap -->
+
   <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="editModalLabel">
-            Modifier la {{ isEditingAchat ? 'commission d\'achat' : 'commission de vente' }}
+            Edit the {{ isEditingAchat ? 'purchase commission' : 'sales commission' }}
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -142,20 +141,20 @@ const openEditModal = (isAchat) => {
             v-model="editedValue"
             min="0"
             max="100"
-            placeholder="Entrez une nouvelle valeur"
+            placeholder="Enter a new value"
           />
           <div class="alert alert-danger" v-if="errorMessage">
             <i class="bi bi-exclamation-triangle-fill"></i> {{ errorMessage }}
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
           <button
             type="button"
             class="btn btn-primary"
             @click="updateCommission()"
           >
-            Enregistrer
+            Save
           </button>
         </div>
       </div>

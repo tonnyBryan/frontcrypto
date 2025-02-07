@@ -15,7 +15,6 @@
         <img src="@/assets/App-icon.png" alt="Logo" style="width: 30px; height: 30px" />
       </div>
       <form @submit.prevent="handleLogin" novalidate>
-        <!-- Champ Email -->
         <div class="mb-3">
           <label for="email" class="form-label">E-mail</label>
           <input
@@ -33,7 +32,7 @@
             {{ errors.email }}
           </div>
         </div>
-        <!-- Champ Mot de Passe -->
+         
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>
           <div class="input-group" style="position: relative">
@@ -75,14 +74,14 @@
           </div>
         </div>
 
-        <!-- Bouton Continu -->
+       
         <button id="submit-btn" type="submit" class="btn btn-warning w-100 mb-3 fw-bold">
           Continue
         </button>
       </form>
     </div>
 
-    <!-- Modale pour le code PIN -->
+    
      <div
         class="modal d-flex justify-content-center align-items-center"
         v-if="showPinModal"
@@ -142,7 +141,7 @@
         </div>
      </div>
 
-    <!-- Modal pour la confirmation du compte -->
+ 
     <div
       class="modal d-flex justify-content-center align-items-center"
       v-if="showConfirmationModal"
@@ -188,7 +187,7 @@
       </div>
     </div>
 
-    <!-- Modale pour compte bloqué -->
+
     <div
       class="modal d-flex justify-content-center align-items-center"
       v-if="showBlockedAccountModal"
@@ -212,7 +211,7 @@
           To regain access,please request a password reset through your email address.
         </p>
 
-        <!-- Bouton pour Request a password reset -->
+       
         <button
           id="demandeBtn"
           class="btn btn-warning w-100 fw-bold"
@@ -231,7 +230,7 @@
           Cancel
         </button>
 
-        <!-- Formulaire de réinitialisation -->
+        
         <div v-if="isResetRequested">
           <p class="text-muted" style="margin-bottom: 0.5rem; margin-top: 2rem">
             Please enter the reset key that we send to your email adress.
@@ -241,7 +240,7 @@
             type="text"
             v-model="resetKey"
             class="form-control mb-3"
-            placeholder="Clé de réinitialisation"
+            placeholder="Reset key"
             style="background-color: #444; color: #fff"
           />
           <p class="text-danger mt-3" v-if="resetErrorMessage">{{ resetErrorMessage }}</p>
@@ -291,15 +290,13 @@ export default {
   },
   methods: {
     handleKeyDown(index, event) {
-      // Vérifier si la touche appuyée est "Backspace"
+      
       if (event.key === "Backspace") {
-        // Si le champ courant est vide et qu'il existe un champ précédent
         if (!this.pin[index] && index > 0) {
-          event.preventDefault(); // Empêcher le comportement par défaut
+          event.preventDefault();
           this.$nextTick(() => {
             const inputs = this.$refs.pinInput;
             if (inputs && inputs[index - 1]) {
-              // Optionnel : effacer la valeur du champ précédent si besoin
               this.pin[index - 1] = "";
               inputs[index - 1].focus();
             }
@@ -310,7 +307,6 @@ export default {
     handleInput(index, event) {
       const value = event.target.value;
       if (value && value.length === 1) {
-        // On attend que le DOM soit mis à jour
         this.$nextTick(() => {
           const inputs = this.$refs.pinInput;
           if (inputs && inputs[index + 1]) {
@@ -558,7 +554,7 @@ export default {
 }
 
 input::placeholder {
-  color: #aaaaaa; /* Exemple : texte du placeholder gris clair */
+  color: #aaaaaa; 
 }
 
 input {

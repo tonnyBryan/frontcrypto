@@ -120,7 +120,7 @@
     </div>
   </div>
 
-  <!-- Modal pour la confirmation du compte -->
+
   <div
     class="modal d-flex justify-content-center align-items-center"
     v-if="showConfirmationModal"
@@ -160,7 +160,7 @@
     </div>
   </div>
 
-  <!-- Modal -->
+ 
   <div
     class="modal fade"
     id="thankYouModal"
@@ -296,10 +296,10 @@ export default {
         if (result.success && result.data) {
           this.commission_achat = result.data.commission_achat;
         } else {
-          console.error("Erreur dans les données reçues :", result.message);
+          console.error("Error in received data:", result.message);
         }
       } catch (error) {
-        console.error("Erreur lors de l'appel à l'API :", error);
+        console.error("Error calling API:", error);
       }
     },
     updateSpend() {

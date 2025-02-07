@@ -163,7 +163,7 @@ td {
   color: antiquewhite;
 }
 
-/* Responsive styles */
+
 @media (max-width: 768px) {
   .table-container {
     padding: 0 10px;
@@ -183,7 +183,7 @@ td {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    background-color: transparent; /* Couleur de fond claire */
+    background-color: transparent; 
     border-radius: 50%;
     width: 100px;
     height: 100px;

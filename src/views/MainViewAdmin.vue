@@ -21,7 +21,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 
-const showScrollButton = ref(false) // Gère la visibilité du bouton
+const showScrollButton = ref(false) 
 
 const handleScroll = () => {
   const headerHeight = document.querySelector('header')?.offsetHeight || 0
@@ -33,14 +33,14 @@ const scrollToTop = () => {
 }
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll) // Écouteur de défilement
+  window.addEventListener('scroll', handleScroll)
   if(!UtilClass.isAdminAuth()) {
     router.push('/app')
   }
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll) // Nettoyage
+  window.removeEventListener('scroll', handleScroll) 
 })
 </script>
 

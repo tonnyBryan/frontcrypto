@@ -30,7 +30,7 @@
     </button>
   </header>
 
-  <!-- Modal de confirmation Bootstrap -->
+
   <div
     class="modal fade"
     id="logoutModal"
