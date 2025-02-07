@@ -40,7 +40,7 @@ import TradingView from '../util/TradingView.vue'
         </div>
       </div>
 
-      <!-- Section droite : formulaire d'achat -->
+     
       <div class="col-lg-4 col-md-6">
         <div class="card shadow-sm bg-dark text-light">
           <div class="card-body">
@@ -364,13 +364,13 @@ input {
 }
 
 input:focus {
-  border-color: #ffc107; /* Bordure bleu clair au focus */
-  outline: none; /* Enlever le contour par défaut */
-  box-shadow: none; /* Enlever le contour bleu spécifique à Bootstrap */
+  border-color: #ffc107; 
+  outline: none;
+  box-shadow: none;
 }
 
 input::placeholder {
-  color: #888; /* Couleur de la placeholder */
-  opacity: 1; /* Assure que la couleur est visible (valeur par défaut : 0.5) */
+  color: #888; 
+  opacity: 1; 
 }
 </style>

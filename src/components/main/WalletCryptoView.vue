@@ -177,7 +177,7 @@ h4 {
   font-weight: 700;
   color: white;
   text-align: left;
-  margin-bottom: 10px; /* Pour l'espacement avec la table */
+  margin-bottom: 10px; 
 }
 
 .table {
@@ -192,7 +192,6 @@ h4 {
 
 .table td {
   padding: 10px;
-  /* color: #c1c1c1; */
 }
 
 .unit {
@@ -214,8 +213,8 @@ h4 {
 
 .btn-warning,
 .btn-success {
-  width: 45%; /* Ajuster la largeur pour alignement optimal */
-  margin: 0 2%; /* Ajouter un léger espacement entre les boutons */
+  width: 45%;
+  margin: 0 2%; 
 }
 
 th {
@@ -223,7 +222,6 @@ th {
 }
 
 
-/* Réduire la taille des polices et masquer certaines colonnes sur les petits écrans */
 @media (max-width: 576px) {
   .table th:nth-child(2),
   .table td:nth-child(2) {
@@ -232,8 +230,8 @@ th {
 
   .btn-warning,
   .btn-success {
-    width: 100%; /* Prendre toute la largeur pour les petits écrans */
-    margin: 5px 0; /* Espacement vertical entre les boutons */
+    width: 100%; 
+    margin: 5px 0;
   }
 }
 </style>

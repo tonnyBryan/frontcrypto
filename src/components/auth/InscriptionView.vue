@@ -15,7 +15,7 @@
         <img src="@/assets/App-icon.png" alt="Logo" style="width: 30px; height: 30px" />
       </div>
       <form @submit.prevent="handleInscription" novalidate>
-        <!-- Champ Email -->
+       
         <div class="mb-3">
           <label for="username" class="form-label">Username</label>
           <input
@@ -50,7 +50,7 @@
             {{ errors.email }}
           </div>
         </div>
-        <!-- Champ Mot de Passe -->
+       
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>
           <div class="input-group" style="position: relative">
@@ -87,7 +87,6 @@
             {{ errors.password }}
           </div>
         </div>
-        <!-- Bouton Continuee-->
         <button id="submit-btn" type="submit" class="btn btn-warning w-100 mb-3 fw-bold">
           Continue
         </button>
@@ -95,7 +94,7 @@
     </div>
   </div>
 
-  <!-- Modal pour la confirmation du compte -->
+
   <div
     class="modal d-flex justify-content-center align-items-center"
     v-if="showConfirmationModal"
@@ -272,7 +271,7 @@ export default {
 }
 
 input::placeholder {
-  color: #aaaaaa; /* Exemple : texte du placeholder gris clair */
+  color: #aaaaaa; 
 }
 
 input {
@@ -282,15 +281,15 @@ input {
 }
 
 input:focus {
-  color: #ffffff; /* Texte jaune vif au focus */
-  border-color: #ffc107; /* Bordure bleu clair au focus */
-  outline: none; /* Enlever le contour par défaut */
-  box-shadow: none; /* Enlever le contour bleu spécifique à Bootstrap */
+  color: #ffffff; 
+  border-color: #ffc107; 
+  outline: none; 
+  box-shadow: none; 
 }
 
 input:-webkit-autofill {
-  background-color: #1e1e1e !important; /* Remettre un fond sombre */
-  color: #c7c6c6 !important; /* Garder le texte en blanc */
+  background-color: #1e1e1e !important; 
+  color: #c7c6c6 !important; 
 }
 .border-red {
   border: 3px solid #c82333 !important;

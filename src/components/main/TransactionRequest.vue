@@ -39,7 +39,7 @@ const getUserLogo = (logo) => {
 const formatDateTime = (dateString) => {
   if (!dateString) return "N/A";
   const date = new Date(dateString);
-  date.setHours(date.getHours()); // Ajout de 3 heures
+  date.setHours(date.getHours()); 
   return date.toLocaleString("fr-FR", {
     day: "2-digit",
     month: "2-digit",
@@ -98,9 +98,6 @@ const confirmAction = async () => {
     }, 300);
   }
 };
-
-
-// Récupérer les données au chargement du composant
 onMounted(fetchDemandes);
 </script>
 
@@ -155,7 +152,7 @@ onMounted(fetchDemandes);
     </table>
   </div>
 
-  <!-- Modal de confirmation -->
+
   <div
     id="confirmationModal"
     class="modal fade"
@@ -170,9 +167,9 @@ onMounted(fetchDemandes);
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          Êtes-vous sûr de vouloir
-          <strong>{{ actionType === "allow" ? "approuver" : "refuser" }}</strong>
-          cette demande ?
+          Are you sure you want to
+          <strong>{{ actionType === "allow" ? "allow" : "deny" }}</strong>
+          this request ?
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -185,7 +182,7 @@ onMounted(fetchDemandes);
   </div>
 
 
-  <!-- Modal d'erreur -->
+
   <div id="errorModal" class="modal fade" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -213,7 +210,7 @@ h4 {
   font-weight: 700;
   color: white;
   text-align: left;
-  margin-bottom: 10px; /* Pour l'espacement avec la table */
+  margin-bottom: 10px; 
 }
 
 .table {
@@ -233,7 +230,7 @@ h4 {
 
 .table td {
   padding: 10px;
-  /* color: #c1c1c1; */
+  
 }
 
 .unit {
@@ -257,7 +254,6 @@ th {
   font-weight: bold;
 }
 
-/* Réduire la taille des polices et masquer certaines colonnes sur les petits écrans */
 @media (max-width: 576px) {
   .table th:nth-child(2),
   .table td:nth-child(2) {

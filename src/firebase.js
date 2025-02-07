@@ -1,11 +1,11 @@
-// src/firebase.js
+
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import { getFirestore } from "firebase/firestore";
 import { getMessaging } from 'firebase/messaging';
 
-// Configuration de Firebase
+
 const firebaseConfig = {
     apiKey: "AIzaSyBuU-y6Yjqq9-_UyMhMPLvcylHah07AOdo",
     authDomain: "fireproject-fff3b.firebaseapp.com",
@@ -16,14 +16,14 @@ const firebaseConfig = {
     databaseURL: "https://fireproject-fff3b-default-rtdb.asia-southeast1.firebasedatabase.app"
 };
 
-// Initialiser Firebase
+
 const app = initializeApp(firebaseConfig);
 
-// Initialiser les services Firebase
-const database = getDatabase(app); // Realtime Database
-const auth = getAuth(app); // Authentication
-const db = getFirestore(app); // Firestore
+
+const database = getDatabase(app); 
+const auth = getAuth(app); 
+const db = getFirestore(app); 
 const messaging = getMessaging(app);
 
-// Exporter les services Firebase
+
 export { auth, database, db, messaging };

@@ -40,7 +40,7 @@
     </button>
   </header>
 
-  <!-- Modal de confirmation Bootstrap -->
+ 
   <div
     class="modal fade"
     id="logoutModal"
@@ -86,7 +86,7 @@ export default {
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen
     },
-    // Déclenche l'affichage du modal de confirmation
+  
     confirmLogout() {
       const logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'))
       logoutModal.show()

@@ -124,7 +124,7 @@
           <input type="checkbox" v-model="filterActive" @change="handleToggle">
           <span class="slider"></span>
         </label>
-        
+
       </div>
     </div>
 
@@ -192,7 +192,7 @@
 
   </div>
 
-  <!-- Modal d'erreur -->
+
   <div id="errorModal" class="modal fade" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -295,7 +295,7 @@ export default {
         if (this.selectedCrypto) {
           params.push("idc=" + this.selectedCrypto);
           if (this.selectedUser) {
-            filterHeader += "et ";
+            filterHeader += "and ";
           }
           const crypto = this.cryptoOptions.find(crypto => crypto.value === this.selectedCrypto);
           filterHeader += "crypto "+ crypto.label;
@@ -321,7 +321,7 @@ export default {
     addHeader(text) {
       const headerContainer = document.querySelector('.filter-header');
       if (headerContainer) {
-        headerContainer.innerHTML = `<h4>👁️ ${text}</h4>`;
+        headerContainer.innerHTML = `<h4>👁️${text}</h4>`;
       }
     },
     formatDateTime(dateString) {
@@ -564,8 +564,6 @@ td {
   min-width: 100px;
 }
 
-
-/* Responsive styles */
 @media (max-width: 768px) {
   .table-container {
     padding: 0 10px;
@@ -585,7 +583,7 @@ td {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    background-color: transparent; /* Couleur de fond claire */
+    background-color: transparent; 
     border-radius: 50%;
     width: 100px;
     height: 100px;
@@ -641,20 +639,20 @@ td {
 }
 
 .date-inputs input.small-datetime {
-  width: 150px !important; /* Ajuste la largeur */
-  font-size: 14px; /* Réduit la taille du texte */
-  padding: 5px; /* Réduit l’espace intérieur */
+  width: 150px !important;
+  font-size: 14px; 
+  padding: 5px; 
   margin-right: 5px;
   background-color: transparent;
   color: #fff;
 }
 
 input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-    filter: invert(1); /* Inverse la couleur pour rendre l'icône blanche */
+    filter: invert(1); 
     cursor: pointer;
 }
 
-/* From Uiverse.io by TimTrayler */
+
 .switch {
  font-size: 17px;
  position: relative;

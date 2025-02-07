@@ -10,13 +10,6 @@ defineProps({
 <template>
   <div class="greetings">
     <h1 class="yellow">{{ msg }}</h1>
-    <!-- <h3>
-      Powerful Crypto project, created by ETU<br />
-      <a href="#" rel="noopener" class="yellow">2768</a> +
-      <a href="#" rel="noopener" class="yellow">2442</a> +
-      <a href="#" rel="noopener" class="yellow">2561</a> +
-      <a href="#" rel="noopener" class="yellow">2756</a> .
-    </h3> -->
   </div>
 </template>
 
