@@ -91,12 +91,12 @@ export default {
       }
 
       socket.onopen = () => {
-        console.log('WebSocket connected')
+      
         this.getLastCour()
       }
 
       socket.onclose = () => {
-        console.log('WebSocket disconnected')
+        
         this.cryptos = []
       }
 

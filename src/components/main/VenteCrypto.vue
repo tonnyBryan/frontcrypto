@@ -282,11 +282,11 @@ export default {
         this.updatePriceOne()
       }
       this.socket.onopen = () => {
-        console.log('WebSocket connected')
+      
         this.getLastCour()
       }
       this.socket.onclose = () => {
-        console.log('WebSocket disconnected')
+        
       }
     },
     async getLastCour() {

@@ -143,11 +143,11 @@ export default {
       }
 
       socket.onopen = () => {
-        console.log('WebSocket connected')
+      
       }
 
       socket.onclose = () => {
-        console.log('WebSocket disconnected')
+        
         this.isConnected = false
       }
 
