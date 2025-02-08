@@ -250,11 +250,11 @@ export default {
         this.updateCryptoData(data)
       }
       this.socket.onopen = () => {
-        console.log('WebSocket connected')
+      
         this.getLastCour()
       }
       this.socket.onclose = () => {
-        console.log('WebSocket disconnected')
+        
       }
     },
     async getLastCour() {
@@ -339,7 +339,6 @@ export default {
         }
         if (data.success) {
           this.isfav = data.data
-          console.log( "tyyyy aaaa"+this.isfav );
         } else {
           throw new Error(data.message || 'Error retrieving user information')
         }

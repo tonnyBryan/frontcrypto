@@ -358,11 +358,11 @@ export default {
         this.updateSpend()
       }
       this.socket.onopen = () => {
-        console.log('WebSocket connected')
+      
         this.getLastCour()
       }
       this.socket.onclose = () => {
-        console.log('WebSocket disconnected')
+        
       }
     },
     async getLastCour() {

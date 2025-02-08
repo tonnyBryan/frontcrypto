@@ -101,14 +101,11 @@
       },
       methods: {
         handleDateChange() {
-          console.log(this.endDate);
-          // Appliquer le filtre
           this.applyFilter();
         },
         async applyFilter() {
           if (this.endDate) {
             const url = `${UtilClass.BACKEND_BASE_URL}/crypto/user/transactions/group?date=${encodeURIComponent(this.endDate)}`;
-            console.log(url);
             this.getTransactionsData(url);
           } else {
             this.getTransactionsData(null);

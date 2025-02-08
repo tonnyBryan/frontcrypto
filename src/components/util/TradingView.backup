@@ -126,10 +126,10 @@ export default {
         this.updateChartData(selectedCrypto)
       }
       this.socket.onopen = () => {
-        console.log('WebSocket connected')
+      
       }
       this.socket.onclose = () => {
-        console.log('WebSocket disconnected')
+        
       }
     },
 

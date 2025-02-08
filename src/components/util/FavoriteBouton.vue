@@ -10,7 +10,6 @@ const props = defineProps({
 const emit = defineEmits(['update:isFavorite']);
 
 const isFavorite = ref(props.isFavorite);
-console.log(isFavorite);
 
 const toggleFavorite = async () => {
   try {

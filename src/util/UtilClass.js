@@ -86,8 +86,6 @@ export default class UtilClass {
       <span class="ms-2">${message}</span>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     `;
-
-    console.log(type)
     alertDiv.classList.add(
       type === 'success' ? 'alert-success' :
       type === 'danger' ? 'alert-danger' :
