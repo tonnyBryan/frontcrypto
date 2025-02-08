@@ -8,22 +8,22 @@
       <ul>
         <li>
           <RouterLink to="/app/v1/home" @click="closeMenu">
-            <i class="bi bi-house"></i> Home
+            <i class="bi bi-house-fill"></i>Home
           </RouterLink>
         </li>
         <li>
           <RouterLink to="/app/v1/achat" @click="closeMenu">
-            <i class="bi bi-box"></i> Buy crypto
-          </RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/app/v1/profil" @click="closeMenu">
-            <i class="bi bi-person-circle"></i> My Profile
+            <i class="bi bi-currency-exchange"></i> Buy crypto
           </RouterLink>
         </li>
         <li>
           <RouterLink to="/app/v1/history" @click="closeMenu">
-            <i class="bi bi-calendar2-check"></i> History
+            <i class="bi bi-calendar-range-fill"></i> History
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/app/v1/profil" @click="closeMenu">
+            <i class="bi bi-person-circle"></i>  My Profile
           </RouterLink>
         </li>
         <li>

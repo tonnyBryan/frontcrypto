@@ -54,7 +54,7 @@ import LoaderV from '../util/LoaderV.vue'
 
     <hr style="border-top: 4px solid gray" />
     <div class="row" style="padding-bottom: 2rem">
-      <WalletCryptoView :Mycryphoss="mycrypto" :limit="20" />
+      <WalletCryptoView  :Mycryphoss="mycrypto" :limit="20" />
     </div>
     <div class="row">
       <div class="scrollable-container col-md-6">
@@ -132,8 +132,6 @@ import LoaderV from '../util/LoaderV.vue'
     </div>
   </div>
 
-
-
   <div
     class="modal fade"
     id="thankYouModal"
@@ -191,7 +189,7 @@ export default {
       mycrypto: [],
 
       fundLimit: 3,
-      cryptoLimit: 3,
+      cryptoLimit: 2,
       fundExpanded: false,
       cryptoExpanded: false,
 

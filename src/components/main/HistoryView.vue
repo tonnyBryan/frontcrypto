@@ -5,9 +5,6 @@
     enableTime: true,       
     dateFormat: "d-m-Y H:i", 
     time_24hr: true,
-    altFormat: "d-m-Y H:i", 
-    altInput: true,
-      
   };
 </script>
 
@@ -153,7 +150,7 @@
     </div>
 
     <div class="table-container">
-      <div class="table-responsive">
+      <div class="table-responsive scrollable-container">
         <table v-if="transactions.length" class="table table-dark tba" style="width: 90%">
           <thead>
           <tr>
@@ -261,6 +258,8 @@ export default {
       userOptions: null,
       modalInstance: ref(null),
       errorMessage: ref(""),
+      startDate : null,
+      endDate : null,
     }
   },
   async created() {
@@ -271,11 +270,15 @@ export default {
   },
   methods: {
       handleToggle() {
-        if (!this.filterActive) {
-          this.resetDates();
+        if (this.filterActive) {
+          this.filterTransactions();
+        }
+        else{
+          this.filteredTransactions =this.transactions;
         }
       },
       handleDateChange() {
+        console.log("strat"+this.startDate+"endd"+this.endDate)
         if (this.filterActive) {
           this.filterTransactions();
         }
@@ -287,16 +290,27 @@ export default {
       },
       filterTransactions() {
         let filtered = [...this.transactions];
+
         if (this.startDate) {
-          let start = new Date(this.startDate);
-          filtered = filtered.filter(transaction => new Date(transaction.date_action) >= start);
+            let start = this.convertToISO(this.startDate, true); 
+            filtered = filtered.filter(transaction => new Date(transaction.date_action) >= start);
         }
         if (this.endDate) {
-          let end = new Date(this.endDate);
-          filtered = filtered.filter(transaction => new Date(transaction.date_action) <= end);
+            let end = this.convertToISO(this.endDate, false);
+            filtered = filtered.filter(transaction => new Date(transaction.date_action) <= end);
         }
-        this.filteredTransactions = filtered;
-      },
+
+        this.filteredTransactions = filtered.map(transaction => ({
+            ...transaction,
+            formatted_date: this.formatDateTime(transaction.date_action) // Ajoute un champ formaté
+        }));
+    },
+    convertToISO(dateStr, isStart) {
+        let [day, month, year, hour, minute] = dateStr.split(/[- :]/);
+        let formattedDate = new Date(`${year}-${month}-${day}T${hour || (isStart ? '00' : '23')}:${minute || (isStart ? '00' : '59')}:00`);
+        return formattedDate;
+    },
+
     showErrorModal() {
       this.modalInstance = new bootstrap.Modal(document.getElementById('errorModal'));
       this.modalInstance.show();
@@ -305,6 +319,8 @@ export default {
       this.getTransactionsData(null);
       this.addHeader("History for all");
       this.resetDates();
+      this.selectedUser=null;
+      this.selectedCrypto=null;
     },
     filterData() {
       let url = UtilClass.BACKEND_BASE_URL + "/crypto/user/transactions";
@@ -397,7 +413,6 @@ export default {
       }
     },
     getUserLogo(logo) {
-      console.log(logo)
       if (!logo || parseInt(logo) === 0) {
         return '/assets/images/default-logo.jpg'
       }
@@ -444,7 +459,6 @@ export default {
         if (data.success) {
           this.transactions = data.data
           this.filteredTransactions = [...this.transactions];
-          this.resetDates();
         } else {
           throw new Error(data.message || 'Error retrieving user information')
         }
@@ -460,6 +474,11 @@ export default {
 
 
 <style scoped>
+.scrollable-container {
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: 1rem;
+}
 .v-select .vs__dropdown-toggle {
   display: flex;
   align-items: center;

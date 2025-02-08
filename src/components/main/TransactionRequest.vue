@@ -102,7 +102,14 @@ onMounted(fetchDemandes);
 </script>
 
 <template>
-  <div class="table-responsive">
+
+  <div class="col-md-12 d-flex flex-column flex-sm-row  justify-content-between align-items-center" >
+    <h3 style="color: #fdf8f8; font-weight: 700;">
+      <i class="bi bi-patch-check-fill"></i> User Requests Management
+    </h3>
+  </div>
+
+  <div class="table-responsive mt-5">
     <table class="table table-dark tba">
       <thead>
       <tr>
@@ -116,7 +123,7 @@ onMounted(fetchDemandes);
       <tbody>
       <tr v-for="demande in demandes" :key="demande.id_demande">
         <td class="unit">
-          <img :src="getUserLogo(demande.utilisateur.imageUrl)" alt="logo" width="40" class="me-2" style="border-radius: 5px" />
+          <img :src="getUserLogo(demande.utilisateur.imageUrl)" alt="logo" width="40" height="40" class="me-2" style="border-radius: 5px" />
           {{ demande.utilisateur.nom }}
         </td>
         <td class="unit">
@@ -181,8 +188,6 @@ onMounted(fetchDemandes);
     </div>
   </div>
 
-
-
   <div id="errorModal" class="modal fade" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -201,17 +206,11 @@ onMounted(fetchDemandes);
       </div>
     </div>
   </div>
+
 </template>
 
 <style scoped>
 
-h4 {
-  margin-top: 16px;
-  font-weight: 700;
-  color: white;
-  text-align: left;
-  margin-bottom: 10px; 
-}
 
 .table {
   margin: 0 auto;
