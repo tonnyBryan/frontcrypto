@@ -1,6 +1,6 @@
 <template>
   <Head></Head>
-  <div class="container" style="min-height: 80vh; position: relative; padding-top: 2rem">
+  <div  style="min-height: 80vh; position: relative; padding-top: 2rem;margin: auto;width: 90%;">
     <RouterView />
   </div>
   <button

@@ -8,50 +8,49 @@
   };
 </script>
 <template>
-    <div>
-      <div class="col-md-12 d-flex flex-column flex-sm-row p-3 justify-content-between align-items-center" >
-        <h3 style="color: #fdf8f8; font-weight: 700;">
-          <i class="bi bi-calendar2-check"></i> Portfolio Summary
-        </h3>
-        <div class="date-inputs" style="display: flex; gap: 10px; align-items: center; margin-top: 1rem;">
-          <flatpickr
-            v-model="endDate"
-            :config="config"
-            class="form-control small-datetime dark-picker"
-            placeholder="Date max"
-          />
-          <button @click="handleDateChange" class="btn  btn-sm btn-outline-warning">
-            <i class="bi bi-funnel"></i> Filter
-          </button>
-        </div>
+    
+    <div class="col-md-12 d-flex flex-column flex-sm-row  justify-content-between align-items-center" >
+      <h3 style="color: #fdf8f8; font-weight: 700;">
+        <i class="bi bi-ui-checks-grid"></i> Portfolio Summary
+      </h3>
+      <div class="date-inputs" style="display: flex; gap: 10px; align-items: center; ">
+        <flatpickr
+          v-model="endDate"
+          :config="config"
+          class="form-control small-datetime dark-picker"
+          placeholder="Date max"
+        />
+        <button @click="handleDateChange" class="btn  btn-sm btn-outline-warning">
+          <i class="bi bi-funnel"></i> Filter
+        </button>
       </div>
-
-      <div class="table-container table-responsive" style="width: 90%; margin: auto;">
-        <table v-if="transactions.length" class="table table-dark tba">
+    </div>
+    
+    <div class="table-responsive mt-3 ">
+      <div class="table table-dark tba" >
+        <table v-if="transactions" class="table table-dark tba">
           <thead>
             <tr>
               <th>User</th>
               <th>Total Purchase</th>
               <th>Total Sale</th>
-              <th>Wallet Value</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="summary in transactions" :key="summary.user.id_utilisateur">
+            <tr v-for="summary in transactions" :key="summary.utilisateur.id_utilisateur">
               <td>
                 <img
-                  :src="getUserLogo(summary.user.imageUrl)"
+                  :src="getUserLogo(summary.utilisateur.imageUrl)"
                   alt="User Photo"
                   width="40"
                   height="40"
-                  class="me-2"
+                  class="me-2 "
                   style="border-radius: 5px; cursor: pointer;"
                 />
-                <span>{{ summary.user.nom }}</span>
+                <span class="unit">{{ summary.utilisateur.nom }}</span>
               </td>
-              <td>{{ formatCurrency(summary.totalAchat) }}</td>
-              <td>{{ formatCurrency(summary.totalVente) }}</td>
-              <td>{{ formatCurrency(summary.portfolioValue) }}</td>
+              <td class="unit">{{ formatCurrency(summary.total_achat) }}</td>
+              <td class="unit">{{ formatCurrency(summary.total_vente) }}</td>
             </tr>
           </tbody>
         </table>
@@ -62,38 +61,36 @@
           <p class="mt-3">No transactions are available for the selected dates ! </p>
         </div>
       </div>
+    </div>
 
-
-      <div id="errorModal" class="modal fade" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title text-warning">Warning</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div id="errorModal" class="modal fade" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-warning">Warning</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="alert alert-warning">
+              <i class="bi bi-exclamation-triangle-fill"></i> {{ errorMessage }}
             </div>
-            <div class="modal-body">
-              <div class="alert alert-warning">
-                <i class="bi bi-exclamation-triangle-fill"></i> {{ errorMessage }}
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
-            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
-
     </div>
-  </template>
+
+</template>
 
   <script>
     import UtilClass from '@/util/UtilClass'
-    import axios from 'axios'
     export default {
       name: 'PortfolioSummary',
       data() {
         return {
-          transactions: [],
+          transactions:null,
           endDate: '',
           errorMessage: '',
           modalInstance: null,
@@ -103,17 +100,15 @@
         this.getTransactionsData(null);
       },
       methods: {
-        handleDateChange(selectedDates) {
-          // mettez à jour endDate avec la date sélectionnée
-          this.endDate = selectedDates[0] ? selectedDates[0].toISOString() : null;
+        handleDateChange() {
+          console.log(this.endDate);
           // Appliquer le filtre
           this.applyFilter();
         },
         async applyFilter() {
           if (this.endDate) {
-            const formattedDate = this.endDate ? this.endDate : new Date().toISOString();
-            const url = `${UtilClass.BACKEND_BASE_URL}/crypto/user/transactions?date=${encodeURIComponent(formattedDate)}`;
-
+            const url = `${UtilClass.BACKEND_BASE_URL}/crypto/user/transactions/group?date=${encodeURIComponent(this.endDate)}`;
+            console.log(url);
             this.getTransactionsData(url);
           } else {
             this.getTransactionsData(null);
@@ -121,7 +116,7 @@
         },
         async getTransactionsData(url) {
           try {
-            const uri = (url) ? url : UtilClass.BACKEND_BASE_URL + '/crypto/user/transactions';
+            const uri = (url) ? url : UtilClass.BACKEND_BASE_URL + '/crypto/user/transactions/group';
             const response = await fetch(uri, {
               method: 'GET',
               headers: {
@@ -139,7 +134,6 @@
             }
             if (data.success) {
               this.transactions = data.data
-              this.endDate=null
             } else {
               throw new Error(data.message || 'Error retrieving user information')
             }
@@ -166,7 +160,6 @@
 
   <style scoped>
 
-
   .date-inputs input.small-datetime {
     width: 150px !important;
     font-size: 14px;
@@ -183,21 +176,54 @@
   }
 
   .table {
-    margin: 0 auto;
+    margin: 20px auto;
     width: 100%;
+  }
+
+  .table tbody td {
+    vertical-align: middle;
+  }
+
+  .table tbody tr {
+    transition: background 0.3s ease;
+  }
+
+  .table tbody tr:hover {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .table-dark {
+    --bs-table-bg: transparent !important;
+    --bs-table-color: inherit !important;
+  }
+
+  .unit {
+    font-weight: 600;
+    color: #fdf8f8;
   }
 
   .table th,
   .table td {
     padding: 10px;
-    vertical-align: middle;
   }
 
-  .table tbody tr:hover {
-    background: rgba(0, 0, 0, 0.5);
-    transition: background 0.3s ease;
+  .table tbody tr {
+    height: initial;
   }
 
+  .table-container {
+    position: relative;
+  }
+
+  th {
+    font-weight: bold;
+  }
+
+  td {
+    min-width: 100px;
+  }
 
   .btn-outline-warning {
     font-weight: 600;
@@ -245,5 +271,7 @@
   .flatpickr-input::placeholder {
     color: #ffffffa1!important;
   }
+  
+
 
   </style>

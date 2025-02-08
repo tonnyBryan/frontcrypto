@@ -7,7 +7,7 @@ import FavoriteBouton from './FavoriteBouton.vue';
   <div class="d-flex gap-2 mt-3">
     <button class="btn btn-outline-secondary gap-5" @click="goToRealtime">
       Go to realtime
-      <i class="bi bi-clock"></i>
+      <i class="bi bi-clock custom"></i>
     </button>
     <FavoriteBouton  :isFavorite="isfavories" :id_cryptho="idCrypto"  />
   </div>
@@ -166,6 +166,9 @@ export default {
 </script>
 
 <style scoped>
+.custom {
+  font-size: 17px; 
+}
 #chart {
   display: flex;
   justify-content: center;

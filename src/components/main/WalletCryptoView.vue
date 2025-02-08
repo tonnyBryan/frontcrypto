@@ -6,7 +6,7 @@
       
     </h4>
     <div class="table-responsive">
-      <table class="table table-dark tba">
+      <table class="table table-dark tba"  v-if="paginatedMycryphoss.length > 0">
         <thead>
           <tr>
             <th scope="col">Name</th>
@@ -52,6 +52,10 @@
           </tr>
         </tbody>
       </table>
+      <div class="d-flex flex-column align-items-center" v-else>
+        <i class="bi bi-wallet text-warning fs-2" ></i>
+        <p class="mt-2 fw-bold "> Oops! Your crypto wallet is empty! It's time to invest! 🛒💰</p>
+      </div>
     </div>
   </div>
 </template>

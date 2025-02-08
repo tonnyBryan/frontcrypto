@@ -13,20 +13,15 @@
         </li>
         <li>
           <RouterLink to="/app/backoffice/overview" @click="closeMenu">
-            <i class="bi bi-card-text"></i> Overview
+            <i class="bi bi-bar-chart-line"></i> Analysis
           </RouterLink>
         </li>
-        <li>
-          <RouterLink to="/app/backoffice/analyse" @click="closeMenu">
-            <i class="bi bi-bar-chart-line"></i>Analysis
-          </RouterLink>
-        </li>
-
         <li>
           <RouterLink to="/app/backoffice/config" @click="closeMenu">
             <i class="bi bi-gear"></i> Config
           </RouterLink>
         </li>
+        
         <li>
           <a href="#" @click.prevent="confirmLogout">
             <i class="bi bi-box-arrow-right"></i> Log out

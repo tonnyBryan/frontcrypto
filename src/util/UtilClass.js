@@ -5,8 +5,8 @@ import './footer/mystyle.css';
 export default class UtilClass {
   static LOCAL_TOKEN_NAME = 'token'
 
-  static BACKEND_BASE_URL = 'http://localhost:8080'
-  static BACKEND_SOCKET_BASE_UR = 'ws://localhost:8080'
+  static BACKEND_BASE_URL = 'http://192.168.1.108:8080'
+  static BACKEND_SOCKET_BASE_UR = 'ws://192.168.1.108:8080'
 
   static SECRET_KET = 'secretkey123456789'
   static EM_ADMIN = 'em_admin';
