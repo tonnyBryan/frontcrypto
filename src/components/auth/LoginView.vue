@@ -276,7 +276,7 @@ export default {
       password: '',
       errors: {},
       showPinModal: false,
-      pin: Array(6).fill(''), // pin
+      pin: Array(6).fill(''),
       timer: 90,
       countdown: null,
       errorMessagePin: '',
