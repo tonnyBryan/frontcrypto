@@ -30,7 +30,7 @@ export default {
       default: null,
     },
     isfavories:{
-      type: Object,
+      type: Boolean,
       default:false,
       required:true,
     },

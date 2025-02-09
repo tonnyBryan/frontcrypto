@@ -1,6 +1,6 @@
 <template>
   <div class="table-container">
-    <h4>{{ title }}</h4>
+    <h4>{{ title }} :</h4>
     <div class="table-responsive">
       <table v-if="paginatedTransactions.length" class="table table-dark tba">
         <thead>
@@ -95,7 +95,6 @@ export default {
 <style scoped>
 h4 {
   margin-top: 16px;
-  font-weight: 700;
   color: white;
   text-align: left;
   margin-bottom: 10px;

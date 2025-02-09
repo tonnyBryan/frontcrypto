@@ -302,7 +302,7 @@ export default {
 
         this.filteredTransactions = filtered.map(transaction => ({
             ...transaction,
-            formatted_date: this.formatDateTime(transaction.date_action) // Ajoute un champ formaté
+            formatted_date: this.formatDateTime(transaction.date_action) 
         }));
     },
     convertToISO(dateStr, isStart) {

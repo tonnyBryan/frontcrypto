@@ -4,7 +4,7 @@ import UtilClass from '@/util/UtilClass'
 
 const props = defineProps({
   isFavorite: Boolean,
-  id_cryptho:String, 
+  id_cryptho: String, 
 });
 
 const emit = defineEmits(['update:isFavorite']);
@@ -47,69 +47,67 @@ const toggleFavorite = async () => {
 
 <template>
   <button 
-    class="btn btn-outline-secondary favorite-btn" 
+    class="btn favorite-btn" 
     :class="{ 'is-favorite': isFavorite }"
     @click="toggleFavorite"
     aria-label="Ajouter aux favoris"
   >
-   Favoris
+  <span style="color: #e7e7e8;">Favorite</span>
     <svg 
-      class="heart-icon" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      stroke-width="2"
+      class="bi bi-star iconefav" 
+      viewBox="0 0 16 16"
+      :fill="isFavorite ? '#ffc107' : 'transparent'"
+      :stroke="isFavorite ? '#ffc107' : '#e7e7e8'"
+      stroke-width="1.5"
     >
-      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+      <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
     </svg>
   </button>
 </template>
 
 
+
 <style scoped>
-.favorite-btn {
-  background: none;
-  border: 1px solid #e7e7e8;
-  cursor: pointer;
-  padding: 8px;
-  width: 100px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease-in-out;
-  gap: 5px;
-}
 
-.heart-icon {
-  width: 20px;
-  height: 20px;
-  color: #e7e7e8;
-  fill: transparent;
-  transition: all 0.3s ease;
-}
-
-.is-favorite {
-  border-color: #741836 !important;
-  background: rgba(255, 1, 1, 0.219);
-  color: #e7e7e8;
-}
-
-.is-favorite .heart-icon {
-  color: #b81048;
-  fill: #e21010;
-  animation: heart-pulse 0.4s ease;
-}
-
-@keyframes heart-pulse {
-  0% {
-    transform: scale(1);
+  .favorite-btn {
+    background: none;
+    border: 1px solid #e7e7e8;  
+    cursor: pointer;
+    padding: 8px;
+    width: 120px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease-in-out;
+    gap: 5px;
   }
-  50% {
-    transform: scale(1.3);
+
+  .iconefav {
+    width: 18px;
+    height: 18px;
+    transition: all 0.3s ease;
   }
-  100% {
-    transform: scale(1);
+
+  .is-favorite {
+    border-color: #ffc107;
+    background: rgba(214, 195, 26, 0.219);
   }
-}
+
+  .is-favorite .iconefav {
+    animation: heart-pulse 0.4s ease;
+  }
+
+  @keyframes heart-pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.3);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
 </style>

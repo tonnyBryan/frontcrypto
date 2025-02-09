@@ -3,7 +3,6 @@
     <h4 style="margin-left: 7px">
       Cryptho-Wallet :
       <span class="text-success ms-2" style="color: rgba(22, 216, 22, 0.445);font-weight: 700;">{{ formatCurrency(capitalValue) }}</span>
-      
     </h4>
     <div class="table-responsive">
       <table class="table table-dark tba"  v-if="paginatedMycryphoss.length > 0">
@@ -178,7 +177,6 @@ export default {
 
 h4 {
   margin-top: 16px;
-  font-weight: 700;
   color: white;
   text-align: left;
   margin-bottom: 10px; 

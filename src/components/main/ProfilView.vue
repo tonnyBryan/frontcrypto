@@ -27,7 +27,7 @@ import LoaderV from '../util/LoaderV.vue'
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-start">
             <div>
-              <h5 class="card-title mb-2">Balance  <i class="bi bi-eye"></i></h5>
+              <h4 class="card-title mb-2">Balance : </h4>
               <h1 class="mb-0">{{ formatCurrency(user.monnaie) }} <span class="unit">USD</span></h1>
             </div>
             <div class="d-flex gap-2 flex-sm-row flex-column">
@@ -51,7 +51,10 @@ import LoaderV from '../util/LoaderV.vue'
         </div>
       </div>
     </div>
-
+    <hr style="border-top: 4px solid gray" />
+    <div class="row" style="padding-bottom: 2rem">
+      <ListMyFavoriesView />
+    </div>
     <hr style="border-top: 4px solid gray" />
     <div class="row" style="padding-bottom: 2rem">
       <WalletCryptoView  :Mycryphoss="mycrypto" :limit="20" />
@@ -166,6 +169,7 @@ import TransactionView from './TransactionFond.vue'
 import WalletCryptoView from './WalletCryptoView.vue'
 import TransactionCrypt from './TransactionCrypt.vue'
 import Requestfrom from '../util/MyHistoryRequest.vue'
+import ListMyFavoriesView from './ListMyFavoriesView.vue'
 import * as bootstrap from 'bootstrap'
 
 export default {
