@@ -12,7 +12,7 @@
           >
           <img :src="getLogoUrl(crypto.unit_nom)" alt="logo" class="crypto-logo me-3" width="35" height="35" />
             <span class="bold">{{ crypto.nom }}</span>
-            <button><i class="bi bi-star-fill"></i></button>
+            <button><i class="bi bi-star-fill" style=" margin-left: auto;"></i></button>
           </div>
         </div>
       </div>
@@ -147,7 +147,7 @@ button {
   background: none;
   border: none;
   font-size: 20px;
-  margin-left: auto;
+ 
 }
 .bi-star-fill {
   width: 20px;

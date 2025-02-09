@@ -59,6 +59,7 @@ import LoaderV from '../util/LoaderV.vue'
     <div class="row" style="padding-bottom: 2rem">
       <WalletCryptoView  :Mycryphoss="mycrypto" :limit="20" />
     </div>
+    <hr style="border-top: 4px solid gray"  />
     <div class="row">
       <div class="scrollable-container col-md-6">
         <TransactionView :transactions="fundTransactions" :limit="fundLimit" />
