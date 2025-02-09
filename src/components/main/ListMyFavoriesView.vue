@@ -12,7 +12,7 @@
           >
           <img :src="getLogoUrl(crypto.unit_nom)" alt="logo" class="crypto-logo me-3" width="35" height="35" />
             <span class="bold">{{ crypto.nom }}</span>
-            <button><i class="bi bi-star-fill" style=" margin-left: auto;"></i></button>
+            <button class="mmi"><i class="bi bi-star-fill "></i></button>
           </div>
         </div>
       </div>
@@ -97,6 +97,9 @@
   </script>
   
 <style scoped>
+.mmi{
+  margin-left: auto;
+}
   .table-container {
     position: relative;
     padding: 0 20px;
